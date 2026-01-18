@@ -41,13 +41,10 @@ header p { font-size: 0.95rem; opacity: 0.85; }
   padding: 18px 22px;
   margin-bottom: 20px;
   box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.card h2 {
-  margin-bottom: 12px;
-  font-size: 1.3rem;
-  border-left: 5px solid var(--gold);
-  padding-left: 10px;
-}
+.card:hover { transform: translateY(-3px); box-shadow: 0 15px 28px rgba(0,0,0,0.18); }
+.card h2 { margin-bottom: 12px; font-size: 1.3rem; border-left: 5px solid var(--gold); padding-left: 10px; }
 
 /* FIELDS */
 label { margin-top: 12px; display: block; font-size: 14px; }
@@ -58,10 +55,15 @@ input, select, textarea {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(31,191,184,0.25);
 }
 textarea { resize: vertical; }
 
-/* BUTTON */
+/* BUTTONS */
 button {
   width: 100%;
   padding: 14px;
@@ -72,6 +74,11 @@ button {
   border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(31,191,184,0.35);
 }
 
 /* PHOTO */
@@ -82,6 +89,7 @@ button {
   width: 250px;
   height: 250px;
   margin: 18px auto;
+  display: block;
   background: white;
   border-radius: 12px;
 }
@@ -93,7 +101,7 @@ button {
 
 <header>
   <h1>FRC 6998 Unipards — REBUILT 2026 Pit Collect</h1>
-  <p>Mechanics, Auto Strategy, Endgame</p>
+  <p>Mechanics, Auto Strategy, and Field Traversal</p>
 </header>
 
 <div class="container">
@@ -108,7 +116,7 @@ button {
   <input id="robotName">
 </div>
 
-<!-- MECHANICAL -->
+<!-- MECHANICAL DETAILS -->
 <div class="card">
   <h2>Mechanical Systems</h2>
   <label>Intake Mechanism</label>
@@ -124,78 +132,78 @@ button {
   <select id="scoringMethod">
     <option value="direct shoot">Direct Shoot</option>
     <option value="indexed flywheel">Indexed Flywheel</option>
-    <option value="pass-through">Pass-Through</option>
+    <option value="pass-through">Pass‑Through Storage</option>
     <option value="other">Other</option>
   </select>
   <input id="scoringOther" placeholder="Specify scoring method" hidden>
 
-  <label>Storage Capacity</label>
-  <input id="hopperCapacity" type="number">
+  <label>Hopper / Storage Capacity (Approx)</label>
+  <input id="hopperCapacity" type="number" placeholder="e.g., 10">
 </div>
 
-<!-- AUTON -->
+<!-- FIELD TRAVERSAL -->
 <div class="card">
-  <h2>Autonomous</h2>
-  <label>Auto Start</label>
+  <h2>Field Traversal</h2>
+  <label>Can Cross Bump</label>
+  <select id="bump">
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+
+  <label>Can Traverse Trench</label>
+  <select id="trench">
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+</div>
+
+<!-- AUTONOMOUS -->
+<div class="card">
+  <h2>Autonomous Capabilities</h2>
+  <label>Auto Start Position</label>
   <select id="autoStart">
     <option value="left">Left</option>
     <option value="center">Center</option>
     <option value="right">Right</option>
   </select>
 
-  <label>Auto Score Estimate</label>
-  <input id="autoScore" type="number">
+  <label>Fuel Preloaded (Max 8)</label>
+  <input id="preloadFuel" type="number" min="0" max="8">
 
-  <label>Auto Strategy</label>
+  <label>Estimated Auto Scored</label>
+  <input id="autoScore" type="number" placeholder="e.g., 12">
+
+  <label>Auto Strategy Type</label>
   <select id="autoType">
     <option value="timed">Timed</option>
-    <option value="sensor">Sensor</option>
-    <option value="vision">Vision</option>
+    <option value="sensor">Sensor‑based</option>
+    <option value="vision">Vision (e.g., Limelight)</option>
     <option value="other">Other</option>
   </select>
-  <input id="autoTypeOther" placeholder="Specify auto" hidden>
-</div>
+  <input id="autoTypeOther" placeholder="Specify auto strategy" hidden>
 
-<!-- 🪜 ENDGAME / LADDER -->
-<div class="card">
-  <h2>Endgame / Ladder</h2>
-
-  <label>Can Climb Ladder</label>
-  <select id="canClimb">
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
+  <label>Sensors Used</label>
+  <select id="sensors">
+    <option value="limelight">Limelight</option>
+    <option value="gyro">Gyro (IMU)</option>
+    <option value="encoders">Encoders</option>
+    <option value="lidar">LiDAR</option>
+    <option value="none">None</option>
+    <option value="other">Other</option>
   </select>
-
-  <label>Highest Ladder Level</label>
-  <select id="ladderLevel">
-    <option value="low">Low</option>
-    <option value="mid">Mid</option>
-    <option value="high">High</option>
-    <option value="traversal">Traversal</option>
-  </select>
-
-  <label>Average Climb Time (seconds)</label>
-  <input id="climbTime" type="number">
-
-  <label>Climb Reliability</label>
-  <select id="climbReliability">
-    <option value="always">Always</option>
-    <option value="usually">Usually</option>
-    <option value="sometimes">Sometimes</option>
-    <option value="rarely">Rarely</option>
-  </select>
+  <input id="sensorsOther" placeholder="Specify sensor" hidden>
 </div>
 
 <!-- NOTES -->
 <div class="card">
   <h2>Strategic Notes</h2>
-  <textarea id="notes" rows="4"></textarea>
+  <textarea id="notes" rows="4" placeholder="Strengths, weaknesses, reliability…"></textarea>
 </div>
 
 <!-- PHOTO -->
 <div class="card">
   <h2>Robot Photo</h2>
-  <input id="photo" type="file" accept="image/*">
+  <input id="photo" type="file" accept="image/*" capture="environment">
   <img id="photoPreview">
 </div>
 
@@ -208,51 +216,57 @@ button {
 </div>
 
 <script>
-// Toggle "Other"
-function toggleOther(sel, other) {
-  const s = document.getElementById(sel);
-  const o = document.getElementById(other);
-  s.addEventListener("change", () => {
-    o.hidden = s.value !== "other";
-    if (o.hidden) o.value = "";
+// Show “Other” inputs dynamically
+function toggleOther(selId, otherId) {
+  const sel = document.getElementById(selId);
+  const other = document.getElementById(otherId);
+  sel.addEventListener("change", () => {
+    other.hidden = sel.value !== "other";
+    if (other.hidden) other.value = "";
   });
 }
 toggleOther("intake","intakeOther");
 toggleOther("scoringMethod","scoringOther");
 toggleOther("autoType","autoTypeOther");
+toggleOther("sensors","sensorsOther");
 
 // Photo preview
-photo.onchange = () => {
-  const r = new FileReader();
-  r.onload = () => photoPreview.src = r.result;
-  r.readAsDataURL(photo.files[0]);
-};
+document.getElementById("photo").addEventListener("change", () => {
+  const file = document.getElementById("photo").files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => document.getElementById("photoPreview").src = reader.result;
+  reader.readAsDataURL(file);
+});
 
 // Generate QR
 function generateQR() {
+  const teamNum = document.getElementById("team").value;
+  if (!teamNum) return alert("Please enter Team Number!");
+
   const data = {
-    team: team.value,
-    robotName: robotName.value,
-    intake: intakeOther.value || intake.value,
-    scoring: scoringOther.value || scoringMethod.value,
-    hopperCapacity: hopperCapacity.value,
+    team: teamNum,
+    robotName: document.getElementById("robotName").value || "",
+    intake: document.getElementById("intakeOther").value || document.getElementById("intake").value,
+    scoring: document.getElementById("scoringOther").value || document.getElementById("scoringMethod").value,
+    hopperCapacity: document.getElementById("hopperCapacity").value || 0,
+    bump: document.getElementById("bump").value || "no",
+    trench: document.getElementById("trench").value || "no",
     auto: {
-      start: autoStart.value,
-      score: autoScore.value,
-      strategy: autoTypeOther.value || autoType.value
+      start: document.getElementById("autoStart").value || "",
+      preload: document.getElementById("preloadFuel").value || 0,
+      score: document.getElementById("autoScore").value || 0,
+      strategy: document.getElementById("autoTypeOther").value || document.getElementById("autoType").value || "",
+      sensors: document.getElementById("sensorsOther").value || document.getElementById("sensors").value || ""
     },
-    endgame: {
-      canClimb: canClimb.value,
-      level: ladderLevel.value,
-      time: climbTime.value,
-      reliability: climbReliability.value
-    },
-    notes: notes.value,
+    notes: document.getElementById("notes").value || "",
     timestamp: Date.now()
   };
 
-  qrcode.innerHTML = "";
-  new QRCode(qrcode, {
+  console.log("Generating QR with data:", data);
+
+  document.getElementById("qrcode").innerHTML = "";
+  new QRCode(document.getElementById("qrcode"), {
     text: JSON.stringify(data),
     width: 250,
     height: 250
