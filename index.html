@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRC 2026 REBUILT – Pit Collect</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b1220;
+      color: #e5e7eb;
+      padding: 16px;
+      max-width: 520px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin-top: 20px;
+      font-size: 18px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 4px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 14px;
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #475569;
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    img {
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 8px;
+      border: 2px solid #334155;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>FRC 2026 – Pit Collect</h1>
+
+<h2>Team Info</h2>
+
+<label>Team Number</label>
+<input id="team" type="number" placeholder="Ex: 9487" />
+
+<label>Drivetrain</label>
+<select id="drivetrain">
+  <option value="">Select</option>
+  <option value="swerve">Swerve</option>
+  <option value="tank">Tank</option>
+  <option value="other">Other</option>
+</select>
+
+<label>Programming Language</label>
+<select id="language">
+  <option value="">Select</option>
+  <option value="java">Java</option>
+  <option value="cpp">C++</option>
+  <option value="other">Other</option>
+</select>
+
+<h2>Robot Capabilities</h2>
+
+<label>Primary Role</label>
+<select id="role">
+  <option value="">Select</option>
+  <option value="scoring">Scoring</option>
+  <option value="defense">Defense</option>
+  <option value="hybrid">Hybrid</option>
+</select>
+
+<label>Auto Capability</label>
+<select id="auto">
+  <option value="">Select</option>
+  <option value="none">None</option>
+  <option value="basic">Basic</option>
+  <option value="advanced">Advanced</option>
+</select>
+
+<label>Endgame Ability</label>
+<select id="endgame">
+  <option value="">Select</option>
+  <option value="none">None</option>
+  <option value="partial">Partial</option>
+  <option value="full">Full</option>
+</select>
+
+<h2>Reliability & Strategy</h2>
+
+<label>Reliability Rating</label>
+<select id="reliability">
+  <option value="">Select</option>
+  <option value="high">High</option>
+  <option value="medium">Medium</option>
+  <option value="low">Low</option>
+</select>
+
+<label>Known Issues</label>
+<textarea id="issues" rows="2"></textarea>
+
+<label>Strategy Notes</label>
+<textarea id="notes" rows="3"></textarea>
+
+<h2>Robot Photo</h2>
+
+<label>Take Robot Photo</label>
+<input id="photo" type="file" accept="image/*" capture="environment" />
+<div class="hint">Photo is saved locally, not inside the QR code</div>
+<img id="preview" hidden />
+
+<button onclick="generateQR()">Generate QR Code</button>
+<button class="secondary" onclick="resetForm()">Reset</button>
+
+<div id="qrcode"></div>
+
+<script>
+const fields = [
+  "team","drivetrain","language","role",
+  "auto","endgame","reliability","issues","notes"
+];
+
+// Restore saved data
+fields.forEach(id => {
+  const el = document.getElementById(id);
+  if (localStorage[id]) el.value = localStorage[id];
+  el.addEventListener("input", () => localStorage[id] = el.value);
+});
+
+// Photo handling
+const photoInput = document.getElementById("photo");
+const preview = document.getElementById("preview");
+
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    localStorage["photo"] = reader.result;
+    preview.src = reader.result;
+    preview.hidden = false;
+  };
+  reader.readAsDataURL(file);
+});
+
+if (localStorage["photo"]) {
+  preview.src = localStorage["photo"];
+  preview.hidden = false;
+}
+
+function generateQR() {
+  const data = {
+    team: team.value,
+    drivetrain: drivetrain.value,
+    language: language.value,
+    role: role.value,
+    auto: auto.value,
+    endgame: endgame.value,
+    reliability: reliability.value,
+    issues: issues.value,
+    notes: notes.value,
+    hasPhoto: !!localStorage["photo"],
+    ts: Date.now()
+  };
+
+  if (!data.team) {
+    alert("Team number required");
+    return;
+  }
+
+  document.getElementById("qrcode").innerHTML = "";
+  new QRCode(document.getElementById("qrcode"), {
+    text: JSON.stringify(data),
+    width: 220,
+    height: 220
+  });
+}
+
+function resetForm() {
+  fields.forEach(id => {
+    document.getElementById(id).value = "";
+    localStorage.removeItem(id);
+  });
+  localStorage.removeItem("photo");
+  preview.hidden = true;
+  document.getElementById("qrcode").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
