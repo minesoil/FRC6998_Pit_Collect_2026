@@ -5,11 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FRC 6998 – REBUILT 2026 Pit Collect</title>
 
-<!-- QR Code Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- Lexend Font -->
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -17,84 +16,154 @@
   --stone-dark: #D8C59A;
   --earth: #3E2F1C;
   --clay: #B87333;
-  --accent: #B87333;
-  --accent-light: #E6C08A;
+  --highlight: #F5EEDB;
+  --active-btn: linear-gradient(135deg,#B87333,#E6C08A);
 }
 
-* { box-sizing: border-box; margin:0; padding:0; font-family:'Lexend', sans-serif; transition: all 0.3s ease; }
-body { background-image:url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg'); background-size:cover; background-position:center; min-height:100vh; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Lexend', sans-serif;
+}
+
+body {
+  background-image:url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg');
+  background-size: cover;
+  background-attachment: fixed;
+  transition: background 0.5s ease;
+}
 
 header {
   background: linear-gradient(135deg, #2B1F12, #5A3E25);
-  color:#F5EEDB; text-align:center; padding:26px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-}
-
-header h1 { font-weight:700; letter-spacing:2px; text-transform:uppercase; text-shadow:1px 1px 2px #000; }
-header p { margin-top:6px; font-weight:500; }
-
-.container { max-width:900px; margin:24px auto; padding:16px; }
-
-/* ===== CARDS ===== */
-.card {
-  background: linear-gradient(145deg, var(--stone-light), var(--stone-dark));
-  border-radius:18px;
-  padding:22px;
-  margin-bottom:24px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.35), inset 0 0 18px rgba(0,0,0,0.1);
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover { transform: translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.45); }
-
-.card h2 {
-  color: var(--earth); border-left:6px solid var(--clay);
-  padding-left:12px; margin-bottom:14px; text-transform:uppercase;
-}
-
-/* ===== INPUTS & SELECTS ===== */
-input, textarea, select {
-  width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #7A6348;
-  background:#FBF6E6; outline:none;
+  color: var(--highlight);
+  text-align: center;
+  padding: 26px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   transition: all 0.3s ease;
 }
-input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow:0 0 8px rgba(184,115,51,0.5); }
 
-/* ===== CHECKBOX & RADIO ===== */
+header h1 {
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px #000;
+  transition: all 0.3s ease;
+}
+
+.container {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.card {
+  background: linear-gradient(145deg, var(--stone-light), var(--stone-dark));
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+.card h2 {
+  font-family:"Times New Roman", serif;
+  color: var(--earth);
+  border-left:6px solid var(--clay);
+  padding-left:12px;
+  margin-bottom:12px;
+  text-transform:uppercase;
+  transition: all 0.3s ease;
+}
+
+label {
+  display:block;
+  margin-top:10px;
+  font-weight:600;
+}
+
+input, textarea, select {
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #7A6348;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--clay);
+  box-shadow: 0 0 8px rgba(184,115,51,0.5);
+  outline: none;
+}
+
 .checkbox-inline, .radio-inline {
-  display:flex; align-items:center; gap:8px; margin-right:16px; font-weight:500; cursor:pointer;
-  transition: transform 0.2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin-right:15px;
+  font-weight:normal;
 }
-.checkbox-inline input, .radio-inline input { margin-right:6px; transform:scale(1.2); transition: transform 0.2s ease; }
-.checkbox-inline:hover, .radio-inline:hover { transform: scale(1.05); }
 
-/* ===== TOGGLE BUTTONS ===== */
+.checkbox-inline input {
+  margin-right: 6px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
 .toggle {
-  display:flex; gap:10px; margin-top:6px;
+  display:flex;
+  gap:10px;
+  margin-top:6px;
 }
+
 .toggle button {
-  flex:1; padding:10px; border-radius:10px; border:2px solid #7A6348;
-  background:#E8DFC3; font-weight:600; cursor:pointer; transition: all 0.3s ease;
+  flex:1;
+  padding:6px 12px;
+  border-radius:8px;
+  border:2px solid #7A6348;
+  cursor:pointer;
+  transition: all 0.3s ease;
 }
-.toggle button.active { background: linear-gradient(135deg, var(--accent), var(--accent-light)); transform: scale(1.05); }
 
-/* ===== MAIN BUTTON ===== */
+.toggle button.active {
+  background: var(--active-btn);
+  color:#fff;
+}
+
 .main-btn {
-  width:100%; padding:14px; font-weight:700; border-radius:14px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-light)); border:none;
-  cursor:pointer; transition: all 0.3s ease;
+  width:100%;
+  padding:14px;
+  font-weight:bold;
+  border-radius:14px;
+  background: var(--active-btn);
+  border:none;
+  cursor:pointer;
+  transition: all 0.3s ease;
 }
-.main-btn:hover { transform: translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.3); }
 
-/* ===== QR CODE ===== */
-.qr-card { text-align:center; }
-#qrcode { width:250px; height:250px; margin:0 auto 16px auto; background:white; border-radius:12px; border:3px solid var(--accent); }
+.main-btn:hover {
+  transform: scale(1.05);
+}
 
-/* ===== OTHER INPUT ===== */
-.other-input { margin-top:6px; display:none; transition: all 0.3s ease; }
+#qrcode {
+  width:250px;
+  height:250px;
+  margin: 0 auto 20px auto;
+  background:white;
+  padding:10px;
+  border-radius:12px;
+  display:block;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
 
-/* ===== SMOOTH ANIMATION FOR CHECKBOX FOCUS ===== */
-input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2px solid var(--accent-light); border-radius:6px; }
+.other-input {margin-top:6px; display:none;}
 </style>
 </head>
 
@@ -106,10 +175,12 @@ input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2p
 
 <div class="container">
 
+<div id="qrcode"></div>
+
 <div class="card">
 <h2>Team Identity</h2>
 <label>Team Name</label><input id="teamName">
-<label>Team Number</label><input id="teamNumber" type="number">
+<label>Team Number</label><input id="teamNumber" type="number" min="1" max="9999">
 <label>Robot Name</label><input id="robotName">
 </div>
 
@@ -119,44 +190,45 @@ input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2p
 <label>Intake</label>
 <select id="intake">
   <option value="">--Select--</option>
-  <option value="Roller">Roller</option>
-  <option value="Pneumatic">Pneumatic</option>
-  <option value="Underbelly">Underbelly</option>
+  <option value="R">Roller</option>
+  <option value="P">Pneumatic</option>
 </select>
 
 <label>Output</label>
 <select id="output">
   <option value="">--Select--</option>
-  <option value="Shooter">Shooter</option>
-  <option value="Dump">Dump</option>
-  <option value="Pass">Pass</option>
+  <option value="S">Shooter</option>
+  <option value="D">Dump</option>
+  <option value="P">Pass</option>
 </select>
 
-<label>Auto Preload</label><input id="autoPreload" type="number">
-<label>Capacity</label><input id="capacity" type="number">
+<label>Auto Preload</label>
+<input id="autoPreload" type="number" min="0" max="8">
+
+<label>Capacity</label>
+<input id="capacity" type="number" min="0" max="20">
 
 <label>Ladder</label>
-<select id="ladder">
-  <option value="">--Select--</option>
-  <option value="Level 1">Level 1</option>
-  <option value="Level 2">Level 2</option>
-  <option value="Level 3">Level 3</option>
-  <option value="N/A">N/A</option>
-</select>
+<div class="checkbox-inline">
+  <label><input type="checkbox" id="ladder1" value="1"> Level 1</label>
+  <label><input type="checkbox" id="ladder2" value="2"> Level 2</label>
+  <label><input type="checkbox" id="ladder3" value="3"> Level 3</label>
+  <label><input type="checkbox" id="ladderNA" value="N/A"> N/A</label>
+</div>
 
 <label>Drive System</label>
 <select id="driveSystem" onchange="checkOther(this)">
   <option value="">--Select--</option>
-  <option value="Swerve">Swerve</option>
-  <option value="Tank">Tank</option>
-  <option value="Other">Other</option>
+  <option value="S">Swerve</option>
+  <option value="T">Tank</option>
+  <option value="O">Other</option>
 </select>
 <input id="driveOther" class="other-input" type="text" placeholder="Specify Other">
 
 <label>Traversal</label>
 <div class="checkbox-inline">
-  <label><input type="checkbox" value="Bump" id="traversalBump"> Bump</label>
-  <label><input type="checkbox" value="Trench" id="traversalTrench"> Trench</label>
+  <label><input type="checkbox" id="traversalBump" value="B"> Bump</label>
+  <label><input type="checkbox" id="traversalTrench" value="T"> Trench</label>
 </div>
 </div>
 
@@ -165,27 +237,27 @@ input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2p
 
 <label>Start Position</label>
 <div class="checkbox-inline">
-  <label><input type="checkbox" name="startPos" value="Left"> Left</label>
-  <label><input type="checkbox" name="startPos" value="Center"> Center</label>
-  <label><input type="checkbox" name="startPos" value="Right"> Right</label>
+  <label><input type="checkbox" name="startPos" value="L"> Left</label>
+  <label><input type="checkbox" name="startPos" value="C"> Center</label>
+  <label><input type="checkbox" name="startPos" value="R"> Right</label>
 </div>
 
 <label>Auto Strategy</label>
 <select id="autoStrat">
   <option value="">--Select--</option>
-  <option value="Timed">Timed</option>
-  <option value="Vision">Vision</option>
-  <option value="N/A">N/A</option>
+  <option value="T">Timed</option>
+  <option value="V">Vision</option>
+  <option value="N">N/A</option>
 </select>
 
 <label>Auto Score Ability</label>
 <div class="checkbox-inline">
-  <label><input type="checkbox" value="Fuel" id="autoFuel"> Fuel</label>
-  <label><input type="checkbox" value="Ladder" id="autoLadder"> Ladder</label>
+  <label><input type="checkbox" id="autoFuel" value="F"> Fuel</label>
+  <label><input type="checkbox" id="autoLadder" value="L"> Ladder</label>
 </div>
 
 <label>Auto Estimated Score</label>
-<input id="autoEstScore" type="number">
+<input id="autoEstScore" type="number" min="0" max="100">
 </div>
 
 <div class="card">
@@ -193,8 +265,7 @@ input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2p
 <textarea id="notes" rows="4"></textarea>
 </div>
 
-<div class="card qr-card">
-<div id="qrcode"></div>
+<div class="card">
 <button class="main-btn" onclick="generateQR()">Generate QR Archive</button>
 </div>
 
@@ -203,46 +274,72 @@ input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2p
 <script>
 function checkOther(sel){
   const otherInput = document.getElementById("driveOther");
-  otherInput.style.display = sel.value==="Other" ? "block":"none";
+  otherInput.style.display = sel.value==="O" ? "block":"none";
 }
 
-function getCheckboxValues(name){
-  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
+function getCheckedValues(selector){
+  return [...document.querySelectorAll(selector + " input:checked")].map(i => i.value);
 }
 
 function generateQR(){
   if(!teamNumber.value){ alert("Team number required"); return; }
 
+  // Ladder simplified
+  let ladderVals = [];
+  ["ladder1","ladder2","ladder3","ladderNA"].forEach(id=>{
+    const c = document.getElementById(id);
+    if(c.checked) ladderVals.push(c.value);
+  });
+
+  // Traversal
+  let traversalVals = [];
+  ["traversalBump","traversalTrench"].forEach(id=>{
+    const c = document.getElementById(id);
+    if(c.checked) traversalVals.push(c.value);
+  });
+
+  // Start Positions
+  let startPosVals = getCheckedValues('div.checkbox-inline input[name="startPos"]');
+
+  // Auto Score Ability
+  let autoScoreVals = [];
+  ["autoFuel","autoLadder"].forEach(id=>{
+    const c = document.getElementById(id);
+    if(c.checked) autoScoreVals.push(c.value);
+  });
+
   const data = {
-    team: { name: teamName.value, number: teamNumber.value, robot: robotName.value },
-    mechanical: {
+    team: {
+      name: teamName.value,
+      number: teamNumber.value,
+      robot: robotName.value
+    },
+    mech: {
       intake: intake.value,
       output: output.value,
       autoPreload: autoPreload.value,
       capacity: capacity.value,
-      ladder: ladder.value,
-      driveSystem: driveSystem.value==="Other"?driveOther.value:driveSystem.value,
-      traversal:[
-        traversalBump.checked?"Bump":null,
-        traversalTrench.checked?"Trench":null
-      ].filter(Boolean)
+      ladder: ladderVals.join(""),
+      drive: driveSystem.value==="O"?driveOther.value:driveSystem.value,
+      traversal: traversalVals.join("")
     },
-    auto: {
-      startPos: getCheckboxValues("startPos"),
-      strategy: autoStrat.value,
-      scoreAbility:[
-        autoFuel.checked?"Fuel":null,
-        autoLadder.checked?"Ladder":null
-      ].filter(Boolean),
-      estScore: autoEstScore.value
+    auto:{
+      start: startPosVals.join(""),
+      strat: autoStrat.value,
+      score: autoScoreVals.join(""),
+      est: autoEstScore.value
     },
     notes: notes.value,
-    timestamp: Date.now()
+    ts: Date.now()
   };
 
-  const qrContainer = document.getElementById("qrcode");
-  qrContainer.innerHTML="";
-  new QRCode(qrContainer,{text:JSON.stringify(data), width:250, height:250});
+  // Simplified QR
+  qrcode.innerHTML="";
+  new QRCode(qrcode,{
+    text: JSON.stringify(data),
+    width:250,
+    height:250
+  });
 }
 </script>
 </body>
