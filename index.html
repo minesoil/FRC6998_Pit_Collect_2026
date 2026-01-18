@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FRC 6998 – REBUILT 2026 Pit Collect</title>
 
+<!-- QR Code Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- Lexend Font -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -13,21 +17,84 @@
   --stone-dark: #D8C59A;
   --earth: #3E2F1C;
   --clay: #B87333;
+  --accent: #B87333;
+  --accent-light: #E6C08A;
 }
-* { box-sizing: border-box; margin:0; padding:0; font-family:Inter,sans-serif; }
-body { background-image:url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg'); background-size:cover;}
-header {background: linear-gradient(135deg, #2B1F12, #5A3E25); color:#F5EEDB; text-align:center; padding:26px;}
-.container {max-width:900px; margin:24px auto; padding:16px;}
-.card {background: linear-gradient(145deg, var(--stone-light), var(--stone-dark)); border-radius:18px; padding:20px; margin-bottom:20px; box-shadow:0 8px 20px rgba(0,0,0,0.3);}
-.card h2 {font-family:"Times New Roman", serif; color: var(--earth); border-left:6px solid var(--clay); padding-left:12px; margin-bottom:12px; text-transform:uppercase;}
-label {display:block; margin-top:10px; font-weight:600;}
-input, textarea, select {width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #7A6348;}
-.checkbox-inline, .radio-inline {display:inline-flex; align-items:center; gap:10px; margin-right:15px; font-weight:normal;}
-.toggle button {padding:6px 12px; border-radius:8px; border:2px solid #7A6348; cursor:pointer;}
-.toggle button.active {background: linear-gradient(135deg,#B87333,#E6C08A);}
-.main-btn {width:100%; padding:14px; font-weight:bold; border-radius:14px; background: linear-gradient(135deg,#B87333,#E6C08A); border:none; cursor:pointer;}
-#qrcode {width:250px; margin:20px auto; background:white; padding:10px; border-radius:8px;}
-.other-input {margin-top:6px; display:none;}
+
+* { box-sizing: border-box; margin:0; padding:0; font-family:'Lexend', sans-serif; transition: all 0.3s ease; }
+body { background-image:url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg'); background-size:cover; background-position:center; min-height:100vh; }
+
+header {
+  background: linear-gradient(135deg, #2B1F12, #5A3E25);
+  color:#F5EEDB; text-align:center; padding:26px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+header h1 { font-weight:700; letter-spacing:2px; text-transform:uppercase; text-shadow:1px 1px 2px #000; }
+header p { margin-top:6px; font-weight:500; }
+
+.container { max-width:900px; margin:24px auto; padding:16px; }
+
+/* ===== CARDS ===== */
+.card {
+  background: linear-gradient(145deg, var(--stone-light), var(--stone-dark));
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:24px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.35), inset 0 0 18px rgba(0,0,0,0.1);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover { transform: translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.45); }
+
+.card h2 {
+  color: var(--earth); border-left:6px solid var(--clay);
+  padding-left:12px; margin-bottom:14px; text-transform:uppercase;
+}
+
+/* ===== INPUTS & SELECTS ===== */
+input, textarea, select {
+  width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #7A6348;
+  background:#FBF6E6; outline:none;
+  transition: all 0.3s ease;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow:0 0 8px rgba(184,115,51,0.5); }
+
+/* ===== CHECKBOX & RADIO ===== */
+.checkbox-inline, .radio-inline {
+  display:flex; align-items:center; gap:8px; margin-right:16px; font-weight:500; cursor:pointer;
+  transition: transform 0.2s ease;
+}
+.checkbox-inline input, .radio-inline input { margin-right:6px; transform:scale(1.2); transition: transform 0.2s ease; }
+.checkbox-inline:hover, .radio-inline:hover { transform: scale(1.05); }
+
+/* ===== TOGGLE BUTTONS ===== */
+.toggle {
+  display:flex; gap:10px; margin-top:6px;
+}
+.toggle button {
+  flex:1; padding:10px; border-radius:10px; border:2px solid #7A6348;
+  background:#E8DFC3; font-weight:600; cursor:pointer; transition: all 0.3s ease;
+}
+.toggle button.active { background: linear-gradient(135deg, var(--accent), var(--accent-light)); transform: scale(1.05); }
+
+/* ===== MAIN BUTTON ===== */
+.main-btn {
+  width:100%; padding:14px; font-weight:700; border-radius:14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light)); border:none;
+  cursor:pointer; transition: all 0.3s ease;
+}
+.main-btn:hover { transform: translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.3); }
+
+/* ===== QR CODE ===== */
+.qr-card { text-align:center; }
+#qrcode { width:250px; height:250px; margin:0 auto 16px auto; background:white; border-radius:12px; border:3px solid var(--accent); }
+
+/* ===== OTHER INPUT ===== */
+.other-input { margin-top:6px; display:none; transition: all 0.3s ease; }
+
+/* ===== SMOOTH ANIMATION FOR CHECKBOX FOCUS ===== */
+input[type=checkbox]:focus + label, input[type=radio]:focus + label { outline:2px solid var(--accent-light); border-radius:6px; }
 </style>
 </head>
 
@@ -97,7 +164,7 @@ input, textarea, select {width:100%; padding:10px; margin-top:6px; border-radius
 <h2>Autonomous</h2>
 
 <label>Start Position</label>
-<div class="radio-inline">
+<div class="checkbox-inline">
   <label><input type="checkbox" name="startPos" value="Left"> Left</label>
   <label><input type="checkbox" name="startPos" value="Center"> Center</label>
   <label><input type="checkbox" name="startPos" value="Right"> Right</label>
@@ -117,7 +184,8 @@ input, textarea, select {width:100%; padding:10px; margin-top:6px; border-radius
   <label><input type="checkbox" value="Ladder" id="autoLadder"> Ladder</label>
 </div>
 
-<label>Auto Estimated Score</label><input id="autoEstScore" type="number">
+<label>Auto Estimated Score</label>
+<input id="autoEstScore" type="number">
 </div>
 
 <div class="card">
@@ -125,9 +193,9 @@ input, textarea, select {width:100%; padding:10px; margin-top:6px; border-radius
 <textarea id="notes" rows="4"></textarea>
 </div>
 
-<div class="card">
-<button class="main-btn" onclick="generateQR()">Generate QR Archive</button>
+<div class="card qr-card">
 <div id="qrcode"></div>
+<button class="main-btn" onclick="generateQR()">Generate QR Archive</button>
 </div>
 
 </div>
@@ -138,34 +206,29 @@ function checkOther(sel){
   otherInput.style.display = sel.value==="Other" ? "block":"none";
 }
 
-function getToggleValue(name){
-  const checked = document.querySelector(`input[name="${name}"]:checked`);
-  return checked ? checked.value : "unknown";
+function getCheckboxValues(name){
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
 }
 
 function generateQR(){
   if(!teamNumber.value){ alert("Team number required"); return; }
 
   const data = {
-    team: {
-      name: teamName.value,
-      number: teamNumber.value,
-      robot: robotName.value
-    },
+    team: { name: teamName.value, number: teamNumber.value, robot: robotName.value },
     mechanical: {
       intake: intake.value,
       output: output.value,
       autoPreload: autoPreload.value,
       capacity: capacity.value,
       ladder: ladder.value,
-      driveSystem: driveSystem.value==="Other" ? driveOther.value : driveSystem.value,
-      traversal: [
-        traversalBump.checked ? "Bump":null,
-        traversalTrench.checked ? "Trench":null
+      driveSystem: driveSystem.value==="Other"?driveOther.value:driveSystem.value,
+      traversal:[
+        traversalBump.checked?"Bump":null,
+        traversalTrench.checked?"Trench":null
       ].filter(Boolean)
     },
     auto: {
-      startPos: getToggleValue("startPos"),
+      startPos: getCheckboxValues("startPos"),
       strategy: autoStrat.value,
       scoreAbility:[
         autoFuel.checked?"Fuel":null,
@@ -177,8 +240,9 @@ function generateQR(){
     timestamp: Date.now()
   };
 
-  qrcode.innerHTML="";
-  new QRCode(qrcode,{text:JSON.stringify(data), width:250, height:250});
+  const qrContainer = document.getElementById("qrcode");
+  qrContainer.innerHTML="";
+  new QRCode(qrContainer,{text:JSON.stringify(data), width:250, height:250});
 }
 </script>
 </body>
