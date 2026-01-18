@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-/* ===== ARCHAEOLOGICAL THEME ===== */
+/* ===== THEME ===== */
 :root {
   --stone-light: #EFE6C8;
   --stone-dark: #D8C59A;
@@ -25,7 +25,7 @@
 }
 
 body {
-  background-image: url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg');
+  background-image: url("https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -47,6 +47,10 @@ header h1 {
   text-shadow: 2px 2px 0 #000;
 }
 
+header p {
+  opacity: 0.85;
+}
+
 .container {
   max-width: 900px;
   margin: 24px auto;
@@ -62,15 +66,12 @@ header h1 {
   border-radius: 18px;
   padding: 20px 22px;
   margin-bottom: 22px;
-
   border: 2px solid rgba(80,60,40,0.4);
-
   box-shadow:
     0 10px 25px rgba(0,0,0,0.35),
     inset 0 0 18px rgba(0,0,0,0.15);
 }
 
-/* Weathered cracks */
 .card::after {
   content: "";
   position: absolute;
@@ -81,15 +82,15 @@ header h1 {
   border-radius: 18px;
 }
 
-/* ===== TABLET HEADINGS ===== */
+/* ===== HEADINGS ===== */
 .card h2 {
   font-family: "Times New Roman", serif;
   letter-spacing: 1.5px;
+  text-transform: uppercase;
   color: var(--earth);
   margin-bottom: 14px;
   border-left: 6px solid var(--clay);
   padding-left: 12px;
-  text-transform: uppercase;
 }
 
 /* ===== INPUTS ===== */
@@ -100,30 +101,21 @@ label {
   color: var(--earth);
 }
 
-input[type="number"],
-input[type="text"],
-textarea {
+input, select, textarea {
   width: 100%;
   margin-top: 6px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #7A6348;
   background: #FBF6E6;
+  font-size: 14px;
 }
 
-/* ===== CHECKBOX GROUPS ===== */
-.checkbox-group {
-  margin-top: 8px;
+textarea {
+  resize: vertical;
 }
 
-.checkbox-group label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: normal;
-}
-
-/* ===== YES / NO BUTTONS ===== */
+/* ===== YES / NO TOGGLES ===== */
 .toggle {
   display: flex;
   gap: 10px;
@@ -144,16 +136,23 @@ textarea {
   background: linear-gradient(135deg, #B87333, #E6C08A);
 }
 
-/* ===== MAIN BUTTON ===== */
-.main-btn {
+/* ===== BUTTON ===== */
+button.main {
   width: 100%;
   padding: 14px;
+  margin-top: 12px;
   background: linear-gradient(135deg, #B87333, #E6C08A);
   border: none;
   border-radius: 14px;
   font-weight: 800;
   cursor: pointer;
+}
+
+/* ===== PHOTO ===== */
+#photoPreview {
+  width: 100%;
   margin-top: 10px;
+  border-radius: 10px;
 }
 
 /* ===== QR ===== */
@@ -165,13 +164,6 @@ textarea {
   border-radius: 12px;
   border: 3px solid #B87333;
 }
-
-/* ===== PHOTO ===== */
-#photoPreview {
-  width: 100%;
-  margin-top: 10px;
-  border-radius: 10px;
-}
 </style>
 </head>
 
@@ -179,73 +171,137 @@ textarea {
 
 <header>
   <h1>FRC 6998 – REBUILT 2026</h1>
-  <p>Pit Scouting – Ancient Archive</p>
+  <p>Pit Scouting • Ancient Archive</p>
 </header>
 
 <div class="container">
 
+<!-- ROBOT ID -->
 <div class="card">
   <h2>Robot Identity</h2>
   <label>Team Number</label>
   <input id="team" type="number">
 
   <label>Robot Name</label>
-  <input id="robotName" type="text">
+  <input id="robotName">
 </div>
 
+<!-- MECHANICAL -->
 <div class="card">
   <h2>Mechanical Systems</h2>
 
-  <label>Intake Type</label>
-  <div class="checkbox-group">
-    <label><input type="checkbox" value="roller"> Roller</label>
-    <label><input type="checkbox" value="pneumatic"> Pneumatic</label>
-    <label><input type="checkbox" value="underbelly"> Underbelly</label>
-  </div>
+  <label>Intake Mechanism</label>
+  <select id="intake">
+    <option value="roller">Roller</option>
+    <option value="pneumatic">Pneumatic</option>
+    <option value="underbelly">Underbelly</option>
+    <option value="other">Other</option>
+  </select>
+  <input id="intakeOther" placeholder="Specify intake" hidden>
 
   <label>Scoring Method</label>
-  <div class="checkbox-group">
-    <label><input type="checkbox" value="direct shoot"> Direct Shoot</label>
-    <label><input type="checkbox" value="flywheel"> Flywheel</label>
-    <label><input type="checkbox" value="pass-through"> Pass Through</label>
-  </div>
+  <select id="scoringMethod">
+    <option value="direct shoot">Direct Shoot</option>
+    <option value="indexed flywheel">Indexed Flywheel</option>
+    <option value="pass-through">Pass-through</option>
+    <option value="other">Other</option>
+  </select>
+  <input id="scoringOther" placeholder="Specify scoring" hidden>
+
+  <label>Hopper Capacity</label>
+  <input id="hopperCapacity" type="number">
 </div>
 
+<!-- FIELD -->
 <div class="card">
   <h2>Field Traversal</h2>
 
-  <label>Cross Bump?</label>
+  <label>Can Cross Bump?</label>
   <div class="toggle" data-id="bump">
     <button onclick="setToggle(this)">Yes</button>
     <button onclick="setToggle(this)">No</button>
   </div>
 
-  <label>Traverse Trench?</label>
+  <label>Can Traverse Trench?</label>
   <div class="toggle" data-id="trench">
     <button onclick="setToggle(this)">Yes</button>
     <button onclick="setToggle(this)">No</button>
   </div>
 </div>
 
+<!-- AUTONOMOUS -->
+<div class="card">
+  <h2>Autonomous</h2>
+
+  <label>Auto Start Position</label>
+  <select id="autoStart">
+    <option value="left">Left</option>
+    <option value="center">Center</option>
+    <option value="right">Right</option>
+  </select>
+
+  <label>Fuel Preloaded</label>
+  <input id="preloadFuel" type="number" min="0" max="8">
+
+  <label>Estimated Auto Score</label>
+  <input id="autoScore" type="number">
+
+  <label>Auto Strategy</label>
+  <select id="autoType">
+    <option value="timed">Timed</option>
+    <option value="sensor">Sensor-based</option>
+    <option value="vision">Vision</option>
+    <option value="other">Other</option>
+  </select>
+  <input id="autoTypeOther" placeholder="Specify strategy" hidden>
+
+  <label>Sensors Used</label>
+  <select id="sensors">
+    <option value="limelight">Limelight</option>
+    <option value="gyro">Gyro</option>
+    <option value="encoders">Encoders</option>
+    <option value="lidar">LiDAR</option>
+    <option value="none">None</option>
+    <option value="other">Other</option>
+  </select>
+  <input id="sensorsOther" placeholder="Specify sensor" hidden>
+</div>
+
+<!-- NOTES -->
 <div class="card">
   <h2>Strategic Notes</h2>
   <textarea id="notes" rows="4"></textarea>
 </div>
 
+<!-- PHOTO -->
 <div class="card">
   <h2>Robot Photo</h2>
   <input id="photo" type="file" accept="image/*">
   <img id="photoPreview">
 </div>
 
+<!-- QR -->
 <div class="card">
-  <button class="main-btn" onclick="generateQR()">Generate QR Archive</button>
+  <button class="main" onclick="generateQR()">Generate QR Archive</button>
   <div id="qrcode"></div>
 </div>
 
 </div>
 
 <script>
+function toggleOther(sel, other) {
+  const s = document.getElementById(sel);
+  const o = document.getElementById(other);
+  s.addEventListener("change", () => {
+    o.hidden = s.value !== "other";
+    if (o.hidden) o.value = "";
+  });
+}
+toggleOther("intake","intakeOther");
+toggleOther("scoringMethod","scoringOther");
+toggleOther("autoType","autoTypeOther");
+toggleOther("sensors","sensorsOther");
+
 function setToggle(btn) {
   const group = btn.parentElement;
   group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
@@ -253,18 +309,14 @@ function setToggle(btn) {
 }
 
 document.getElementById("photo").addEventListener("change", () => {
-  const file = photo.files[0];
-  if (!file) return;
+  const f = photo.files[0];
+  if (!f) return;
   const r = new FileReader();
   r.onload = () => photoPreview.src = r.result;
-  r.readAsDataURL(file);
+  r.readAsDataURL(f);
 });
 
-function getCheckedValues(selector) {
-  return [...document.querySelectorAll(selector + " input:checked")].map(i => i.value);
-}
-
-function getToggleValue(id) {
+function getToggle(id) {
   const active = document.querySelector(`.toggle[data-id="${id}"] .active`);
   return active ? active.innerText.toLowerCase() : "";
 }
@@ -273,11 +325,20 @@ function generateQR() {
   const data = {
     team: team.value,
     robotName: robotName.value,
-    intake: getCheckedValues(".checkbox-group")[0] || [],
-    bump: getToggleValue("bump"),
-    trench: getToggleValue("trench"),
+    intake: intakeOther.value || intake.value,
+    scoring: scoringOther.value || scoringMethod.value,
+    hopperCapacity: hopperCapacity.value,
+    bump: getToggle("bump"),
+    trench: getToggle("trench"),
+    auto: {
+      start: autoStart.value,
+      preload: preloadFuel.value,
+      score: autoScore.value,
+      strategy: autoTypeOther.value || autoType.value,
+      sensors: sensorsOther.value || sensors.value
+    },
     notes: notes.value,
-    time: Date.now()
+    timestamp: Date.now()
   };
 
   qrcode.innerHTML = "";
