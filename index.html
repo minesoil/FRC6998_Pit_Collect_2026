@@ -3,270 +3,285 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FRC 6998 Unipards – REBUILT 2026 Pit Collect</title>
+<title>FRC 6998 – REBUILT 2026 Pit Collect</title>
 
-<!-- QR Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
+/* ===== ARCHAEOLOGICAL THEME ===== */
 :root {
-  --navy: #0B1C2D;
-  --gold: #F5B700;
-  --teal: #1FBFB8;
+  --stone-light: #EFE6C8;
+  --stone-dark: #D8C59A;
+  --earth: #3E2F1C;
+  --clay: #B87333;
 }
 
-/* GLOBAL */
-* { box-sizing: border-box; margin:0; padding:0; font-family: "Inter", sans-serif; }
+/* ===== GLOBAL ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+}
+
 body {
-  background: radial-gradient(circle at top left, #0B1C2D, #12304A, #1FBFB8);
-  color: var(--navy);
-  min-height: 100vh;
+  background-image: url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
+/* ===== HEADER ===== */
 header {
-  background: linear-gradient(135deg, #0B1C2D, #12304A, #1FBFB8);
-  color: white;
+  background: linear-gradient(135deg, #2B1F12, #5A3E25);
+  color: #F5EEDB;
   text-align: center;
-  padding: 24px 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  padding: 26px 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
 }
-header h1 { margin-bottom:4px; font-size: 1.8rem; }
-header p { font-size: 0.95rem; opacity: 0.85; }
 
-.container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+header h1 {
+  font-family: "Times New Roman", serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 #000;
+}
 
-/* CARDS */
+.container {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+/* ===== STONE CARDS ===== */
 .card {
-  background: linear-gradient(145deg, #FFFFFF, #e1e7f0);
-  border-radius: 16px;
-  padding: 18px 22px;
-  margin-bottom: 20px;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.12);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-.card:hover { transform: translateY(-3px); box-shadow: 0 15px 28px rgba(0,0,0,0.18); }
-.card h2 { margin-bottom: 12px; font-size: 1.3rem; border-left: 5px solid var(--gold); padding-left: 10px; }
+  position: relative;
+  background:
+    url("https://www.transparenttextures.com/patterns/stone.png"),
+    linear-gradient(145deg, var(--stone-light), var(--stone-dark));
+  border-radius: 18px;
+  padding: 20px 22px;
+  margin-bottom: 22px;
 
-/* FIELDS */
-label { margin-top: 12px; display: block; font-size: 14px; }
-input, select, textarea {
+  border: 2px solid rgba(80,60,40,0.4);
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.35),
+    inset 0 0 18px rgba(0,0,0,0.15);
+}
+
+/* Weathered cracks */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("https://www.transparenttextures.com/patterns/cracked.png");
+  opacity: 0.35;
+  pointer-events: none;
+  border-radius: 18px;
+}
+
+/* ===== TABLET HEADINGS ===== */
+.card h2 {
+  font-family: "Times New Roman", serif;
+  letter-spacing: 1.5px;
+  color: var(--earth);
+  margin-bottom: 14px;
+  border-left: 6px solid var(--clay);
+  padding-left: 12px;
+  text-transform: uppercase;
+}
+
+/* ===== INPUTS ===== */
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 600;
+  color: var(--earth);
+}
+
+input[type="number"],
+input[type="text"],
+textarea {
   width: 100%;
   margin-top: 6px;
-  padding: 10px 12px;
+  padding: 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  transition: border 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid #7A6348;
+  background: #FBF6E6;
 }
-input:focus, select:focus, textarea:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(31,191,184,0.25);
-}
-textarea { resize: vertical; }
 
-/* BUTTONS */
-button {
+/* ===== CHECKBOX GROUPS ===== */
+.checkbox-group {
+  margin-top: 8px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+}
+
+/* ===== YES / NO BUTTONS ===== */
+.toggle {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.toggle button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #7A6348;
+  background: #E8DFC3;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.toggle button.active {
+  background: linear-gradient(135deg, #B87333, #E6C08A);
+}
+
+/* ===== MAIN BUTTON ===== */
+.main-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, var(--teal), var(--gold));
+  background: linear-gradient(135deg, #B87333, #E6C08A);
   border: none;
-  color: var(--navy);
-  font-weight: 700;
-  border-radius: 12px;
+  border-radius: 14px;
+  font-weight: 800;
   cursor: pointer;
-  font-size: 15px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(31,191,184,0.35);
+  margin-top: 10px;
 }
 
-/* PHOTO */
-#photoPreview { width: 100%; margin-top: 10px; border-radius: 10px; }
-
-/* QR */
+/* ===== QR ===== */
 #qrcode {
   width: 250px;
   height: 250px;
   margin: 18px auto;
-  display: block;
   background: white;
   border-radius: 12px;
+  border: 3px solid #B87333;
 }
-#qrcode canvas { width: 100% !important; height: 100% !important; }
+
+/* ===== PHOTO ===== */
+#photoPreview {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>FRC 6998 Unipards — REBUILT 2026 Pit Collect</h1>
-  <p>Mechanics, Auto Strategy, and Field Traversal</p>
+  <h1>FRC 6998 – REBUILT 2026</h1>
+  <p>Pit Scouting – Ancient Archive</p>
 </header>
 
 <div class="container">
 
-<!-- ROBOT IDENTITY -->
 <div class="card">
   <h2>Robot Identity</h2>
   <label>Team Number</label>
   <input id="team" type="number">
 
   <label>Robot Name</label>
-  <input id="robotName">
+  <input id="robotName" type="text">
 </div>
 
-<!-- MECHANICAL DETAILS -->
 <div class="card">
   <h2>Mechanical Systems</h2>
-  <label>Intake Mechanism</label>
-  <select id="intake">
-    <option value="roller">Roller</option>
-    <option value="pneumatic">Pneumatic</option>
-    <option value="underbelly">Underbelly</option>
-    <option value="other">Other</option>
-  </select>
-  <input id="intakeOther" placeholder="Specify intake" hidden>
+
+  <label>Intake Type</label>
+  <div class="checkbox-group">
+    <label><input type="checkbox" value="roller"> Roller</label>
+    <label><input type="checkbox" value="pneumatic"> Pneumatic</label>
+    <label><input type="checkbox" value="underbelly"> Underbelly</label>
+  </div>
 
   <label>Scoring Method</label>
-  <select id="scoringMethod">
-    <option value="direct shoot">Direct Shoot</option>
-    <option value="indexed flywheel">Indexed Flywheel</option>
-    <option value="pass-through">Pass‑Through Storage</option>
-    <option value="other">Other</option>
-  </select>
-  <input id="scoringOther" placeholder="Specify scoring method" hidden>
-
-  <label>Hopper / Storage Capacity (Approx)</label>
-  <input id="hopperCapacity" type="number" placeholder="e.g., 10">
+  <div class="checkbox-group">
+    <label><input type="checkbox" value="direct shoot"> Direct Shoot</label>
+    <label><input type="checkbox" value="flywheel"> Flywheel</label>
+    <label><input type="checkbox" value="pass-through"> Pass Through</label>
+  </div>
 </div>
 
-<!-- FIELD TRAVERSAL -->
 <div class="card">
   <h2>Field Traversal</h2>
-  <label>Can Cross Bump</label>
-  <select id="bump">
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
-  </select>
 
-  <label>Can Traverse Trench</label>
-  <select id="trench">
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
-  </select>
+  <label>Cross Bump?</label>
+  <div class="toggle" data-id="bump">
+    <button onclick="setToggle(this)">Yes</button>
+    <button onclick="setToggle(this)">No</button>
+  </div>
+
+  <label>Traverse Trench?</label>
+  <div class="toggle" data-id="trench">
+    <button onclick="setToggle(this)">Yes</button>
+    <button onclick="setToggle(this)">No</button>
+  </div>
 </div>
 
-<!-- AUTONOMOUS -->
-<div class="card">
-  <h2>Autonomous Capabilities</h2>
-  <label>Auto Start Position</label>
-  <select id="autoStart">
-    <option value="left">Left</option>
-    <option value="center">Center</option>
-    <option value="right">Right</option>
-  </select>
-
-  <label>Fuel Preloaded (Max 8)</label>
-  <input id="preloadFuel" type="number" min="0" max="8">
-
-  <label>Estimated Auto Scored</label>
-  <input id="autoScore" type="number" placeholder="e.g., 12">
-
-  <label>Auto Strategy Type</label>
-  <select id="autoType">
-    <option value="timed">Timed</option>
-    <option value="sensor">Sensor‑based</option>
-    <option value="vision">Vision (e.g., Limelight)</option>
-    <option value="other">Other</option>
-  </select>
-  <input id="autoTypeOther" placeholder="Specify auto strategy" hidden>
-
-  <label>Sensors Used</label>
-  <select id="sensors">
-    <option value="limelight">Limelight</option>
-    <option value="gyro">Gyro (IMU)</option>
-    <option value="encoders">Encoders</option>
-    <option value="lidar">LiDAR</option>
-    <option value="none">None</option>
-    <option value="other">Other</option>
-  </select>
-  <input id="sensorsOther" placeholder="Specify sensor" hidden>
-</div>
-
-<!-- NOTES -->
 <div class="card">
   <h2>Strategic Notes</h2>
-  <textarea id="notes" rows="4" placeholder="Strengths, weaknesses, reliability…"></textarea>
+  <textarea id="notes" rows="4"></textarea>
 </div>
 
-<!-- PHOTO -->
 <div class="card">
   <h2>Robot Photo</h2>
-  <input id="photo" type="file" accept="image/*" capture="environment">
+  <input id="photo" type="file" accept="image/*">
   <img id="photoPreview">
 </div>
 
-<!-- GENERATE -->
 <div class="card">
-  <button onclick="generateQR()">Generate QR Payload</button>
+  <button class="main-btn" onclick="generateQR()">Generate QR Archive</button>
   <div id="qrcode"></div>
 </div>
 
 </div>
 
 <script>
-// Show “Other” inputs dynamically
-function toggleOther(selId, otherId) {
-  const sel = document.getElementById(selId);
-  const other = document.getElementById(otherId);
-  sel.addEventListener("change", () => {
-    other.hidden = sel.value !== "other";
-    if (other.hidden) other.value = "";
-  });
+function setToggle(btn) {
+  const group = btn.parentElement;
+  group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
 }
-toggleOther("intake","intakeOther");
-toggleOther("scoringMethod","scoringOther");
-toggleOther("autoType","autoTypeOther");
-toggleOther("sensors","sensorsOther");
 
-// Photo preview
 document.getElementById("photo").addEventListener("change", () => {
-  const file = document.getElementById("photo").files[0];
+  const file = photo.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => document.getElementById("photoPreview").src = reader.result;
-  reader.readAsDataURL(file);
+  const r = new FileReader();
+  r.onload = () => photoPreview.src = r.result;
+  r.readAsDataURL(file);
 });
 
-// Generate QR
-function generateQR() {
-  const teamNum = document.getElementById("team").value;
-  if (!teamNum) return alert("Please enter Team Number!");
+function getCheckedValues(selector) {
+  return [...document.querySelectorAll(selector + " input:checked")].map(i => i.value);
+}
 
+function getToggleValue(id) {
+  const active = document.querySelector(`.toggle[data-id="${id}"] .active`);
+  return active ? active.innerText.toLowerCase() : "";
+}
+
+function generateQR() {
   const data = {
-    team: teamNum,
-    robotName: document.getElementById("robotName").value || "",
-    intake: document.getElementById("intakeOther").value || document.getElementById("intake").value,
-    scoring: document.getElementById("scoringOther").value || document.getElementById("scoringMethod").value,
-    hopperCapacity: document.getElementById("hopperCapacity").value || 0,
-    bump: document.getElementById("bump").value || "no",
-    trench: document.getElementById("trench").value || "no",
-    auto: {
-      start: document.getElementById("autoStart").value || "",
-      preload: document.getElementById("preloadFuel").value || 0,
-      score: document.getElementById("autoScore").value || 0,
-      strategy: document.getElementById("autoTypeOther").value || document.getElementById("autoType").value || "",
-      sensors: document.getElementById("sensorsOther").value || document.getElementById("sensors").value || ""
-    },
-    notes: document.getElementById("notes").value || "",
-    timestamp: Date.now()
+    team: team.value,
+    robotName: robotName.value,
+    intake: getCheckedValues(".checkbox-group")[0] || [],
+    bump: getToggleValue("bump"),
+    trench: getToggleValue("trench"),
+    notes: notes.value,
+    time: Date.now()
   };
 
-  console.log("Generating QR with data:", data);
-
-  document.getElementById("qrcode").innerHTML = "";
-  new QRCode(document.getElementById("qrcode"), {
+  qrcode.innerHTML = "";
+  new QRCode(qrcode, {
     text: JSON.stringify(data),
     width: 250,
     height: 250
