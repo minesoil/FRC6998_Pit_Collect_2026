@@ -6,7 +6,7 @@
 <title>FRC 6998 Unipards – REBUILT 2026 Pit Collect</title>
 
 <!-- QR Library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
 /* COLORS */
@@ -302,12 +302,23 @@ document.getElementById("photo").addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
+// Helper to resize canvas image for QR
+function getResizedCanvasDataURL(srcCanvas, maxWidth = 150, maxHeight = 100) {
+  const tmp = document.createElement("canvas");
+  const ratio = Math.min(maxWidth/srcCanvas.width, maxHeight/srcCanvas.height);
+  tmp.width = srcCanvas.width * ratio;
+  tmp.height = srcCanvas.height * ratio;
+  tmp.getContext("2d").drawImage(srcCanvas, 0, 0, tmp.width, tmp.height);
+  return tmp.toDataURL();
+}
+
 // Generate QR
 function generateQR() {
   const teamNum = document.getElementById("team").value;
   if (!teamNum) return alert("Please enter Team Number!");
 
-  const autoPath = canvas.toDataURL();
+  const autoPath = getResizedCanvasDataURL(canvas); // resized
+
   const data = {
     team: teamNum,
     robotName: document.getElementById("robotName").value || "",
@@ -328,11 +339,13 @@ function generateQR() {
     timestamp: Date.now()
   };
 
+  console.log("Generating QR with data:", data);
+
   document.getElementById("qrcode").innerHTML = "";
   new QRCode(document.getElementById("qrcode"), {
     text: JSON.stringify(data),
-    width: 240,
-    height: 240
+    width: 250,
+    height: 250
   });
 }
 </script>
