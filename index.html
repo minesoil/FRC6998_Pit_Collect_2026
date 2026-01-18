@@ -1,283 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FRC 2026 REBUILT – Pit Collect</title>
-
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unipards 6998 | FRC 2026 Pit Collect</title>
 
 <style>
 :root {
-  --bg: #0b1220;
-  --card: #111827;
-  --accent: #3b82f6;
-  --muted: #94a3b8;
-  --border: #1f2933;
+  --navy: #0B1C2D;
+  --gold: #F5B700;
+  --teal: #1FBFB8;
+  --bg: #F4F7FA;
+  --card: #FFFFFF;
 }
 
 * {
   box-sizing: border-box;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #111827, var(--bg));
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #e5e7eb;
-  padding: 18px;
+  background: var(--bg);
+  color: var(--navy);
 }
 
-h1 {
+header {
+  background: linear-gradient(135deg, var(--navy), #10283F);
+  color: white;
+  padding: 24px;
   text-align: center;
-  font-size: 22px;
-  margin-bottom: 14px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: 0.5px;
+}
+
+header span {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
 }
 
 .card {
-  background: linear-gradient(180deg, #111827, #0b1220);
-  border: 1px solid var(--border);
+  background: var(--card);
   border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   animation: fadeUp 0.4s ease;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .card h2 {
-  margin: 0 0 10px;
-  font-size: 17px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  margin-top: 0;
+  color: var(--navy);
+  border-left: 5px solid var(--gold);
+  padding-left: 10px;
 }
 
 label {
   display: block;
-  margin-top: 10px;
-  font-size: 13px;
-  color: var(--muted);
+  margin-top: 14px;
+  font-weight: 600;
 }
 
 input, select, textarea {
   width: 100%;
-  padding: 10px 12px;
-  margin-top: 4px;
+  margin-top: 6px;
+  padding: 12px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #020617;
-  color: #e5e7eb;
-  font-size: 15px;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(59,130,246,0.25);
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
 }
 
 textarea {
   resize: vertical;
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
 button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  font-size: 16px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--accent), #2563eb);
+  background: var(--navy);
   color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(59,130,246,0.35);
+  transform: translateY(-2px);
+  background: var(--gold);
+  color: var(--navy);
 }
 
-.secondary {
-  background: #1f2937;
-  margin-top: 10px;
-}
-
-#qrcode {
-  margin-top: 18px;
-  display: flex;
-  justify-content: center;
-  animation: fadeUp 0.3s ease;
-}
-
-img {
-  width: 100%;
+.photo-preview {
+  margin-top: 12px;
+  max-width: 100%;
   border-radius: 12px;
-  margin-top: 10px;
-  border: 1px solid var(--border);
 }
 
-.hint {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
+.qr-box {
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
 
-<h1>🤖 FRC 2026 REBUILT – Pit Collect</h1>
+<header>
+  <h1>Unipards <span>6998</span> — FRC 2026 REBUILT</h1>
+  <p>Pit Scouting • Mechanics & Auto Intelligence</p>
+</header>
 
+<div class="container">
+
+<!-- BASIC INFO -->
 <div class="card">
-  <h2>🆔 Robot Identity</h2>
-  <label>Team Number</label>
-  <input id="team" type="number">
-
-  <label>Robot Name</label>
-  <input id="name">
+  <h2>Team Information</h2>
+  <div class="grid">
+    <div>
+      <label>Team Number</label>
+      <input id="team" type="number">
+    </div>
+    <div>
+      <label>Robot Name</label>
+      <input id="robot">
+    </div>
+    <div>
+      <label>Drive Base</label>
+      <select id="drive">
+        <option>Swerve</option>
+        <option>West Coast</option>
+        <option>Tank</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
 </div>
 
+<!-- AUTO -->
 <div class="card">
-  <h2>🚀 Autonomous Configuration</h2>
-
-  <label>Auto Start Position</label>
-  <select id="autoStart">
-    <option value="">Select</option>
-    <option value="left">Left</option>
-    <option value="center">Center</option>
-    <option value="right">Right</option>
-  </select>
-
-  <label>Preloaded Game Pieces</label>
-  <input id="preload" type="number" min="0">
-
-  <label>Auto Routine Type</label>
-  <select id="autoType">
-    <option value="">Select</option>
-    <option value="timed">Timed</option>
-    <option value="sensor">Sensor-based</option>
-    <option value="vision">Vision targeting</option>
-  </select>
-
-  <label>Estimated Auto Score</label>
-  <input id="autoCount" type="number" min="0">
+  <h2>Autonomous (ADVANCED)</h2>
+  <div class="grid">
+    <div>
+      <label>Auto Start Position</label>
+      <select id="autoStart">
+        <option>Center</option>
+        <option>Left</option>
+        <option>Right</option>
+        <option>Flexible</option>
+      </select>
+    </div>
+    <div>
+      <label>Max Auto Score (Ideal)</label>
+      <input id="autoMax" type="number">
+    </div>
+    <div>
+      <label>Consistent Auto Score</label>
+      <input id="autoConsistent" type="number">
+    </div>
+    <div>
+      <label>Auto Reliability</label>
+      <select id="autoReliability">
+        <option>Very Consistent</option>
+        <option>Sometimes Misses</option>
+        <option>Experimental</option>
+      </select>
+    </div>
+  </div>
 </div>
 
+<!-- MECHANISMS -->
 <div class="card">
-  <h2>⚙️ Mechanical Systems</h2>
-
-  <label>Drivetrain</label>
-  <select id="drive">
-    <option value="">Select</option>
-    <option value="swerve">Swerve</option>
-    <option value="tank">Tank</option>
-  </select>
-
-  <label>Intake Mechanism</label>
-  <select id="intake">
-    <option value="">Select</option>
-    <option value="roller">Roller</option>
-    <option value="pneumatic">Pneumatic</option>
-    <option value="pivot">Pivot Arm</option>
-  </select>
-
-  <label>Arm / Manipulator</label>
-  <select id="arm">
-    <option value="">Select</option>
-    <option value="single">Single Joint</option>
-    <option value="double">Double Joint</option>
-    <option value="elevator">Elevator</option>
-  </select>
-
-  <label>Climb Mechanism</label>
-  <select id="climb">
-    <option value="">Select</option>
-    <option value="none">None</option>
-    <option value="hook">Hook + Winch</option>
-    <option value="elevator">Elevator</option>
-  </select>
+  <h2>Scoring Mechanisms</h2>
+  <div class="grid">
+    <div>
+      <label>Primary Arm Type</label>
+      <select id="arm">
+        <option>Single Joint</option>
+        <option>Double Joint</option>
+        <option>Elevator</option>
+        <option>Hybrid</option>
+      </select>
+    </div>
+    <div>
+      <label>End Effector</label>
+      <select id="effector">
+        <option>Rollers</option>
+        <option>Claw</option>
+        <option>Vacuum</option>
+        <option>Custom</option>
+      </select>
+    </div>
+    <div>
+      <label>Max Scoring Height</label>
+      <select id="height">
+        <option>Low</option>
+        <option>Mid</option>
+        <option>High</option>
+        <option>All Levels</option>
+      </select>
+    </div>
+  </div>
 </div>
 
+<!-- PHOTO -->
 <div class="card">
-  <h2>📸 Robot Photo</h2>
+  <h2>Robot Photo</h2>
   <input id="photo" type="file" accept="image/*" capture="environment">
-  <div class="hint">Stored locally, not embedded in QR</div>
-  <img id="preview" hidden>
+  <img id="preview" class="photo-preview">
 </div>
 
-<button onclick="generateQR()">Generate QR Code</button>
-<button class="secondary" onclick="resetForm()">Reset</button>
+<!-- NOTES -->
+<div class="card">
+  <h2>Strategic Notes</h2>
+  <textarea id="notes" rows="4" placeholder="Design strengths, weaknesses, failure points, special features..."></textarea>
+</div>
 
-<div id="qrcode"></div>
+<!-- SUBMIT -->
+<div class="card qr-box">
+  <button onclick="generateQR()">Generate QR Payload</button>
+  <pre id="output"></pre>
+</div>
+
+</div>
+
+<footer>
+  FRC 6998 Unipards • Built for Strategy, Not Guessing
+</footer>
 
 <script>
-const ids = ["team","name","autoStart","preload","autoType","autoCount","drive","intake","arm","climb"];
-ids.forEach(id => {
-  const el = document.getElementById(id);
-  if (localStorage[id]) el.value = localStorage[id];
-  el.addEventListener("input", () => localStorage[id] = el.value);
-});
-
-const photo = document.getElementById("photo");
+const photoInput = document.getElementById("photo");
 const preview = document.getElementById("preview");
 
-photo.addEventListener("change", () => {
-  const f = photo.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    localStorage.photo = r.result;
-    preview.src = r.result;
-    preview.hidden = false;
-  };
-  r.readAsDataURL(f);
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => preview.src = reader.result;
+  reader.readAsDataURL(file);
 });
 
-if (localStorage.photo) {
-  preview.src = localStorage.photo;
-  preview.hidden = false;
-}
-
 function generateQR() {
-  if (!team.value) return alert("Team number required");
-
   const data = {
-    t: team.value,
-    n: name.value,
-    as: autoStart.value,
-    pl: preload.value,
-    at: autoType.value,
-    ac: autoCount.value,
-    d: drive.value,
-    i: intake.value,
-    a: arm.value,
-    c: climb.value,
-    p: !!localStorage.photo,
-    ts: Date.now()
+    team: team.value,
+    robot: robot.value,
+    drive: drive.value,
+    auto: {
+      start: autoStart.value,
+      max: autoMax.value,
+      consistent: autoConsistent.value,
+      reliability: autoReliability.value
+    },
+    mechanism: {
+      arm: arm.value,
+      effector: effector.value,
+      height: height.value
+    },
+    notes: notes.value,
+    timestamp: Date.now()
   };
 
-  qrcode.innerHTML = "";
-  new QRCode(qrcode, {
-    text: JSON.stringify(data),
-    width: 230,
-    height: 230
-  });
-}
-
-function resetForm() {
-  ids.forEach(id => {
-    localStorage.removeItem(id);
-    document.getElementById(id).value = "";
-  });
-  localStorage.removeItem("photo");
-  preview.hidden = true;
-  qrcode.innerHTML = "";
+  document.getElementById("output").textContent =
+    JSON.stringify(data, null, 2);
 }
 </script>
 
