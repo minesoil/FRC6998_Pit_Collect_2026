@@ -9,94 +9,158 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
+/* ===== ARCHAEOLOGICAL COLOR THEME ===== */
 :root {
-  --navy: #0B1C2D;
-  --gold: #F5B700;
-  --teal: #1FBFB8;
+  --sand: #E6D3A3;        /* sandstone */
+  --limestone: #F2E8C9;  /* light stone */
+  --clay: #C07A3E;       /* terracotta */
+  --soil: #3E2F1C;       /* dark earth */
+  --shadow: rgba(62, 47, 28, 0.25);
 }
 
-/* GLOBAL */
-* { box-sizing: border-box; margin:0; padding:0; font-family: "Inter", sans-serif; }
+/* ===== GLOBAL ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+}
+
 body {
-  background-image: 
-    url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg');
+  background-image: url('https://images.pexels.com/photos/3666327/pexels-photo-3666327.jpeg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
+/* ===== HEADER ===== */
 header {
-  background: linear-gradient(135deg, #0B1C2D, #12304A, #1FBFB8);
-  color: white;
+  background: linear-gradient(135deg, #3E2F1C, #6B4E2E, #C07A3E);
+  color: #FFF6E0;
   text-align: center;
   padding: 24px 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.35);
 }
-header h1 { margin-bottom:4px; font-size: 1.8rem; }
-header p { font-size: 0.95rem; opacity: 0.85; }
 
-.container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+header h1 {
+  margin-bottom: 4px;
+  font-size: 1.8rem;
+}
 
-/* CARDS */
+header p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+/* ===== CARDS (STONE LOOK) ===== */
 .card {
-  background: linear-gradient(145deg, #FFFFFF, #e1e7f0);
+  background: linear-gradient(145deg, var(--limestone), var(--sand));
   border-radius: 16px;
   padding: 18px 22px;
   margin-bottom: 20px;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+
+  border: 1px solid rgba(192, 122, 62, 0.35);
+
+  box-shadow:
+    0 8px 18px var(--shadow),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.card:hover { transform: translateY(-3px); box-shadow: 0 15px 28px rgba(0,0,0,0.18); }
-.card h2 { margin-bottom: 12px; font-size: 1.3rem; border-left: 5px solid var(--gold); padding-left: 10px; }
 
-/* FIELDS */
-label { margin-top: 12px; display: block; font-size: 14px; }
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 14px 28px var(--shadow),
+    inset 0 1px 0 rgba(255,255,255,0.45);
+}
+
+.card h2 {
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+  color: var(--soil);
+  border-left: 6px solid var(--clay);
+  padding-left: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* ===== FIELDS ===== */
+label {
+  margin-top: 12px;
+  display: block;
+  font-size: 14px;
+  color: var(--soil);
+}
+
 input, select, textarea {
   width: 100%;
   margin-top: 6px;
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid rgba(62, 47, 28, 0.3);
+  background: #FBF6E6;
+  color: var(--soil);
   font-size: 14px;
   transition: border 0.25s ease, box-shadow 0.25s ease;
 }
-input:focus, select:focus, textarea:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(31,191,184,0.25);
-}
-textarea { resize: vertical; }
 
-/* BUTTONS */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--clay);
+  box-shadow: 0 0 0 2px rgba(192, 122, 62, 0.25);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* ===== BUTTON ===== */
 button {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, var(--teal), var(--gold));
+  background: linear-gradient(135deg, #C07A3E, #E6B980);
   border: none;
-  color: var(--navy);
+  color: #3E2F1C;
   font-weight: 700;
   border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(31,191,184,0.35);
+  box-shadow: 0 8px 22px rgba(192, 122, 62, 0.45);
 }
 
-/* PHOTO */
-#photoPreview { width: 100%; margin-top: 10px; border-radius: 10px; }
+/* ===== PHOTO ===== */
+#photoPreview {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(62,47,28,0.3);
+}
 
-/* QR */
+/* ===== QR ===== */
 #qrcode {
   width: 250px;
   height: 250px;
   margin: 18px auto;
   display: block;
-  background: white;
+  background: #FFF;
   border-radius: 12px;
+  border: 2px solid var(--clay);
 }
-#qrcode canvas { width: 100% !important; height: 100% !important; }
+
+#qrcode canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
 </style>
 </head>
 
@@ -109,7 +173,6 @@ button:hover {
 
 <div class="container">
 
-<!-- ROBOT IDENTITY -->
 <div class="card">
   <h2>Robot Identity</h2>
   <label>Team Number</label>
@@ -119,7 +182,6 @@ button:hover {
   <input id="robotName">
 </div>
 
-<!-- MECHANICAL DETAILS -->
 <div class="card">
   <h2>Mechanical Systems</h2>
   <label>Intake Mechanism</label>
@@ -135,82 +197,26 @@ button:hover {
   <select id="scoringMethod">
     <option value="direct shoot">Direct Shoot</option>
     <option value="indexed flywheel">Indexed Flywheel</option>
-    <option value="pass-through">Pass‑Through Storage</option>
+    <option value="pass-through">Pass-Through Storage</option>
     <option value="other">Other</option>
   </select>
   <input id="scoringOther" placeholder="Specify scoring method" hidden>
 
-  <label>Hopper / Storage Capacity (Approx)</label>
-  <input id="hopperCapacity" type="number" placeholder="e.g., 10">
+  <label>Hopper / Storage Capacity</label>
+  <input id="hopperCapacity" type="number">
 </div>
 
-<!-- FIELD TRAVERSAL -->
-<div class="card">
-  <h2>Field Traversal</h2>
-  <label>Can Cross Bump</label>
-  <select id="bump">
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
-  </select>
-
-  <label>Can Traverse Trench</label>
-  <select id="trench">
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
-  </select>
-</div>
-
-<!-- AUTONOMOUS -->
-<div class="card">
-  <h2>Autonomous Capabilities</h2>
-  <label>Auto Start Position</label>
-  <select id="autoStart">
-    <option value="left">Left</option>
-    <option value="center">Center</option>
-    <option value="right">Right</option>
-  </select>
-
-  <label>Fuel Preloaded (Max 8)</label>
-  <input id="preloadFuel" type="number" min="0" max="8">
-
-  <label>Estimated Auto Scored</label>
-  <input id="autoScore" type="number" placeholder="e.g., 12">
-
-  <label>Auto Strategy Type</label>
-  <select id="autoType">
-    <option value="timed">Timed</option>
-    <option value="sensor">Sensor‑based</option>
-    <option value="vision">Vision (e.g., Limelight)</option>
-    <option value="other">Other</option>
-  </select>
-  <input id="autoTypeOther" placeholder="Specify auto strategy" hidden>
-
-  <label>Sensors Used</label>
-  <select id="sensors">
-    <option value="limelight">Limelight</option>
-    <option value="gyro">Gyro (IMU)</option>
-    <option value="encoders">Encoders</option>
-    <option value="lidar">LiDAR</option>
-    <option value="none">None</option>
-    <option value="other">Other</option>
-  </select>
-  <input id="sensorsOther" placeholder="Specify sensor" hidden>
-</div>
-
-<!-- NOTES -->
 <div class="card">
   <h2>Strategic Notes</h2>
-  <textarea id="notes" rows="4" placeholder="Strengths, weaknesses, reliability…"></textarea>
+  <textarea id="notes" rows="4"></textarea>
 </div>
 
-<!-- PHOTO -->
 <div class="card">
   <h2>Robot Photo</h2>
   <input id="photo" type="file" accept="image/*" capture="environment">
   <img id="photoPreview">
 </div>
 
-<!-- GENERATE -->
 <div class="card">
   <button onclick="generateQR()">Generate QR Payload</button>
   <div id="qrcode"></div>
@@ -219,7 +225,6 @@ button:hover {
 </div>
 
 <script>
-// Show “Other” inputs dynamically
 function toggleOther(selId, otherId) {
   const sel = document.getElementById(selId);
   const other = document.getElementById(otherId);
@@ -228,12 +233,10 @@ function toggleOther(selId, otherId) {
     if (other.hidden) other.value = "";
   });
 }
+
 toggleOther("intake","intakeOther");
 toggleOther("scoringMethod","scoringOther");
-toggleOther("autoType","autoTypeOther");
-toggleOther("sensors","sensorsOther");
 
-// Photo preview
 document.getElementById("photo").addEventListener("change", () => {
   const file = document.getElementById("photo").files[0];
   if (!file) return;
@@ -242,7 +245,6 @@ document.getElementById("photo").addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
-// Generate QR
 function generateQR() {
   const teamNum = document.getElementById("team").value;
   if (!teamNum) return alert("Please enter Team Number!");
@@ -253,20 +255,9 @@ function generateQR() {
     intake: document.getElementById("intakeOther").value || document.getElementById("intake").value,
     scoring: document.getElementById("scoringOther").value || document.getElementById("scoringMethod").value,
     hopperCapacity: document.getElementById("hopperCapacity").value || 0,
-    bump: document.getElementById("bump").value || "no",
-    trench: document.getElementById("trench").value || "no",
-    auto: {
-      start: document.getElementById("autoStart").value || "",
-      preload: document.getElementById("preloadFuel").value || 0,
-      score: document.getElementById("autoScore").value || 0,
-      strategy: document.getElementById("autoTypeOther").value || document.getElementById("autoType").value || "",
-      sensors: document.getElementById("sensorsOther").value || document.getElementById("sensors").value || ""
-    },
     notes: document.getElementById("notes").value || "",
     timestamp: Date.now()
   };
-
-  console.log("Generating QR with data:", data);
 
   document.getElementById("qrcode").innerHTML = "";
   new QRCode(document.getElementById("qrcode"), {
