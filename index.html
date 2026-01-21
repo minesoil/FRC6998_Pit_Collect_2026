@@ -10,101 +10,145 @@
 
 <style>
 :root {
-  --stone-light: #2B2F2A;   /* dark neutral background */
-  --stone-dark:  #1F2320;   /* deeper container / card bg */
+  --stone-light: #0F0F12;
+  --stone-dark:  #1A1A1F;
 
-  --earth:       #E6D8B8;   /* main text (warm off-white, easy to read) */
-  --clay:        #C88A4A;   /* accent / highlights (buttons, icons) */
-  --highlight:   #3A4038;   /* hover / subtle panels */
+  --earth:       #F2F2F2;
+  --clay:        #D4AF37;
+  --highlight:   #2A2A32;
 
-  --active-btn:  linear-gradient(135deg, #C88A4A, #E0B97A);
+  --active-btn: linear-gradient(135deg, #D4AF37, #FFD966);
 }
 
-* { box-sizing:border-box; margin:0; padding:0; font-family:'Lexend',sans-serif; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Lexend', sans-serif;
+}
 
 body {
-  background-size:cover;
+  background: var(--stone-light);
+  color: var(--earth);
 }
 
 header {
-  background: linear-gradient(135deg,#2B1F12,#5A3E25);
-  color:var(--highlight);
-  text-align:center;
-  padding:26px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+  background: linear-gradient(135deg, #000000, #1A1A1F);
+  text-align: center;
+  padding: 26px;
+  border-bottom: 3px solid var(--clay);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
 }
 
 header h1 {
-  font-family:'Times New Roman',serif;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  text-shadow:2px 2px #000;
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-.container { max-width:900px; margin:24px auto; padding:16px; }
+header p {
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.container {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 16px;
+}
 
 .card {
-  background:linear-gradient(145deg,var(--stone-light),var(--stone-dark));
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  background: linear-gradient(145deg, var(--stone-light), var(--stone-dark));
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(212,175,55,0.15);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.5);
 }
 
 .card h2 {
-  font-family:"Times New Roman",serif;
-  color:var(--earth);
-  border-left:6px solid var(--clay);
-  padding-left:12px;
-  margin-bottom:12px;
-  text-transform:uppercase;
+  font-family: 'Times New Roman', serif;
+  color: var(--earth);
+  border-left: 6px solid var(--clay);
+  padding-left: 12px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-label { display:block; margin-top:10px; font-weight:600; }
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
 
 input, textarea, select {
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,0.3);
-  backdrop-filter:blur(6px);
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: #121218;
+  color: var(--earth);
 }
 
-.checkbox-inline { display:inline-flex; gap:10px; margin-top:6px; }
+.checkbox-inline {
+  display: inline-flex;
+  gap: 14px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
 
 .main-btn {
-  width:100%;
-  padding:14px;
-  font-weight:bold;
-  border-radius:14px;
-  background:var(--active-btn);
-  border:none;
-  cursor:pointer;
+  width: 100%;
+  padding: 14px;
+  font-weight: bold;
+  border-radius: 14px;
+  background: var(--active-btn);
+  border: none;
+  cursor: pointer;
+  margin-top: 12px;
 }
 
-.nav-buttons { display:flex; gap:12px; }
+.main-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
 
-.page { display:none; }
-.page.active { display:block; }
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
 
 #qrcode {
-  width:180px;
-  height:180px;
-  margin:0 auto;
-  background:white;
-  border-radius:12px;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
 }
 
-.other-input { display:none; margin-top:6px; }
+.other-input {
+  display: none;
+  margin-top: 6px;
+}
 </style>
 </head>
 
 <body>
+
 <header>
   <h1>FRC 6998 – REBUILT 2026</h1>
-  <p>Pit Scouting – By Justin</p>
+  <p>Pit Scouting – UniPards</p>
 </header>
 
 <div class="container">
@@ -113,8 +157,11 @@ input, textarea, select {
 <div class="page active">
   <div class="card">
     <h2>Scouter Info</h2>
-    <label>Scouter Name</label><input id="scouterName">
-    <label>Team Number</label><input id="teamNumber" type="number">
+    <label>Scouter Name</label>
+    <input id="scouterName">
+
+    <label>Team Number</label>
+    <input id="teamNumber" type="number">
   </div>
   <button class="main-btn" onclick="nextPage()">Next</button>
 </div>
@@ -139,15 +186,18 @@ input, textarea, select {
       <option value="P">Pass</option>
     </select>
 
-    <label>Auto Preload</label><input id="autoPreload" type="number">
-    <label>Capacity</label><input id="capacity" type="number">
+    <label>Auto Preload</label>
+    <input id="autoPreload" type="number">
+
+    <label>Capacity</label>
+    <input id="capacity" type="number">
 
     <label>Ladder</label>
     <div class="checkbox-inline">
-      <input type="checkbox" id="ladder1" value="1">1
-      <input type="checkbox" id="ladder2" value="2">2
-      <input type="checkbox" id="ladder3" value="3">3
-      <input type="checkbox" id="ladderNA" value="N">N/A
+      <input type="checkbox" value="1">1
+      <input type="checkbox" value="2">2
+      <input type="checkbox" value="3">3
+      <input type="checkbox" value="N">N/A
     </div>
 
     <label>Drive</label>
@@ -158,6 +208,7 @@ input, textarea, select {
       <option value="M">Mecanum</option>
       <option value="O">Other</option>
     </select>
+
     <input id="driveOther" class="other-input" placeholder="Other Drive">
   </div>
 
@@ -172,11 +223,11 @@ input, textarea, select {
   <div class="card">
     <h2>Sensors</h2>
     <div class="checkbox-inline">
-      <input type="checkbox" id="sensorLimelight" value="L">Limelight
-      <input type="checkbox" id="sensorLidar" value="D">LIDAR
-      <input type="checkbox" id="sensorUltra" value="U">Ultrasonic
-      <input type="checkbox" id="sensorAprilTag" value="A">AprilTag
-      <input type="checkbox" id="sensorOtherCB" value="O">Other
+      <input type="checkbox" id="sensorLimelight">Limelight
+      <input type="checkbox" id="sensorLidar">LIDAR
+      <input type="checkbox" id="sensorUltra">Ultrasonic
+      <input type="checkbox" id="sensorApril">AprilTag
+      <input type="checkbox" id="sensorOtherCB">Other
     </div>
     <input id="sensorOther" class="other-input" placeholder="Other Sensor">
   </div>
@@ -191,6 +242,7 @@ input, textarea, select {
 <div class="page">
   <div class="card">
     <h2>Autonomous</h2>
+
     <div class="checkbox-inline">
       <input type="checkbox" name="startPos" value="L">Left
       <input type="checkbox" name="startPos" value="C">Center
@@ -206,8 +258,8 @@ input, textarea, select {
     </select>
 
     <div class="checkbox-inline">
-      <input type="checkbox" id="autoFuel" value="F">Fuel
-      <input type="checkbox" id="autoLadder" value="L">Ladder
+      <input type="checkbox" id="autoFuel">Fuel
+      <input type="checkbox" id="autoLadder">Ladder
     </div>
 
     <label>Auto Est Score</label>
@@ -227,10 +279,7 @@ input, textarea, select {
     <textarea id="notes" rows="4"></textarea>
   </div>
 
-  <button class="main-btn" onclick="generateQR(); nextPage();">
-    Generate QR
-  </button>
-
+  <button class="main-btn" onclick="generateQR(); nextPage()">Generate QR</button>
   <button class="main-btn" onclick="prevPage()">Back</button>
 </div>
 
@@ -247,44 +296,75 @@ input, textarea, select {
 </div>
 
 <script>
-let currentPage=0;
-const pages=document.querySelectorAll(".page");
+let currentPage = 0;
+const pages = document.querySelectorAll(".page");
 
-function showPage(i){
-  pages.forEach(p=>p.classList.remove("active"));
+function showPage(i) {
+  pages.forEach(p => p.classList.remove("active"));
   pages[i].classList.add("active");
 }
 
-function nextPage(){ if(currentPage<pages.length-1){currentPage++;showPage(currentPage);} }
-function prevPage(){ if(currentPage>0){currentPage--;showPage(currentPage);} }
-
-function checkOther(sel){
-  driveOther.style.display=sel.value==="O"?"block":"none";
-  sensorOther.style.display=sensorOtherCB.checked?"block":"none";
+function nextPage() {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    showPage(currentPage);
+  }
 }
 
-sensorOtherCB.addEventListener("change",()=>sensorOther.style.display=sensorOtherCB.checked?"block":"none");
-
-function getChecked(name){
-  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i=>i.value).join("");
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    showPage(currentPage);
+  }
 }
 
-function generateQR(){
-  if(!teamNumber.value){alert("Team number required");return;}
+function checkOther(sel) {
+  driveOther.style.display = sel.value === "O" ? "block" : "none";
+  sensorOther.style.display = sensorOtherCB.checked ? "block" : "none";
+}
 
-  const data={
-    scouter:scouterName.value,
-    team:teamNumber.value,
-    mech:{i:intake.value,o:output.value,ap:autoPreload.value,c:capacity.value},
-    auto:{s:getChecked("startPos"),st:autoStrat.value,e:autoEstScore.value},
-    n:notes.value,
+sensorOtherCB.addEventListener("change", () => {
+  sensorOther.style.display = sensorOtherCB.checked ? "block" : "none";
+});
+
+function getChecked(name) {
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
+    .map(i => i.value)
+    .join("");
+}
+
+function generateQR() {
+  if (!teamNumber.value) {
+    alert("Team number required");
+    return;
+  }
+
+  const data = {
+    scouter: scouterName.value,
+    team: teamNumber.value,
+    mech: {
+      i: intake.value,
+      o: output.value,
+      ap: autoPreload.value,
+      c: capacity.value
+    },
+    auto: {
+      s: getChecked("startPos"),
+      st: autoStrat.value,
+      e: autoEstScore.value
+    },
+    n: notes.value,
     ts: new Date().toLocaleString()
-
   };
 
-  qrcode.innerHTML="";
-  new QRCode(qrcode,{text:JSON.stringify(data),width:180,height:180});
+  qrcode.innerHTML = "";
+  new QRCode(qrcode, {
+    text: JSON.stringify(data),
+    width: 180,
+    height: 180
+  });
 }
 </script>
+
 </body>
 </html>
