@@ -12,11 +12,9 @@
 :root {
   --stone-light: #0F0F12;
   --stone-dark:  #1A1A1F;
-
-  --earth:       #F2F2F2;
-  --clay:        #D4AF37;
-  --highlight:   #2A2A32;
-
+  --earth: #F2F2F2;
+  --clay: #D4AF37;
+  --highlight: #2A2A32;
   --active-btn: linear-gradient(135deg, #D4AF37, #FFD966);
 }
 
@@ -37,18 +35,6 @@ header {
   text-align: center;
   padding: 26px;
   border-bottom: 3px solid var(--clay);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
-}
-
-header h1 {
-  font-family: 'Times New Roman', serif;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-header p {
-  margin-top: 6px;
-  opacity: 0.9;
 }
 
 .container {
@@ -63,17 +49,13 @@ header p {
   padding: 20px;
   margin-bottom: 20px;
   border: 1px solid rgba(212,175,55,0.15);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.5);
 }
 
 .card h2 {
   font-family: 'Times New Roman', serif;
-  color: var(--earth);
   border-left: 6px solid var(--clay);
   padding-left: 12px;
   margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 label {
@@ -92,11 +74,23 @@ input, textarea, select {
   color: var(--earth);
 }
 
+/* ✅ Checkbox layout */
 .checkbox-inline {
-  display: inline-flex;
-  gap: 14px;
+  display: flex;
+  gap: 16px;
   margin-top: 8px;
   flex-wrap: wrap;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.check input {
+  width: auto;
 }
 
 .main-btn {
@@ -110,37 +104,23 @@ input, textarea, select {
   margin-top: 12px;
 }
 
-.main-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
 .nav-buttons {
   display: flex;
   gap: 12px;
 }
 
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
+.page { display: none; }
+.page.active { display: block; }
 
 #qrcode {
   width: 180px;
   height: 180px;
   margin: 0 auto;
   background: white;
-  padding: 0px;
   border-radius: 12px;
 }
 
-.other-input {
-  display: none;
-  margin-top: 6px;
-}
+.other-input { display: none; margin-top: 6px; }
 </style>
 </head>
 
@@ -159,7 +139,6 @@ input, textarea, select {
     <h2>Scouter Info</h2>
     <label>Scouter Name</label>
     <input id="scouterName">
-
     <label>Team Number</label>
     <input id="teamNumber" type="number">
   </div>
@@ -171,126 +150,19 @@ input, textarea, select {
   <div class="card">
     <h2>Mechanical Systems</h2>
 
-    <label>Intake</label>
-    <select id="intake">
-      <option value="">--Select--</option>
-      <option value="R">Roller</option>
-      <option value="P">Pneumatic</option>
-    </select>
-
-    <label>Output</label>
-    <select id="output">
-      <option value="">--Select--</option>
-      <option value="S">Shooter</option>
-      <option value="D">Dump</option>
-      <option value="P">Pass</option>
-    </select>
-
-    <label>Auto Preload</label>
-    <input id="autoPreload" type="number">
-
-    <label>Capacity</label>
-    <input id="capacity" type="number">
-
     <label>Ladder</label>
     <div class="checkbox-inline">
-      <input type="checkbox" value="1">1
-      <input type="checkbox" value="2">2
-      <input type="checkbox" value="3">3
-      <input type="checkbox" value="N">N/A
+      <label class="check"><input type="checkbox" id="ladder1">1</label>
+      <label class="check"><input type="checkbox" id="ladder2">2</label>
+      <label class="check"><input type="checkbox" id="ladder3">3</label>
+      <label class="check"><input type="checkbox" id="ladderNA">N/A</label>
     </div>
-
-    <label>Drive</label>
-    <select id="driveSystem" onchange="checkOther(this)">
-      <option value="">--Select--</option>
-      <option value="S">Swerve</option>
-      <option value="T">Tank</option>
-      <option value="M">Mecanum</option>
-      <option value="O">Other</option>
-    </select>
-
-    <input id="driveOther" class="other-input" placeholder="Other Drive">
   </div>
 
   <div class="nav-buttons">
     <button class="main-btn" onclick="prevPage()">Back</button>
     <button class="main-btn" onclick="nextPage()">Next</button>
   </div>
-</div>
-
-<!-- PAGE 3 -->
-<div class="page">
-  <div class="card">
-    <h2>Sensors</h2>
-    <div class="checkbox-inline">
-      <input type="checkbox" id="sensorLimelight">Limelight
-      <input type="checkbox" id="sensorLidar">LIDAR
-      <input type="checkbox" id="sensorUltra">Ultrasonic
-      <input type="checkbox" id="sensorApril">AprilTag
-      <input type="checkbox" id="sensorOtherCB">Other
-    </div>
-    <input id="sensorOther" class="other-input" placeholder="Other Sensor">
-  </div>
-
-  <div class="nav-buttons">
-    <button class="main-btn" onclick="prevPage()">Back</button>
-    <button class="main-btn" onclick="nextPage()">Next</button>
-  </div>
-</div>
-
-<!-- PAGE 4 -->
-<div class="page">
-  <div class="card">
-    <h2>Autonomous</h2>
-
-    <div class="checkbox-inline">
-      <input type="checkbox" name="startPos" value="L">Left
-      <input type="checkbox" name="startPos" value="C">Center
-      <input type="checkbox" name="startPos" value="R">Right
-    </div>
-
-    <label>Auto Strategy</label>
-    <select id="autoStrat">
-      <option value="">--Select--</option>
-      <option value="T">Timed</option>
-      <option value="V">Vision</option>
-      <option value="N">N/A</option>
-    </select>
-
-    <div class="checkbox-inline">
-      <input type="checkbox" id="autoFuel">Fuel
-      <input type="checkbox" id="autoLadder">Ladder
-    </div>
-
-    <label>Auto Est Score</label>
-    <input id="autoEstScore" type="number">
-  </div>
-
-  <div class="nav-buttons">
-    <button class="main-btn" onclick="prevPage()">Back</button>
-    <button class="main-btn" onclick="nextPage()">Next</button>
-  </div>
-</div>
-
-<!-- PAGE 5 -->
-<div class="page">
-  <div class="card">
-    <h2>Notes</h2>
-    <textarea id="notes" rows="4"></textarea>
-  </div>
-
-  <button class="main-btn" onclick="generateQR(); nextPage()">Generate QR</button>
-  <button class="main-btn" onclick="prevPage()">Back</button>
-</div>
-
-<!-- PAGE 6 -->
-<div class="page">
-  <div class="card">
-    <h2>QR Code</h2>
-    <div id="qrcode"></div>
-  </div>
-
-  <button class="main-btn" onclick="prevPage()">Back</button>
 </div>
 
 </div>
@@ -305,65 +177,32 @@ function showPage(i) {
 }
 
 function nextPage() {
-  if (currentPage < pages.length - 1) {
-    currentPage++;
-    showPage(currentPage);
-  }
+  if (currentPage < pages.length - 1) showPage(++currentPage);
 }
 
 function prevPage() {
-  if (currentPage > 0) {
-    currentPage--;
-    showPage(currentPage);
+  if (currentPage > 0) showPage(--currentPage);
+}
+
+/*  Ladder N/A logic */
+const ladderNA = document.getElementById("ladderNA");
+const ladderOthers = [
+  document.getElementById("ladder1"),
+  document.getElementById("ladder2"),
+  document.getElementById("ladder3")
+];
+
+ladderNA.addEventListener("change", () => {
+  if (ladderNA.checked) {
+    ladderOthers.forEach(cb => cb.checked = false);
   }
-}
-
-function checkOther(sel) {
-  driveOther.style.display = sel.value === "O" ? "block" : "none";
-  sensorOther.style.display = sensorOtherCB.checked ? "block" : "none";
-}
-
-sensorOtherCB.addEventListener("change", () => {
-  sensorOther.style.display = sensorOtherCB.checked ? "block" : "none";
 });
 
-function getChecked(name) {
-  return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
-    .map(i => i.value)
-    .join("");
-}
-
-function generateQR() {
-  if (!teamNumber.value) {
-    alert("Team number required");
-    return;
-  }
-
-  const data = {
-    scouter: scouterName.value,
-    team: teamNumber.value,
-    mech: {
-      i: intake.value,
-      o: output.value,
-      ap: autoPreload.value,
-      c: capacity.value
-    },
-    auto: {
-      s: getChecked("startPos"),
-      st: autoStrat.value,
-      e: autoEstScore.value
-    },
-    n: notes.value,
-    ts: new Date().toLocaleString()
-  };
-
-  qrcode.innerHTML = "";
-  new QRCode(qrcode, {
-    text: JSON.stringify(data),
-    width: 180,
-    height: 180
+ladderOthers.forEach(cb => {
+  cb.addEventListener("change", () => {
+    if (cb.checked) ladderNA.checked = false;
   });
-}
+});
 </script>
 
 </body>
