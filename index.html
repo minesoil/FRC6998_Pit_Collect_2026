@@ -167,17 +167,16 @@ input, textarea, select {
     <h2>Scouter Info</h2>
     <label>Scouter Name</label>
     <input id="scouterName">
-
+    
     <label>Team Number</label>
-    <select id="teamNumber">
-      <option value="">--Select Team--</option>
-    </select>
+    <input id="teamNumber" type="number" placeholder="Enter team number">
+    <p id="teamInfo" style="margin-top:6px; font-size:0.9em; color:var(--earth);"></p>
   </div>
   <button class="main-btn" onclick="nextPage()">Next</button>
 </div>
 
 <!-- PAGE 2 -->
-<div class="page" id="page2">
+<div class="page">
   <div class="card">
     <h2>Mechanical Systems</h2>
     <label>Intake</label>
@@ -195,18 +194,18 @@ input, textarea, select {
       <option value="P">Pass</option>
     </select>
 
-    <label>Auto Preload (max 8)</label>
+    <label>Auto Preload (0-8)</label>
     <input id="autoPreload" type="number" min="0" max="8">
 
-    <label>Capacity (max 20)</label>
-    <input id="capacity" type="number" min="0" max="20">
+    <label>Capacity</label>
+    <input id="capacity" type="number" min="0">
 
     <label>Ladder</label>
-    <div class="checkbox-inline" id="ladderCheckboxes">
-      <label><input type="checkbox" value="1"> 1</label>
-      <label><input type="checkbox" value="2"> 2</label>
-      <label><input type="checkbox" value="3"> 3</label>
-      <label><input type="checkbox" value="N"> N/A</label>
+    <div class="checkbox-inline" id="ladderGroup">
+      <label><input type="checkbox" value="1" class="ladderCheck"> 1</label>
+      <label><input type="checkbox" value="2" class="ladderCheck"> 2</label>
+      <label><input type="checkbox" value="3" class="ladderCheck"> 3</label>
+      <label><input type="checkbox" value="N" class="ladderCheck" id="ladderNA"> N/A</label>
     </div>
 
     <label>Drive</label>
@@ -270,7 +269,7 @@ input, textarea, select {
     </div>
 
     <label>Auto Est Score</label>
-    <input id="autoEstScore" type="number" min="0" max="100">
+    <input id="autoEstScore" type="number" min="0">
   </div>
 
   <div class="nav-buttons">
@@ -302,30 +301,28 @@ input, textarea, select {
 </div>
 
 <script>
-// Team list for 2026mslr
-const mslsTeams = [
-364,456,538,590,1421,1912,1927,2221,2556,3039,
-3616,3753,4087,4107,4336,5863,5971,6184,6489,
-6706,6998,7094,7474,8044,8624,8808,9153,9309,
-9405,9503,9717,9734,10101,10217,10309,10943,
-10961,11107,11265,11287,11343
-];
-
-// Populate team dropdown
-const teamSelect = document.getElementById("teamNumber");
-mslsTeams.forEach(t => {
-  const opt = document.createElement("option");
-  opt.value = t;
-  opt.text = t;
-  teamSelect.add(opt);
-});
-
+// Navigation
 let currentPage = 0;
 const pages = document.querySelectorAll(".page");
+
+function showPage(i) {
+  pages.forEach(p => p.classList.remove("active"));
+  pages[i].classList.add("active");
+}
+
+function nextPage() {
+  showPage(currentPage+1 < pages.length ? ++currentPage : currentPage);
+}
+function prevPage() {
+  showPage(currentPage-1 >= 0 ? --currentPage : currentPage);
+}
+
+// DOM Elements
 const driveOther = document.getElementById("driveOther");
 const sensorOther = document.getElementById("sensorOther");
 const sensorOtherCB = document.getElementById("sensorOtherCB");
-const ladderChecks = document.querySelectorAll('#ladderCheckboxes input[type="checkbox"]');
+const teamNumber = document.getElementById("teamNumber");
+const teamInfo = document.getElementById("teamInfo");
 const scouterName = document.getElementById("scouterName");
 const intake = document.getElementById("intake");
 const output = document.getElementById("output");
@@ -336,113 +333,117 @@ const autoEstScore = document.getElementById("autoEstScore");
 const notes = document.getElementById("notes");
 const qrcode = document.getElementById("qrcode");
 
-function showPage(i) {
-  pages.forEach(p => p.classList.remove("active"));
-  pages[i].classList.add("active");
-}
+// Team info
+const mslsTeamDetails = {
+  364:"Team Fusion 364 — Gulfport, Mississippi, USA",
+  456:"Siege Robotics — Vicksburg, Mississippi, USA",
+  538:"Renaissance Robotics — Athens, Alabama, USA",
+  590:"Chahta Warriors — Choctaw, Mississippi, USA",
+  1421:"Team CHAOS — Picayune, Mississippi, USA",
+  1912:"Team Combustion — Slidell, Louisiana, USA",
+  1927:"Tempest — Biloxi, Mississippi, USA",
+  2221:"FHS Robodawgs — Mandeville, Louisiana, USA",
+  2556:"RadioActive Roaches — Niceville, Florida, USA",
+  3039:"Wildcat Robotics — Destrehan, Louisiana, USA",
+  3616:"Team Phenomena — Lafayette, Louisiana, USA",
+  3753:"BulahBots! — Baton Rouge, Louisiana, USA",
+  4087:"Voodoo Voltage — New Orleans, Louisiana, USA",
+  4107:"Team Storm — Long Beach, Mississippi, USA",
+  4336:"Ramageddon Robotics — Lafayette, Louisiana, USA",
+  5863:"Hypercubed — Brusly, Louisiana, USA",
+  5971:"Raider Robotics Team — Metairie, Louisiana, USA",
+  6184:"C4 (Capital City Chaotic Coders) — Tallahassee, Florida, USA",
+  6489:"Bronco Bolts — Zachary, Louisiana, USA",
+  6706:"Golem — Shenzhen, Guangdong, China",
+  6998:"Unipards — Tainan, Taiwan",
+  7094:"Alpha Omega — Bay Saint Louis, Mississippi, USA",
+  7474:"JXN UNITED — Ridgeland, Mississippi, USA",
+  8044:"Denham Venom — Denham Springs, Louisiana, USA",
+  8624:"Sasquatch Robotics — Andalusia, Alabama, USA",
+  8808:"SWLA Tech Pirates — Lake Charles, Louisiana, USA",
+  9153:"Bearcat Robotics — Ruston, Louisiana, USA",
+  9309:"Metal Mages — New Orleans, Louisiana, USA",
+  9405:"KNOS Robotics — New Orleans, Louisiana, USA",
+  9503:"EF5 CHAOS — Laurel, Mississippi, USA",
+  9717:"Poultronix — Forest, Mississippi, USA",
+  9734:"Jasper County Robotics — Bay Springs, Mississippi, USA",
+  10101:"Critical Hit — Huntsville, Alabama, USA",
+  10217:"Catahoula Blue Dogs — Port Allen, Louisiana, USA",
+  10309:"Jayhawks Robotics — Columbus, Mississippi, USA",
+  10943:"WJH RoboMustangs — Laurel, Mississippi, USA",
+  10961:"Hyper Wave — Gulf Shores, Alabama, USA",
+  11107:"FARMBots — Farmerville, Louisiana, USA",
+  11265:"Rock‑a‑chaw Robotics — Bay Saint Louis, Mississippi, USA",
+  11287:"Canton Career Center — Canton, Mississippi, USA",
+  11343:"JPS High School Robotics — Jackson, Mississippi, USA"
+};
 
-function nextPage() {
-  // Validate page before moving forward
-  if (!validatePage(currentPage)) return;
-  if (currentPage < pages.length - 1) {
-    currentPage++;
-    showPage(currentPage);
-  }
-}
-
-function prevPage() {
-  if (currentPage > 0) {
-    currentPage--;
-    showPage(currentPage);
-  }
-}
-
-function checkOther(sel) {
-  driveOther.style.display = sel.value === "O" ? "block" : "none";
-  sensorOther.style.display = sensorOtherCB.checked ? "block" : "none";
-}
-
-sensorOtherCB.addEventListener("change", () => {
-  sensorOther.style.display = sensorOtherCB.checked ? "block" : "none";
+// Show team name on input
+teamNumber.addEventListener("input", function() {
+  const val = parseInt(this.value);
+  if (!val) { teamInfo.textContent = ""; return; }
+  teamInfo.textContent = mslsTeamDetails[val] || "Team not found at this event.";
 });
 
-// Ladder exclusivity
-ladderChecks.forEach(chk => {
-  chk.addEventListener('change', () => {
-    if (chk.value === "N" && chk.checked) {
-      ladderChecks.forEach(other => { if (other !== chk) other.checked = false; });
-    } else if (chk.value !== "N" && chk.checked) {
-      ladderChecks.forEach(other => { if (other.value === "N") other.checked = false; });
+// Other & sensor input
+function checkOther(sel) {
+  driveOther.style.display = sel.value==="O"?"block":"none";
+  sensorOther.style.display = sensorOtherCB.checked?"block":"none";
+}
+sensorOtherCB.addEventListener("change", ()=>{ sensorOther.style.display = sensorOtherCB.checked?"block":"none"; });
+
+// Ladder N/A logic
+const ladderChecks = document.querySelectorAll(".ladderCheck");
+const ladderNA = document.getElementById("ladderNA");
+ladderChecks.forEach(ch => {
+  ch.addEventListener("change", e => {
+    if (e.target === ladderNA && ladderNA.checked) {
+      ladderChecks.forEach(c => {if(c!==ladderNA) c.checked=false;});
+    } else if (e.target!==ladderNA && e.target.checked) {
+      ladderNA.checked=false;
     }
   });
 });
 
-function getChecked(name) {
+// Get checked start positions
+function getChecked(name){
   return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
-    .map(i => i.value)
-    .join("");
+    .map(i=>i.value).join("");
 }
 
-// Validate page input
-function validatePage(page) {
-  if (page === 0) {
-    if (!scouterName.value) { alert("Scouter name required"); return false; }
-    if (!teamSelect.value) { alert("Team selection required"); return false; }
-  }
-  if (page === 1) {
-    if (!intake.value) { alert("Select Intake"); return false; }
-    if (!output.value) { alert("Select Output"); return false; }
-    if (!driveOther.style.display && !driveSystem.value) { alert("Select Drive system"); return false; }
-    if (autoPreload.value < 0 || autoPreload.value > 8) { alert("Auto Preload must be 0-8"); return false; }
-    if (capacity.value < 0 || capacity.value > 20) { alert("Capacity must be 0-20"); return false; }
-  }
-  if (page === 3) {
-    if (!autoStrat.value) { alert("Select Auto Strategy"); return false; }
-    if (autoEstScore.value < 0 || autoEstScore.value > 100) { alert("Auto Est Score 0-100"); return false; }
-  }
-  return true;
-}
+// Generate QR
+function generateQR(){
+  if(!teamNumber.value){ alert("Team number required"); return; }
+  if(autoPreload.value>8){ alert("Auto Preload cannot be >8"); return; }
+  if(capacity.value>100){ alert("Capacity cannot be >100"); return; }
+  if(autoEstScore.value>100){ alert("Auto Est Score cannot be >100"); return; }
 
-function generateQR() {
-  if (!validatePage(currentPage)) return;
-
-  const data = {
+  const data={
     scouter: scouterName.value,
-    team: teamSelect.value,
-    mech: {
-      i: intake.value,
-      o: output.value,
-      ap: autoPreload.value,
-      c: capacity.value,
-      ladder: [...ladderChecks].filter(chk=>chk.checked).map(chk=>chk.value).join(","),
-      drive: driveOther.style.display === "block" ? driveOther.value : document.getElementById("driveSystem").value
+    team: teamNumber.value,
+    mech:{
+      i:intake.value,
+      o:output.value,
+      ap:autoPreload.value,
+      c:capacity.value,
+      ladder: [...document.querySelectorAll(".ladderCheck:checked")].map(c=>c.value)
     },
-    sensors: {
-      limelight: document.getElementById("sensorLimelight").checked,
-      lidar: document.getElementById("sensorLidar").checked,
-      ultrasonic: document.getElementById("sensorUltra").checked,
-      april: document.getElementById("sensorApril").checked,
-      other: sensorOther.value
+    auto:{
+      s:getChecked("startPos"),
+      st:autoStrat.value,
+      e:autoEstScore.value
     },
-    auto: {
-      startPos: getChecked("startPos"),
-      strat: autoStrat.value,
-      fuel: document.getElementById("autoFuel").checked,
-      ladder: document.getElementById("autoLadder").checked,
-      estScore: autoEstScore.value
-    },
-    notes: notes.value,
-    timestamp: new Date().toLocaleString()
+    n:notes.value,
+    ts:new Date().toLocaleString()
   };
 
-  qrcode.innerHTML = "";
-  new QRCode(qrcode, {
+  qrcode.innerHTML="";
+  new QRCode(qrcode,{
     text: JSON.stringify(data),
-    width: 180,
-    height: 180
+    width:180,
+    height:180
   });
 }
 </script>
-
 </body>
 </html>
