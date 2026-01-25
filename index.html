@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>6998 | Laurel Pit Scout</title>
+    <title>6998 | 2026 Pit Scout</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-deep: #050505;
             --bg-card: #141419;
-            --accent: #FFD700; /* Gold */
+            --accent: #D4AF37; /* Gold */
             --accent-dim: #b89b00;
             --text-main: #ffffff;
             --text-secondary: #a0a0a0;
@@ -164,7 +164,7 @@
 <body>
 
 <header>
-    <h1>6998 | Laurel Pit Scout</h1>
+    <h1>6998 | 2026 Pit Scout</h1>
     <div class="counter-badge" id="robotCounter">ROBOTS: 0</div>
 </header>
 
@@ -196,9 +196,9 @@
                 <label>Chassis Type (底盤)</label>
                 <select id="chassis">
                     <option value="Swerve">Swerve</option>
-                    <option value="Tank">Tank / West Coast</option>
+                    <option value="Tank">Tank</option>
                     <option value="Mecanum">Mecanum</option>
-                    <option value="Other">Other / Omni</option>
+                    <option value="Other">Other</option>
                 </select>
                 
                 <br><br>
@@ -208,7 +208,6 @@
                 
                 <br><br>
                 <label>Max Piece Capacity (最高容量)</label>
-                <span class="sub-label">Excluding Preload</span>
                 <input type="number" id="capacity" placeholder="e.g. 1">
             </div>
 
@@ -292,14 +291,14 @@
 
                 <br><br>
                 <label>Preload Count (Preload 數量)</label>
-                <span class="sub-label">Maximum 8 notes</span>
+                <span class="sub-label">Maximum 8</span>
                 <input type="number" id="preload" placeholder="0" max="8">
                 <div class="error-msg" id="err-preload">Max Preload is 8</div>
             </div>
 
             <div class="card">
                 <label>Total Auto Pieces (Auto 總共顆數)</label>
-                <span class="sub-label">Scored during Auto (Excluding preload if not shot)</span>
+                <span class="sub-label">Scored during Auto</span>
                 <input type="number" id="autoTotal" placeholder="0">
             </div>
 
@@ -318,12 +317,11 @@
                         Bump
                     </label>
                     <label class="toggle-btn">
-                        <input type="checkbox" name="terrain" value="Trench" onchange="checkStability()">
-                        Trench
+                        <input type="checkbox" name="terrain" value="Trench">
                     </label>
                     <label class="toggle-btn">
                         <input type="checkbox" name="terrain" value="Both" onchange="checkStability()">
-                        Both
+                        Bump
                     </label>
                 </div>
 
