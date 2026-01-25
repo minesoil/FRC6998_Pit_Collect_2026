@@ -2,362 +2,728 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6998 | Pit Scout 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>6998 | Laurel Pit Scout</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #08080a; --bg-card: #12121a; --accent: #d4af37;
-            --accent-glow: rgba(212, 175, 55, 0.4); --text-main: #f0f0f0;
-            --text-dim: #94a3b8; --error: #ff4d4d; --input-bg: #1c1c24;
+            --bg-deep: #050505;
+            --bg-card: #141419;
+            --accent: #FFD700; /* Gold */
+            --accent-dim: #b89b00;
+            --text-main: #ffffff;
+            --text-secondary: #a0a0a0;
+            --danger: #ff4444;
+            --success: #00C851;
+            --input-bg: #1f1f26;
+            --border: rgba(255, 215, 0, 0.2);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Lexend', sans-serif; }
-        body { background-color: var(--bg-deep); color: var(--text-main); overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Lexend', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-deep); 
+            color: var(--text-main); 
+            padding-bottom: 100px; /* Space for navbar */
+        }
 
+        /* --- Header --- */
         header {
-            background: linear-gradient(to bottom, #1a1a24, var(--bg-deep));
-            padding: 1.5rem; text-align: center; border-bottom: 2px solid var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+            background: linear-gradient(180deg, #1a1a20 0%, var(--bg-deep) 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
         }
-        header h1 { color: var(--accent); text-transform: uppercase; letter-spacing: 3px; font-size: 1.5rem; }
+        header h1 { color: var(--accent); font-weight: 800; letter-spacing: 2px; font-size: 1.4rem; text-transform: uppercase; }
+        .counter-badge {
+            position: absolute; top: 20px; right: 20px;
+            font-size: 0.75rem; color: var(--accent); border: 1px solid var(--accent);
+            padding: 4px 8px; border-radius: 8px; font-weight: 600;
+        }
 
-        .match-counter { position: absolute; top: 15px; right: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem; border: 1px solid var(--accent); padding: 5px 10px; border-radius: 10px; }
+        /* --- Layout --- */
+        .container { max-width: 650px; margin: 0 auto; padding: 20px; }
+        
+        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 10px 15px 140px 15px; }
+        /* --- Cards --- */
+        .section-title {
+            color: var(--text-secondary); font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 10px 5px;
+            border-left: 3px solid var(--accent); padding-left: 10px;
+        }
 
         .card {
-            background: var(--bg-card); border-radius: 24px; padding: 25px; margin-bottom: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
         }
 
-        .card h2 { font-size: 1.1rem; margin-bottom: 1.2rem; color: var(--accent); display: flex; align-items: center; gap: 10px; }
-        .card h2::before { content: ""; width: 4px; height: 18px; background: var(--accent); border-radius: 10px; }
+        /* --- Inputs --- */
+        label { display: block; font-size: 0.9rem; margin-bottom: 8px; font-weight: 600; color: var(--text-main); }
+        .sub-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px; display: block; }
 
-        label { display: block; margin-top: 15px; font-weight: 700; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
-
-        input, select, textarea {
-            width: 100%; padding: 12px; margin-top: 6px; background: var(--input-bg); color: #fff;
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 0.95rem;
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%; padding: 14px; background: var(--input-bg);
+            border: 1px solid #333; border-radius: 10px;
+            color: white; font-size: 1rem; outline: none; transition: 0.3s;
         }
-
-        .grid-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
-        .option-box {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; font-size: 0.85rem;
-            text-align: center; font-weight: 600; color: var(--text-dim);
-        }
-        .option-box input { display: none; }
-        .option-box:has(input:checked) { 
-            border-color: var(--accent); 
-            background: rgba(214, 175, 55, 0.15); 
-            color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .warning-text { color: var(--error); font-size: 0.7rem; margin-top: 5px; font-weight: 700; text-transform: uppercase; }
-        .team-badge { display: inline-block; background: var(--accent); color: #000; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 800; margin-top: 8px; }
-
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(18, 18, 26, 0.98); padding: 15px; display: flex; gap: 12px; border-top: 1px solid rgba(214, 175, 55, 0.2); z-index: 1000; }
-        .btn { flex: 1; padding: 15px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: 0.2s; }
-        .btn-next { background: var(--accent); color: #000; }
-        .btn-back { background: #2a2a35; color: #fff; }
-        .btn:disabled { opacity: 0.1; filter: grayscale(1); }
-
-        .page { display: none; }
-        .page.active { display: block; animation: pageIn 0.3s ease-out; }
-        @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        #qrcode { background: #fff; padding: 12px; border-radius: 15px; margin: 15px auto; display: none; }
-        .log-entry { font-size: 0.75rem; padding: 10px; border-bottom: 1px solid #333; color: var(--text-dim); display: flex; justify-content: space-between; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 215, 0, 0.1); }
         
-        input[type="range"] { accent-color: var(--accent); }
+        /* Bad Word Violation State */
+        .violation { border-color: var(--danger) !important; background: rgba(255, 68, 68, 0.1) !important; }
+
+        /* --- Custom Checkboxes/Radios (Grid) --- */
+        .grid-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 10px; }
+        
+        .toggle-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-secondary);
+        }
+        .toggle-btn input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        
+        /* Selected State */
+        .toggle-btn:has(input:checked) {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        /* --- Range Slider --- */
+        .slider-container { padding: 10px 0; }
+        input[type="range"] {
+            -webkit-appearance: none; width: 100%; height: 6px; background: #333;
+            border-radius: 5px; outline: none; margin-top: 10px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; border: 2px solid #000;
+        }
+
+        /* --- Navigation Bar --- */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex; gap: 15px;
+            border-top: 1px solid #333;
+            z-index: 1000;
+        }
+        .btn {
+            flex: 1; padding: 16px; border: none; border-radius: 12px;
+            font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-back { background: #2a2a2a; color: #fff; }
+        .btn-next { background: var(--accent); color: #000; }
+        .btn-next:disabled { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; }
+
+        /* --- Utility --- */
+        .team-display { margin-top: 10px; font-size: 0.9rem; font-weight: bold; color: var(--accent); display: inline-block; padding: 5px 10px; background: rgba(255,215,0,0.1); border-radius: 8px; }
+        .error-msg { color: var(--danger); font-size: 0.75rem; font-weight: bold; margin-top: 5px; display: none; }
+        #qrcode { background: white; padding: 15px; border-radius: 10px; margin: 20px auto; width: fit-content; display: none; }
+        
+        .profanity-alert {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            color: #ffcccc;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: none;
+            font-weight: bold;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>6998 Pit Scout 2026</h1>
-    <div class="match-counter" id="mCount">ROBOTS: 0</div>
+    <h1>6998 | Laurel Pit Scout</h1>
+    <div class="counter-badge" id="robotCounter">ROBOTS: 0</div>
 </header>
 
 <div class="container">
-    <form id="scoutingForm" onsubmit="return false;">
-        
-        <div class="page active" id="page0">
-            <div class="card">
-                <h2>Identification</h2>
-                <label>Scouter Name</label>
-                <input type="text" id="scouterName" placeholder="Enter Full Name">
-                <div id="scouterWarn" class="warning-text"></div>
+    <form id="scoutForm">
 
-                <label>Team Number (機器人)</label>
+        <div class="page active" id="page0">
+            <div class="section-title">Step 1: Identification</div>
+            
+            <div class="card">
+                <label>Scouter Name (你的名字)</label>
+                <input type="text" id="scouterName" placeholder="First & Last Name">
+                <div class="error-msg" id="err-name">Invalid Name</div>
+                <div class="profanity-alert" id="profanity-name">Please remove inappropriate language.</div>
+            </div>
+
+            <div class="card">
+                <label>Team Number (隊伍編號)</label>
                 <input type="number" id="teamNum" placeholder="e.g. 6998">
-                <div id="teamBadge" class="team-badge">Waiting for input...</div>
+                <div id="teamNameDisplay" class="team-display">Waiting for input...</div>
+                <div class="error-msg" id="err-team">Team Number Required</div>
             </div>
         </div>
 
         <div class="page" id="page1">
+            <div class="section-title">Step 2: Robot Specifications</div>
+
             <div class="card">
-                <h2>Robot Specs</h2>
-                <label>Chassis (底盤)</label>
-                <select id="driveType">
-                    <option value="">-- Choose Configuration --</option>
-                    <option>Swerve</option><option>Tank</option><option>Mecanum</option>
+                <label>Chassis Type (底盤)</label>
+                <select id="chassis">
+                    <option value="Swerve">Swerve</option>
+                    <option value="Tank">Tank / West Coast</option>
+                    <option value="Mecanum">Mecanum</option>
+                    <option value="Other">Other / Omni</option>
                 </select>
                 
-                <label>Weight (重量 lbs)</label>
+                <br><br>
+                <label>Robot Weight (機器人重量)</label>
+                <span class="sub-label">In Pounds (lbs)</span>
                 <input type="number" id="weight" placeholder="125">
+                
+                <br><br>
+                <label>Max Piece Capacity (最高容量)</label>
+                <span class="sub-label">Excluding Preload</span>
+                <input type="number" id="capacity" placeholder="e.g. 1">
+            </div>
 
-                <label>Max Piece Capacity</label>
-                <input type="number" id="maxCap" value="4">
+            <div class="section-title">Step 3: Systems</div>
+
+            <div class="card">
+                <label>Intake Mechanism (Intake)</label>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="intake" value="Roller" class="exclusive-check" data-group="intake">
+                        Roller
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="intake" value="Pneumatic" class="exclusive-check" data-group="intake">
+                        Pneumatic
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="intake" value="Both" class="exclusive-check-all" data-group="intake">
+                        Both
+                    </label>
+                </div>
             </div>
 
             <div class="card">
-                <h2>Systems</h2>
-                <label>Intake Logic</label>
-                <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="intake" value="Roller" class="logic-group" data-group="intake"> Roller</label>
-                    <label class="option-box"><input type="checkbox" name="intake" value="Pneumatic" class="logic-group" data-group="intake"> Pneumatic</label>
-                    <label class="option-box"><input type="checkbox" name="intake" value="Both" class="logic-both" data-group="intake"> Both</label>
+                <label>Vision System (視覺/相機)</label>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="vision" value="Limelight" class="exclusive-check" data-group="vis">
+                        Limelight
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="vision" value="AprilTag" class="exclusive-check" data-group="vis">
+                        AprilTag
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="vision" value="Both" class="exclusive-check-all" data-group="vis">
+                        Both
+                    </label>
                 </div>
+            </div>
 
-                <label>Vision & Tracking</label>
-                <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="vision" value="Limelight" class="logic-group" data-group="vis"> Limelight</label>
-                    <label class="option-box"><input type="checkbox" name="vision" value="AprilTag" class="logic-group" data-group="vis"> AprilTag</label>
-                    <label class="option-box"><input type="checkbox" name="vision" value="Both" class="logic-both" data-group="vis"> Both</label>
+            <div class="card">
+                <label>Shooting Capabilities (射球能力)</label>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="shoot" value="MoveShoot">
+                        邊走邊射<br><span style="font-size:0.7em">(Move & Shoot)</span>
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="shoot" value="IntakeShoot">
+                        邊吸邊射<br><span style="font-size:0.7em">(Intake & Shoot)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <label>Turret Features (砲台)</label>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="turret" value="Yaw">
+                        Yaw (Horizontal)
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="turret" value="Pitch">
+                        Pitch (Vertical)
+                    </label>
                 </div>
             </div>
         </div>
 
         <div class="page" id="page2">
-            <div class="card">
-                <h2>Autonomous</h2>
-                <label>Preload (Max: 8)</label>
-                <input type="number" id="preload" value="0">
-                <div id="preloadWarn" class="warning-text"></div>
+            <div class="section-title">Step 4: Autonomous</div>
 
-                <label>Starting Location</label>
-                <select id="outpostSrc">
-                    <option>Robot Outpost</option>
-                    <option>Human Outpost</option>
-                    <option>Depot</option>
+            <div class="card">
+                <label>Starting Location (位子)</label>
+                <select id="startPos">
+                    <option value="RobotOutpost">Robot Outpost</option>
+                    <option value="HumanOutpost">Human Outpost</option>
+                    <option value="Depot">Depot</option>
                 </select>
 
-                <label class="option-box" style="margin-top:20px;">
-                    <input type="checkbox" id="crossMid" onchange="toggleMidfield()"> Cross Midfield
-                </label>
+                <br><br>
+                <label>Preload Count (Preload 數量)</label>
+                <span class="sub-label">Maximum 8 notes</span>
+                <input type="number" id="preload" placeholder="0" max="8">
+                <div class="error-msg" id="err-preload">Max Preload is 8</div>
+            </div>
 
-                <div id="midfieldSection" style="display:none; margin-top:15px; border-top: 1px solid #333; padding-top:15px;">
-                    <label>Navigate Terrain</label>
-                    <div class="grid-options">
-                        <label class="option-box"><input type="checkbox" name="terrain" value="Bump" class="logic-group" data-group="terr" onchange="toggleStability()"> Bump</label>
-                        <label class="option-box"><input type="checkbox" name="terrain" value="Trench" class="logic-group" data-group="terr" onchange="toggleStability()"> Trench</label>
-                        <label class="option-box"><input type="checkbox" name="terrain" value="Both" class="logic-both" data-group="terr" onchange="toggleStability()"> Both</label>
-                    </div>
-                    <div id="stabilitySection" style="display:none; margin-top:15px;">
-                        <label>Stability: <span id="sLabel" style="color:var(--accent)">3</span></label>
-                        <input type="range" id="bumpStable" min="1" max="5" value="3" oninput="document.getElementById('sLabel').innerText=this.value">
+            <div class="card">
+                <label>Total Auto Pieces (Auto 總共顆數)</label>
+                <span class="sub-label">Scored during Auto (Excluding preload if not shot)</span>
+                <input type="number" id="autoTotal" placeholder="0">
+            </div>
+
+            <div class="card">
+                <label class="toggle-btn" style="width:100%;">
+                    <input type="checkbox" id="crossMid">
+                    Cross Midfield (會不會過中場)
+                </label>
+            </div>
+
+            <div class="card">
+                <label>Terrain Navigation (地形)</label>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="terrain" value="Bump" onchange="checkStability()">
+                        Bump
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="terrain" value="Trench" onchange="checkStability()">
+                        Trench
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="terrain" value="Both" onchange="checkStability()">
+                        Both
+                    </label>
+                </div>
+
+                <div id="stabilityBox" style="margin-top:20px; display:none; border-top:1px solid #333; padding-top:15px;">
+                    <label>Bump Stability (過Bump影響)</label>
+                    <span class="sub-label">1 (Very Unstable) - 5 (Very Stable)</span>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <span style="font-weight:bold; color:var(--accent); font-size:1.2rem;" id="stableVal">3</span>
+                        <input type="range" id="stability" min="1" max="5" value="3" oninput="document.getElementById('stableVal').innerText = this.value">
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="page" id="page3">
+            <div class="section-title">Step 5: Teleop & Endgame</div>
+
             <div class="card">
-                <h2>Teleop & Climb</h2>
-                <label>Climb Level (Multi-select)</label>
-                <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="climbLv" value="L1"> L1</label>
-                    <label class="option-box"><input type="checkbox" name="climbLv" value="L2"> L2</label>
-                    <label class="option-box"><input type="checkbox" name="climbLv" value="L3"> L3</label>
+                <label>Climb Capability (吊掛能力)</label>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbLvl" value="L1">
+                        L1
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbLvl" value="L2">
+                        L2
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbLvl" value="L3">
+                        L3
+                    </label>
                 </div>
+            </div>
 
-                <label>Climb Time (sec)</label>
-                <input type="number" id="climbTime" placeholder="0">
+            <div class="card">
+                <label>Climb Position (吊掛位子)</label>
+                <div class="grid-select" style="grid-template-columns: repeat(3, 1fr);">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbPos" value="Left">
+                        Left<br>左
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbPos" value="Center">
+                        Center<br>中
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbPos" value="Right">
+                        Right<br>右
+                    </label>
+                </div>
+                <div class="grid-select" style="margin-top:10px;">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbPos" value="FarLeft">
+                        Far Left Side (左側)
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="climbPos" value="FarRight">
+                        Far Right Side (右側)
+                    </label>
+                </div>
+            </div>
 
-                <label>Notes</label>
-                <textarea id="notes" rows="3" placeholder="Enter observations..."></textarea>
-                <div id="notesWarn" class="warning-text"></div>
+            <div class="card">
+                <label>Climb Time (吊掛時間)</label>
+                <span class="sub-label">Estimated seconds to climb</span>
+                <input type="number" id="climbTime" placeholder="e.g. 5">
+            </div>
+
+            <div class="card">
+                <label style="display:flex; align-items:center; gap:10px;">
+                    <input type="checkbox" id="photosTaken" style="width:25px; height:25px; accent-color:var(--accent);">
+                    <span>Photos Taken? (照片全部已拍)</span>
+                </label>
+            </div>
+
+            <div class="card">
+                <label>General Notes (備註)</label>
+                <textarea id="notes" rows="4" placeholder="Driver skill, defense, reliability notes..."></textarea>
+                <div class="profanity-alert" id="profanity-notes">Please remove inappropriate language.</div>
             </div>
         </div>
 
         <div class="page" id="page4">
-            <div class="card">
-                <h2>Review</h2>
-                <div id="summaryPanel" style="font-size: 0.9rem; line-height: 2; margin-bottom: 15px; border-left: 2px solid var(--accent); padding-left: 15px;"></div>
-                <div style="text-align:center"><div id="qrcode"></div></div>
-                <button type="button" class="btn btn-next" style="width:100%; margin-top:15px;" id="genBtn" onclick="generateQR()">Generate QR</button>
-                <button type="button" class="btn" style="width:100%; margin-top:10px; background:#4a1010; color:white;" onclick="softReset()">Reset Form</button>
-            </div>
-            <div class="card">
-                <h2>Session Logs</h2>
-                <div id="sessionLogs" style="max-height: 200px; overflow-y: auto;">No logs.</div>
+            <div class="section-title">Step 6: Review & Sync</div>
+            <div class="card" style="text-align:center;">
+                <h2 style="color:var(--accent); margin-bottom:10px;">Ready to Generate</h2>
+                <div id="reviewText" style="text-align:left; background:#000; padding:15px; border-radius:10px; margin-bottom:20px; font-size:0.9rem; line-height:1.6; color:#ccc;">
+                    </div>
+
+                <div id="qrcode"></div>
+                
+                <button type="button" class="btn btn-next" id="generateBtn" onclick="generateQR()">Generate QR Code</button>
+                <br><br>
+                <button type="button" class="btn" style="background:var(--danger); color:white; font-size:0.8rem; padding:10px;" onclick="resetForm()">Reset Form</button>
             </div>
         </div>
+
     </form>
 </div>
 
 <div class="nav-bar">
-    <button class="btn btn-back" id="prevBtn" onclick="changePage(-1)">Back</button>
-    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next</button>
+    <button type="button" class="btn btn-back" id="backBtn" onclick="navigate(-1)">Back</button>
+    <button type="button" class="btn btn-next" id="nextBtn" onclick="navigate(1)">Next</button>
 </div>
 
 <script>
-    const badWords = ["anal","anus","arse","ass","ballsack","bastard","bitch","biatch","bloody","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","buttplug","clitoris","cock","coon","crap","cunt","damn","dick","dildo","dyke","fag","feck","felatio","feltch","fuck","fudgepacker","flange","goddamn","hell","homo","jerk","jizm","knobend","labia","lmao","lmfao","muff","nigger","nigga","piss","poop","prick","pube","pussy","queer","scrotum","sex","sh1t","shit","slut","smegma","spunk","tit","tosser","turd","twat","vagina","wank","whore","wtf"];
+    /* --- CONFIGURATION --- */
+    // TEAM LIST - LAUREL, MS (Corrected)
+    const TEAM_LIST = {
+        364: "Team Fusion",
+        456: "Siege Robotics",
+        538: "Renaissance Robotics",
+        590: "Chahta Warriors",
+        1421: "Team CHAOS",
+        1912: "Team Combustion",
+        1927: "Tempest",
+        2221: "FHS Robodawgs",
+        2556: "RadioActive Roaches",
+        2992: "The S.S. Prometheus",
+        3039: "Wildcat Robotics",
+        3606: "BearMetal",
+        3616: "Team Phenomena",
+        3753: "BulahBots!",
+        4087: "Voodoo Voltage",
+        4107: "Team Storm",
+        4336: "Ramageddon Robotics",
+        4400: "Cerbotics - Peñoles",
+        5045: "SpartaBot",
+        5863: "Hypercubed",
+        5971: "Raider Robotics Team",
+        6184: "C4 (Capital City Chaotic Coders)",
+        6706: "Golem",
+        6998: "Unipards",
+        7094: "Alpha Omega",
+        7474: "JXN UNITED",
+        8044: "Denham Venom",
+        8624: "Sasquatch Robotics",
+        8808: "SWLA Tech Pirates",
+        9153: "Bearcat Robotics",
+        9309: "Metal Mages",
+        9405: "KNOS Robotics",
+        9503: "EF5 CHAOS",
+        9717: "Poultronix",
+        9734: "Jasper County Robotics",
+        10101: "Critical Hit",
+        10217: "Catahoula Blue Dogs",
+        10309: "Jayhawks Robotics",
+        10661: "Blue Phoenix",
+        10929: "Tarpon Robotics",
+        10943: "WJH RoboStangs",
+        10961: "Hyper Wave",
+        11107: "FARMBots",
+        11265: "Rockbotics -FRC",
+        11287: "Canton Career Center",
+        11343: "JPS High School Robotics",
+        11345: "Long Beach RoboBearcats"
+    };
+
+    // BAD WORDS LIST (Basic Filter)
+    const BAD_WORDS = ["damn", "hell", "shit", "fuck", "bitch", "crap", "ass", "bastard", "dick", "piss", "cock", "pussy", "slut", "whore", "nigger", "fag", "retard", "sex", "nude", "gyatt", "skibidi", "rizz"];
     
-    const teams = { 364:"Team Fusion", 456:"Siege Robotics", 538:"Renaissance Robotics", 590:"Chahta Warriors", 1421:"Team CHAOS", 1912:"Team Combustion", 1927:"Tempest", 2221:"FHS Robodawgs", 2556:"RadioActive Roaches", 2992:"The S.S. Prometheus", 3039:"Wildcat Robotics", 3606:"BearMetal", 3616:"Team Phenomena", 3753:"BulahBots!", 4087:"Voodoo Voltage", 4107:"Team Storm", 4336:"Ramageddon Robotics", 4400:"Cerbotics - Peñoles", 5045:"SpartaBot", 5863:"Hypercubed", 5971:"Raider Robotics Team", 6184:"C4", 6706:"Golem", 6998:"Unipards", 7094:"Alpha Omega", 7474:"JXN UNITED", 8044:"Denham Venom", 8624:"Sasquatch Robotics", 8808:"SWLA Tech Pirates", 9153:"Bearcat Robotics", 9309:"Metal Mages", 9405:"KNOS Robotics", 9503:"EF5 CHAOS", 9717:"Poultronix", 9734:"Jasper County Robotics", 10101:"Critical Hit", 10217:"Catahoula Blue Dogs", 10309:"Jayhawks Robotics", 10661:"Blue Phoenix", 10929:"Tarpon Robotics", 10943:"WJH RoboStangs", 10961:"Hyper Wave", 11107:"FARMBots", 11265:"Rockbotics", 11287:"Canton Career Center", 11343:"JPS High School Robotics", 11345:"Long Beach RoboBearcats" };
+    let currentPage = 0;
+    const totalPages = 5; // 0 to 4
+    let robotsScouted = 0;
 
-    let curPage = 0;
-    let matchCount = 0;
-    let logs = [];
+    /* --- LOGIC HANDLERS --- */
+    
+    // Checkbox Logic: "Both" vs Individual
+    document.querySelectorAll('input[type="checkbox"]').forEach(box => {
+        box.addEventListener('change', (e) => {
+            const group = e.target.dataset.group;
+            if(!group) return; // Only apply to grouped items
 
-    function toggleMidfield() {
-        document.getElementById('midfieldSection').style.display = document.getElementById('crossMid').checked ? 'block' : 'none';
-    }
+            const allInGroup = document.querySelectorAll(`input[data-group="${group}"]`);
+            const isBoth = e.target.classList.contains('exclusive-check-all');
 
-    function toggleStability() {
-        const isBump = document.querySelector('input[value="Bump"]').checked || document.querySelector('input[value="Both"][data-group="terr"]').checked;
-        document.getElementById('stabilitySection').style.display = isBump ? 'block' : 'none';
-    }
-
-    // Logic for mutually exclusive choices vs multi-select
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', function() {
-            const group = this.getAttribute('data-group');
-            if (!group) return; // If no group, skip logic
-            
-            const members = document.querySelectorAll(`.logic-group[data-group="${group}"]`);
-            const both = document.querySelector(`.logic-both[data-group="${group}"]`);
-            
-            // If "Both" is clicked, uncheck the individuals
-            if (this.classList.contains('logic-both') && this.checked) {
-                members.forEach(m => m.checked = false);
-            } 
-            // If an individual member is clicked
-            else if (this.classList.contains('logic-group')) {
-                if(both) both.checked = false;
-                
-                // NEW: If group has exactly 2 members, make it "Choose One" (Radio style)
-                if (members.length === 2) {
-                    members.forEach(m => { if(m !== this) m.checked = false; });
-                }
+            if (isBoth && e.target.checked) {
+                // If "Both" clicked, uncheck others
+                allInGroup.forEach(el => { if(el !== e.target) el.checked = false; });
+            } else if (!isBoth && e.target.checked) {
+                // If specific item clicked, uncheck "Both"
+                allInGroup.forEach(el => { if(el.classList.contains('exclusive-check-all')) el.checked = false; });
             }
-            validate();
         });
     });
 
-    function validate() {
-        let valid = true;
-        const name = document.getElementById('scouterName').value.toLowerCase();
-        const notes = document.getElementById('notes').value.toLowerCase();
-        const tNum = document.getElementById('teamNum').value;
-        const preload = parseInt(document.getElementById('preload').value) || 0;
-
-        if (badWords.some(w => name.includes(w))) {
-            document.getElementById('scouterWarn').innerText = "AUDIT FAILED: INVALID NAME";
-            valid = false;
-        } else { document.getElementById('scouterWarn').innerText = ""; }
-
-        if (badWords.some(w => notes.includes(w))) {
-            document.getElementById('notesWarn').innerText = "PROFANITY DETECTED IN NOTES";
-            valid = false;
-        } else { document.getElementById('notesWarn').innerText = ""; }
-
-        if (teams[tNum]) {
-            document.getElementById('teamBadge').innerText = "✓ " + teams[tNum];
-            document.getElementById('teamBadge').style.background = "var(--accent)";
-        } else {
-            document.getElementById('teamBadge').innerText = "Unknown Team #";
-            document.getElementById('teamBadge').style.background = "#4a1010";
-            valid = false;
-        }
-
-        if (preload > 8) {
-            document.getElementById('preloadWarn').innerText = "MAX PRELOAD IS 8";
-            valid = false;
-        } else { document.getElementById('preloadWarn').innerText = ""; }
-
-        document.getElementById('nextBtn').disabled = !valid;
-        return valid;
+    // Stability Slider Visibility
+    function checkStability() {
+        const terrainOpts = Array.from(document.querySelectorAll('input[name="terrain"]:checked')).map(cb => cb.value);
+        const needsStable = terrainOpts.includes('Bump') || terrainOpts.includes('Both');
+        document.getElementById('stabilityBox').style.display = needsStable ? 'block' : 'none';
     }
 
-    function changePage(dir) {
-        if (dir === 1 && !validate()) return;
-        document.getElementById(`page${curPage}`).classList.remove('active');
-        curPage += dir;
-        document.getElementById(`page${curPage}`).classList.add('active');
-        document.getElementById('prevBtn').style.visibility = (curPage === 0) ? 'hidden' : 'visible';
+    // Team Number Lookup
+    document.getElementById('teamNum').addEventListener('input', function() {
+        const num = this.value;
+        const disp = document.getElementById('teamNameDisplay');
+        if(TEAM_LIST[num]) {
+            disp.textContent = "✓ " + TEAM_LIST[num];
+            disp.style.color = "#000";
+            disp.style.background = "var(--accent)";
+        } else {
+            disp.textContent = num ? "Unknown Team" : "Waiting for input...";
+            disp.style.color = num ? "var(--text-secondary)" : "var(--accent)";
+            disp.style.background = "rgba(255,255,255,0.05)";
+        }
+    });
+
+    // Profanity Checker
+    function containsProfanity(text) {
+        if (!text) return false;
+        const lower = text.toLowerCase();
+        return BAD_WORDS.some(word => lower.includes(word));
+    }
+
+    /* --- NAVIGATION & VALIDATION --- */
+
+    function navigate(dir) {
+        if (dir === 1 && !validatePage(currentPage)) return;
+
+        document.getElementById(`page${currentPage}`).classList.remove('active');
+        currentPage += dir;
+        document.getElementById(`page${currentPage}`).classList.add('active');
         
-        if (curPage === 4) {
-            buildSummary();
+        // Button State
+        document.getElementById('backBtn').style.visibility = currentPage === 0 ? 'hidden' : 'visible';
+        
+        if(currentPage === 4) {
             document.getElementById('nextBtn').style.display = 'none';
+            prepareReview();
         } else {
             document.getElementById('nextBtn').style.display = 'block';
         }
+        
+        window.scrollTo(0,0);
     }
 
-    function generateQR() {
-        matchCount++;
-        document.getElementById('mCount').innerText = "ROBOTS: " + matchCount;
-        const getChecks = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(c => c.value);
+    function validatePage(page) {
+        let valid = true;
+        // Page 0 Validation
+        if (page === 0) {
+            const nameInput = document.getElementById('scouterName');
+            const name = nameInput.value.trim();
+            const team = document.getElementById('teamNum').value.trim();
+            
+            // Name Checks
+            if(name.length < 2) {
+                document.getElementById('err-name').style.display = 'block'; valid = false;
+            } else { document.getElementById('err-name').style.display = 'none'; }
+            
+            // Profanity Check Name
+            if(containsProfanity(name)) {
+                 document.getElementById('profanity-name').style.display = 'block';
+                 nameInput.classList.add('violation');
+                 valid = false;
+            } else {
+                 document.getElementById('profanity-name').style.display = 'none';
+                 nameInput.classList.remove('violation');
+            }
 
-        const data = {
-            t: document.getElementById('teamNum').value,
-            s: document.getElementById('scouterName').value,
-            d: document.getElementById('driveType').value,
-            w: document.getElementById('weight').value,
-            mc: document.getElementById('maxCap').value,
-            i: getChecks('intake'),
-            v: getChecks('vision'),
-            p: document.getElementById('preload').value,
-            o: document.getElementById('outpostSrc').value,
-            cm: document.getElementById('crossMid').checked ? 1 : 0,
-            terr: getChecks('terrain'),
-            st: document.getElementById('bumpStable').value,
-            cl: getChecks('climbLv'),
-            ct: document.getElementById('climbTime').value,
-            n: document.getElementById('notes').value
-        };
+            // Team Check
+            if(!team) {
+                document.getElementById('err-team').style.display = 'block'; valid = false;
+            } else { document.getElementById('err-team').style.display = 'none'; }
+        }
 
-        logs.unshift(`Team ${data.t} - Logged`);
-        document.getElementById('sessionLogs').innerHTML = logs.map(l => `<div class="log-entry"><span>${l}</span> <b>✓</b></div>`).join('');
+        // Page 2 Validation (Preload)
+        if (page === 2) {
+            const preload = parseInt(document.getElementById('preload').value) || 0;
+            if(preload > 8) {
+                document.getElementById('err-preload').style.display = 'block'; valid = false;
+            } else { document.getElementById('err-preload').style.display = 'none'; }
+        }
 
-        const qrEl = document.getElementById('qrcode');
-        qrEl.innerHTML = ""; qrEl.style.display = "block";
-        new QRCode(qrEl, { text: JSON.stringify(data), width: 200, height: 200, correctLevel: QRCode.CorrectLevel.L });
-        document.getElementById('genBtn').innerText = "DATA SAVED";
-        document.getElementById('genBtn').style.background = "#4caf50";
+        // Page 3 Validation (Notes Profanity)
+        if (page === 3) {
+            const notesInput = document.getElementById('notes');
+            const notes = notesInput.value;
+            
+            if(containsProfanity(notes)) {
+                document.getElementById('profanity-notes').style.display = 'block';
+                notesInput.classList.add('violation');
+                valid = false;
+            } else {
+                document.getElementById('profanity-notes').style.display = 'none';
+                notesInput.classList.remove('violation');
+            }
+        }
+
+        return valid;
     }
 
-    function buildSummary() {
-        const tNum = document.getElementById('teamNum').value;
-        const name = document.getElementById('scouterName').value || "Unknown";
-        document.getElementById('summaryPanel').innerHTML = `
-            <div style="color:var(--accent); font-weight:bold;">READY TO SYNC:</div>
-            <div><b>Target:</b> Team ${tNum}</div>
-            <div><b>Scouter:</b> ${name}</div>
-            <div style="font-size:0.7rem; color:var(--text-dim); margin-top:5px;">Data for AprilTags, Terrain, and Climb compressed.</div>
+    /* --- QR GENERATION --- */
+
+    function getVals(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
+    }
+
+    function prepareReview() {
+        const team = document.getElementById('teamNum').value;
+        const name = document.getElementById('scouterName').value;
+        const climb = getVals('climbLvl').join(', ') || "None";
+        const auto = document.getElementById('autoTotal').value || 0;
+        
+        document.getElementById('reviewText').innerHTML = `
+            <strong style="color:var(--accent)">Team:</strong> ${team} (${TEAM_LIST[team] || 'Unknown'})<br>
+            <strong style="color:var(--accent)">Scouter:</strong> ${name}<br>
+            <strong style="color:var(--accent)">Auto Pieces:</strong> ${auto}<br>
+            <strong style="color:var(--accent)">Climb:</strong> ${climb}<br>
+            <br>
+            <em>Please verify all data before generating QR.</em>
         `;
     }
 
-    function softReset() {
-        document.getElementById('scoutingForm').reset();
-        curPage = 0;
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page0').classList.add('active');
-        document.getElementById('nextBtn').style.display = 'block';
-        document.getElementById('qrcode').style.display = 'none';
-        document.getElementById('genBtn').innerText = "Generate QR";
-        document.getElementById('genBtn').style.background = "var(--accent)";
-        toggleMidfield(); toggleStability(); validate();
+    function generateQR() {
+        // Double check profanity one last time
+        if(containsProfanity(document.getElementById('scouterName').value) || containsProfanity(document.getElementById('notes').value)) {
+            alert("Please remove inappropriate language before generating.");
+            return;
+        }
+
+        robotsScouted++;
+        document.getElementById('robotCounter').innerText = "ROBOTS: " + robotsScouted;
+
+        // Construct Data Object (Compressed keys for QR size)
+        const data = {
+            // ID
+            t: document.getElementById('teamNum').value,
+            sc: document.getElementById('scouterName').value,
+            // Specs
+            dt: document.getElementById('chassis').value,
+            wt: document.getElementById('weight').value,
+            mx: document.getElementById('capacity').value,
+            // Systems
+            in: getVals('intake'),
+            vis: getVals('vision'),
+            sht: getVals('shoot'),
+            tur: getVals('turret'),
+            // Auto
+            stL: document.getElementById('startPos').value,
+            pre: document.getElementById('preload').value,
+            at: document.getElementById('autoTotal').value,
+            mid: document.getElementById('crossMid').checked ? 1 : 0,
+            ter: getVals('terrain'),
+            stb: document.getElementById('stability').value,
+            // Teleop
+            cLv: getVals('climbLvl'),
+            cPs: getVals('climbPos'),
+            cTm: document.getElementById('climbTime').value,
+            ph: document.getElementById('photosTaken').checked ? 1 : 0,
+            nt: document.getElementById('notes').value
+        };
+
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = "";
+        qrContainer.style.display = "inline-block";
+        
+        new QRCode(qrContainer, {
+            text: JSON.stringify(data),
+            width: 240,
+            height: 240,
+            correctLevel: QRCode.CorrectLevel.L
+        });
+
+        const btn = document.getElementById('generateBtn');
+        btn.innerText = "QR Generated (Saved)";
+        btn.style.background = "var(--success)";
+        btn.disabled = true;
     }
 
-    document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', validate));
-    document.getElementById('prevBtn').style.visibility = 'hidden';
+    function resetForm() {
+        if(!confirm("Are you sure you want to reset? Unsaved data will be lost.")) return;
+        
+        document.getElementById('scoutForm').reset();
+        document.getElementById('qrcode').style.display = 'none';
+        
+        // Remove violation styles
+        document.querySelectorAll('.violation').forEach(el => el.classList.remove('violation'));
+        document.querySelectorAll('.profanity-alert').forEach(el => el.style.display = 'none');
+
+        const btn = document.getElementById('generateBtn');
+        btn.innerText = "Generate QR Code";
+        btn.style.background = "var(--accent)";
+        btn.disabled = false;
+        
+        // Reset navigation
+        document.getElementById(`page${currentPage}`).classList.remove('active');
+        currentPage = 0;
+        document.getElementById(`page0`).classList.add('active');
+        document.getElementById('backBtn').style.visibility = 'hidden';
+        document.getElementById('nextBtn').style.display = 'block';
+        
+        // Reset UI elements
+        document.getElementById('teamNameDisplay').textContent = "Waiting for input...";
+        document.getElementById('teamNameDisplay').style.background = "rgba(255,255,255,0.05)";
+        document.getElementById('teamNameDisplay').style.color = "var(--text-secondary)";
+        checkStability();
+    }
 </script>
+
 </body>
 </html>
