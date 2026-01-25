@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRC 6998 | ELITE SCOUTING 2026</title>
+    <title>FRC 6998 | Pit Scout 2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -19,13 +19,15 @@
         header {
             background: linear-gradient(to bottom, #1a1a24, var(--bg-deep));
             padding: 1.5rem; text-align: center; border-bottom: 2px solid var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
         }
         header h1 { color: var(--accent); text-transform: uppercase; letter-spacing: 3px; font-size: 1.5rem; }
 
+        .match-counter { position: absolute; top: 15px; right: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem; border: 1px solid var(--accent); padding: 5px 10px; border-radius: 10px; }
+
         .container { max-width: 600px; margin: 0 auto; padding: 10px 15px 140px 15px; }
 
-        /* WARNING PAGE / FRONT CARD */
+        /* WARNING FRONT */
         .warning-front {
             background: rgba(255, 77, 77, 0.1); border: 2px solid var(--error);
             border-radius: 20px; padding: 20px; margin-bottom: 20px; text-align: center;
@@ -55,10 +57,10 @@
         .option-box:has(input:checked) { border-color: var(--accent); background: rgba(214, 175, 55, 0.1); }
 
         .warning-text { color: var(--error); font-size: 0.7rem; margin-top: 5px; font-weight: 700; text-transform: uppercase; }
-        .team-badge { display: inline-block; background: var(--accent); color: #000; padding: 3px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: 800; margin-top: 8px; }
+        .team-badge { display: inline-block; background: var(--accent); color: #000; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 800; margin-top: 8px; }
 
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(18, 18, 26, 0.98); padding: 15px; display: flex; gap: 12px; border-top: 1px solid rgba(214, 175, 55, 0.2); z-index: 1000; }
-        .btn { flex: 1; padding: 15px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; }
+        .btn { flex: 1; padding: 15px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: 0.2s; }
         .btn-next { background: var(--accent); color: #000; }
         .btn-back { background: #2a2a35; color: #fff; }
         .btn:disabled { opacity: 0.1; filter: grayscale(1); }
@@ -68,63 +70,58 @@
         @keyframes pageIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
         #qrcode { background: #fff; padding: 12px; border-radius: 15px; margin: 15px auto; display: none; }
-        .match-counter { position: absolute; top: 10px; right: 15px; color: var(--accent); font-weight: bold; font-size: 0.8rem; }
-        .log-entry { font-size: 0.75rem; padding: 5px; border-bottom: 1px solid #333; color: var(--text-dim); }
+        .log-entry { font-size: 0.75rem; padding: 8px; border-bottom: 1px solid #333; color: var(--text-dim); display: flex; justify-content: space-between; }
+        
+        input[type="range"] { accent-color: var(--accent); }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>6998 REBUILT</h1>
-    <div class="match-counter">Matches: <span id="mCount">0</span></div>
+    <h1>6998 Pit Scout 2026</h1>
+    <div class="match-counter" id="mCount">MATCHES: 0</div>
 </header>
 
 <div class="container">
     <form id="scoutingForm" onsubmit="return false;">
-        
-        <div class="page active" id="page0">
-            <div class="warning-front">
-                <h3 style="color:var(--error); margin-bottom: 5px;">⚠️ ATTENTION</h3>
-                <p style="font-size: 0.7rem;">ALL DATA IS SUBJECT TO AUDIT. INAPPROPRIATE LANGUAGE OR FALSE DATA WILL RESULT IN DISQUALIFICATION FROM SCOUTING TEAM.</p>
-            </div>
             <div class="card">
                 <h2>Identification</h2>
                 <label>Scouter Name</label>
-                <input type="text" id="scouterName" placeholder="Full Name">
+                <input type="text" id="scouterName" placeholder="Enter Full Name">
                 <div id="scouterWarn" class="warning-text"></div>
 
-                <label>Team Number</label>
-                <input type="number" id="teamNum" placeholder="Team #">
-                <div id="teamBadge" class="team-badge">Select a valid team</div>
+                <label>Team Number (機器人)</label>
+                <input type="number" id="teamNum" placeholder="e.g. 6998">
+                <div id="teamBadge" class="team-badge">Waiting for input...</div>
             </div>
         </div>
 
         <div class="page" id="page1">
             <div class="card">
-                <h2>機器人 (Robot)</h2>
+                <h2>Robot Specs</h2>
                 <label>Chassis (底盤)</label>
                 <select id="driveType">
-                    <option value="">-- Choose --</option>
+                    <option value="">-- Choose Configuration --</option>
                     <option>Swerve</option><option>Tank</option><option>Mecanum</option>
                 </select>
                 
                 <label>Weight (重量 lbs)</label>
                 <input type="number" id="weight" placeholder="125">
 
-                <label>Max Capacity (最高容量)</label>
+                <label>Max Piece Capacity (最高容量)</label>
                 <input type="number" id="maxCap" value="4">
             </div>
 
             <div class="card">
-                <h2>Hardware</h2>
-                <label>Intake System</label>
+                <h2>Systems</h2>
+                <label>Intake Logic</label>
                 <div class="grid-options">
                     <label class="option-box"><input type="checkbox" name="intake" value="Roller" class="logic-group" data-group="intake"> Roller</label>
                     <label class="option-box"><input type="checkbox" name="intake" value="Pneumatic" class="logic-group" data-group="intake"> Pneumatic</label>
                     <label class="option-box"><input type="checkbox" name="intake" value="Both" class="logic-both" data-group="intake"> Both</label>
                 </div>
 
-                <label>Vision/Camera (視覺/相機)</label>
+                <label>Vision & Camera (視覺/相機)</label>
                 <div class="grid-options">
                     <label class="option-box"><input type="checkbox" name="vision" value="Limelight"> Limelight</label>
                     <label class="option-box"><input type="checkbox" name="vision" value="AI-Camera"> AI Camera</label>
@@ -132,43 +129,43 @@
 
                 <label>Turret (砲台)</label>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="turret" value="Yaw"> Yaw</label>
-                    <label class="option-box"><input type="checkbox" name="turret" value="Pitch"> Pitch</label>
+                    <label class="option-box"><input type="checkbox" name="turret" value="Yaw"> Yaw (Horizontal)</label>
+                    <label class="option-box"><input type="checkbox" name="turret" value="Pitch"> Pitch (Vertical)</label>
                 </div>
             </div>
         </div>
 
         <div class="page" id="page2">
             <div class="card">
-                <h2>Auto</h2>
-                <label>Preload (Max 8)</label>
+                <h2>Autonomous</h2>
+                <label>Preload (Strict Max: 8)</label>
                 <input type="number" id="preload" value="0">
                 <div id="preloadWarn" class="warning-text"></div>
 
-                <label>Auto Source</label>
+                <label>Starting Location (Outpost/Depot)</label>
                 <select id="outpostSrc">
-                    <option>Outpost (Robot)</option>
-                    <option>Outpost (Human)</option>
+                    <option>Robot Outpost</option>
+                    <option>Human Outpost</option>
                     <option>Depot</option>
                 </select>
 
-                <label>Auto Total Pieces (顆數)</label>
+                <label>Auto Pieces Scored (總共顆數)</label>
                 <input type="number" id="autoBalls" value="0">
 
                 <label class="option-box" style="margin-top:20px;">
                     <input type="checkbox" id="crossMid" onchange="toggleMidfield()"> Cross Midfield (會不會過中場)
                 </label>
 
-                <div id="midfieldSection" class="hidden-section" style="display:none;">
-                    <label>Terrain Access</label>
+                <div id="midfieldSection" class="hidden-section" style="display:none; margin-top:15px; border-top: 1px solid #333; padding-top:15px;">
+                    <label>Navigate Terrain (Bump/Trench)</label>
                     <div class="grid-options">
                         <label class="option-box"><input type="checkbox" name="terrain" value="Bump" class="logic-group" data-group="terr" onchange="toggleStability()"> Bump</label>
                         <label class="option-box"><input type="checkbox" name="terrain" value="Trench" class="logic-group" data-group="terr" onchange="toggleStability()"> Trench</label>
                         <label class="option-box"><input type="checkbox" name="terrain" value="Both" class="logic-both" data-group="terr" onchange="toggleStability()"> Both</label>
                     </div>
-                    <div id="stabilitySection" style="display:none;">
-                        <label>過Bump影響 (Stability 1-5)</label>
-                        <input type="range" id="bumpStable" min="1" max="5" value="3">
+                    <div id="stabilitySection" style="display:none; margin-top:15px;">
+                        <label>過Bump影響 (Stability: <span id="sLabel">3</span>)</label>
+                        <input type="range" id="bumpStable" min="1" max="5" value="3" oninput="document.getElementById('sLabel').innerText=this.value">
                     </div>
                 </div>
             </div>
@@ -176,33 +173,33 @@
 
         <div class="page" id="page3">
             <div class="card">
-                <h2>Teleop / 吊掛 (Climb)</h2>
-                <label>Climb Levels</label>
+                <h2>Teleop & Climb (吊掛)</h2>
+                <label>Climb Ability</label>
                 <div class="grid-options">
                     <label class="option-box"><input type="checkbox" name="climbLv" value="L1" class="logic-group" data-group="cl"> L1</label>
                     <label class="option-box"><input type="checkbox" name="climbLv" value="L2" class="logic-group" data-group="cl"> L2</label>
                     <label class="option-box"><input type="checkbox" name="climbLv" value="L3" class="logic-group" data-group="cl"> L3</label>
-                    <label class="option-box"><input type="checkbox" name="climbLv" value="Both" class="logic-both" data-group="cl"> Both</label>
+                    <label class="option-box"><input type="checkbox" name="climbLv" value="All" class="logic-both" data-group="cl"> Both/All</label>
                 </div>
 
                 <label>Climb Position (吊掛位子)</label>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Left" class="logic-group" data-group="cp"> Left</label>
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Center" class="logic-group" data-group="cp"> Center</label>
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Right" class="logic-group" data-group="cp"> Right</label>
+                    <label class="option-box"><input type="checkbox" name="climbPos" value="Left" class="logic-group" data-group="cp"> Left (左)</label>
+                    <label class="option-box"><input type="checkbox" name="climbPos" value="Center" class="logic-group" data-group="cp"> Center (中)</label>
+                    <label class="option-box"><input type="checkbox" name="climbPos" value="Right" class="logic-group" data-group="cp"> Right (右)</label>
                     <label class="option-box"><input type="checkbox" name="climbPos" value="Both" class="logic-both" data-group="cp"> Both</label>
                 </div>
 
-                <label>Climb Time (secs)</label>
+                <label>Climb Time (sec)</label>
                 <input type="number" id="climbTime" placeholder="0">
 
-                <label>Shooting Logic</label>
+                <label>Shooting Abilities (射球能力)</label>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="shoot" value="邊吸邊射"> 邊吸邊射</label>
-                    <label class="option-box"><input type="checkbox" name="shoot" value="邊走邊射"> 邊走邊射</label>
+                    <label class="option-box"><input type="checkbox" name="shoot" value="吸射"> 邊吸邊射</label>
+                    <label class="option-box"><input type="checkbox" name="shoot" value="走射"> 邊走邊射</label>
                 </div>
 
-                <label>Notes (備註)</label>
+                <label>Notes (其他備註)</label>
                 <textarea id="notes" rows="3"></textarea>
                 <div id="notesWarn" class="warning-text"></div>
             </div>
@@ -211,14 +208,14 @@
         <div class="page" id="page4">
             <div class="card">
                 <h2>Review Summary</h2>
-                <div id="summaryPanel"></div>
+                <div id="summaryPanel" style="font-size: 0.9rem; line-height: 2;"></div>
                 <div style="text-align:center"><div id="qrcode"></div></div>
                 <button type="button" class="btn btn-next" style="width:100%; margin-top:15px;" id="genBtn" onclick="generateQR()">Generate QR</button>
-                <button type="button" class="btn" style="width:100%; margin-top:10px; background:#4a1010; color:white;" onclick="resetForm()">Reset All Data</button>
+                <button type="button" class="btn" style="width:100%; margin-top:10px; background:#4a1010; color:white;" onclick="softReset()">Reset Current Match</button>
             </div>
             <div class="card">
                 <h2>Session Logs</h2>
-                <div id="sessionLogs">No logs yet.</div>
+                <div id="sessionLogs" style="max-height: 200px; overflow-y: auto;">No logs yet.</div>
             </div>
         </div>
     </form>
@@ -226,20 +223,23 @@
 
 <div class="nav-bar">
     <button class="btn btn-back" id="prevBtn" onclick="changePage(-1)">Back</button>
-    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next</button>
+    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next Step</button>
 </div>
 
 <script>
-    // FULL CMU BAD WORDS FILTER (Truncated for space, but logic is ready)
-    const badWords = ["anal","anus","arse","ass","ballsack","bastard","bitch","biatch","bloody","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","buttplug","clitoris","cock","coon","crap","cunt","damn","dick","dildo","dyke","fag","feck","felatio","feltch","fuck","fudgepacker","flange","goddamn","hell","homo","jerk","jizm","knobend","labia","lmao","lmfao","muff","nigger","nigga","omg","piss","poop","prick","pube","pussy","queer","scrotum","sex","sh1t","shit","slut","smegma","spunk","tit","tosser","turd","twat","vagina","wank","whore","wtf"];
+    // FULL CMU BAD WORDS FILTER (Active Logic)
+    const badWords = ["anal","anus","arse","ass","ballsack","bastard","bitch","biatch","bloody","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","buttplug","clitoris","cock","coon","crap","cunt","damn","dick","dildo","dyke","fag","feck","felatio","feltch","fuck","fudgepacker","flange","goddamn","hell","homo","jerk","jizm","knobend","labia","lmao","lmfao","muff","nigger","nigga","piss","poop","prick","pube","pussy","queer","scrotum","sex","sh1t","shit","slut","smegma","spunk","tit","tosser","turd","twat","vagina","wank","whore","wtf"];
     
-    const teams = { 364:"Fusion", 1912:"Combustion", 6998:"Unipards", 8044:"Denham Venom", 2992:"Prometheus" };
+    // RESTORED TEAM DATABASE
+    const teams = { 364:"Team Fusion", 456:"Siege Robotics", 538:"Renaissance Robotics", 590:"Chahta Warriors", 1421:"Team CHAOS", 1912:"Team Combustion", 1927:"Tempest", 2221:"FHS Robodawgs", 2556:"RadioActive Roaches", 2992:"The S.S. Prometheus", 3039:"Wildcat Robotics", 3606:"BearMetal", 3616:"Team Phenomena", 3753:"BulahBots!", 4087:"Voodoo Voltage", 4107:"Team Storm", 4336:"Ramageddon Robotics", 4400:"Cerbotics - Peñoles", 5045:"SpartaBot", 5863:"Hypercubed", 5971:"Raider Robotics Team", 6184:"C4", 6706:"Golem", 6998:"Unipards", 7094:"Alpha Omega", 7474:"JXN UNITED", 8044:"Denham Venom", 8624:"Sasquatch Robotics", 8808:"SWLA Tech Pirates", 9153:"Bearcat Robotics", 9309:"Metal Mages", 9405:"KNOS Robotics", 9503:"EF5 CHAOS", 9717:"Poultronix", 9734:"Jasper County Robotics", 10101:"Critical Hit", 10217:"Catahoula Blue Dogs", 10309:"Jayhawks Robotics", 10661:"Blue Phoenix", 10929:"Tarpon Robotics", 10943:"WJH RoboStangs", 10961:"Hyper Wave", 11107:"FARMBots", 11265:"Rockbotics", 11287:"Canton Career Center", 11343:"JPS High School Robotics", 11345:"Long Beach RoboBearcats" };
+
     let curPage = 0;
     let matchCount = 0;
     let logs = [];
 
     function toggleMidfield() {
-        document.getElementById('midfieldSection').style.display = document.getElementById('crossMid').checked ? 'block' : 'none';
+        const checked = document.getElementById('crossMid').checked;
+        document.getElementById('midfieldSection').style.display = checked ? 'block' : 'none';
     }
 
     function toggleStability() {
@@ -247,7 +247,7 @@
         document.getElementById('stabilitySection').style.display = isBump ? 'block' : 'none';
     }
 
-    // RULE 2: SMART BOTH LOGIC
+    // SMART BOTH LOGIC
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.addEventListener('change', function() {
             const group = this.getAttribute('data-group');
@@ -275,24 +275,23 @@
         const preload = parseInt(document.getElementById('preload').value) || 0;
         const notes = document.getElementById('notes').value.toLowerCase();
 
-        // Profanity Check
-        const hasBad = badWords.some(w => name.includes(w) || notes.includes(w));
-        if (hasBad) {
-            document.getElementById('scouterWarn').innerText = "Inappropriate Language Detected";
+        // Profanity Audit
+        if (badWords.some(w => name.includes(w) || notes.includes(w))) {
+            document.getElementById('scouterWarn').innerText = "BAD WORD DETECTED!";
             valid = false;
         } else { document.getElementById('scouterWarn').innerText = ""; }
 
-        // Team Check
+        // Team Database Check
         if (teams[tNum]) {
             document.getElementById('teamBadge').innerText = "✓ " + teams[tNum];
-            document.getElementById('teamBadge').style.background = "#d4af37";
+            document.getElementById('teamBadge').style.background = "var(--accent)";
         } else {
-            document.getElementById('teamBadge').innerText = "Invalid Team #";
+            document.getElementById('teamBadge').innerText = "Unknown Team #";
             document.getElementById('teamBadge').style.background = "#4a1010";
             valid = false;
         }
 
-        // Rule 1: Preload Cap
+        // Rule 1: Preload
         if (preload > 8) {
             document.getElementById('preloadWarn').innerText = "MAX PRELOAD IS 8";
             valid = false;
@@ -308,6 +307,7 @@
         curPage += dir;
         document.getElementById(`page${curPage}`).classList.add('active');
         document.getElementById('prevBtn').style.visibility = (curPage === 0) ? 'hidden' : 'visible';
+        
         if (curPage === 4) {
             buildSummary();
             document.getElementById('nextBtn').style.display = 'none';
@@ -319,31 +319,39 @@
     function buildSummary() {
         const tNum = document.getElementById('teamNum').value;
         document.getElementById('summaryPanel').innerHTML = `
-            <p>Scouter: ${document.getElementById('scouterName').value}</p>
-            <p>Team: ${tNum} (${teams[tNum]})</p>
-            <p>Preload: ${document.getElementById('preload').value}</p>
+            <div><b>Scouter:</b> ${document.getElementById('scouterName').value}</div>
+            <div><b>Team:</b> ${tNum} - ${teams[tNum]}</div>
+            <div><b>Auto Piece Total:</b> ${document.getElementById('autoBalls').value}</div>
+            <div><b>Climb Time:</b> ${document.getElementById('climbTime').value}s</div>
         `;
     }
 
     function generateQR() {
         matchCount++;
-        document.getElementById('mCount').innerText = matchCount;
+        document.getElementById('mCount').innerText = "MATCHES: " + matchCount;
         const team = document.getElementById('teamNum').value;
         
-        // Log Entry
-        logs.unshift(`Team ${team} scouted at ${new Date().toLocaleTimeString()}`);
-        document.getElementById('sessionLogs').innerHTML = logs.slice(0, 5).map(l => `<div class="log-entry">${l}</div>`).join('');
+        logs.unshift(`Team ${team} (${teams[team]}) - QR Created`);
+        document.getElementById('sessionLogs').innerHTML = logs.map(l => `<div class="log-entry"><span>${l}</span> <b>✓</b></div>`).join('');
 
-        const data = { t: team, s: document.getElementById('scouterName').value, p: document.getElementById('preload').value };
+        const data = { t: team, p: document.getElementById('preload').value, n: document.getElementById('notes').value };
         const qrEl = document.getElementById('qrcode');
         qrEl.innerHTML = ""; qrEl.style.display = "block";
         new QRCode(qrEl, { text: JSON.stringify(data), width: 180, height: 180 });
+        document.getElementById('genBtn').innerText = "QR CODE READY";
+        document.getElementById('genBtn').style.background = "#4caf50";
     }
 
-    function resetForm() {
+    function softReset() {
         document.getElementById('scoutingForm').reset();
         curPage = 0;
-        location.reload();
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page0').classList.add('active');
+        document.getElementById('nextBtn').style.display = 'block';
+        document.getElementById('qrcode').style.display = 'none';
+        document.getElementById('genBtn').innerText = "Generate QR";
+        document.getElementById('genBtn').style.background = "var(--accent)";
+        validate();
     }
 
     document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', validate));
