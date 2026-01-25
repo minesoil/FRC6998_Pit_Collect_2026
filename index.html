@@ -7,11 +7,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg1:#0F0F12;
-  --bg2:#1A1A1F;
-  --txt:#F2F2F2;
-  --gold:#D4AF37;
+:root{
+  --bg1:#0F0F12; --bg2:#1A1A1F; --txt:#F2F2F2; --gold:#D4AF37; --warn:#FF4C4C;
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Lexend',sans-serif;}
 body{background:var(--bg1);color:var(--txt);}
@@ -27,12 +24,33 @@ input,textarea,select{width:100%;padding:9px;margin-top:6px;background:#121218;c
 .nav-buttons{display:flex;gap:10px;margin-top:12px;}
 .page{display:none;}
 .page.active{display:block;}
-#qrcode{width:128px;height:128px;margin:0 auto;background:white;border-radius:10px;}
-#savedEntries{margin-top:12px;max-height:150px;overflow-y:auto;border:1px solid var(--gold);padding:6px;border-radius:8px;background:#121218;}
-.warning{color:#FF4C4C;font-size:0.85rem;margin-top:4px;}
+#qrcode{width:180px;height:180px;margin:0 auto;background:white;border-radius:10px;}
+#warning{color:var(--warn);margin-top:6px;font-size:0.9rem;}
+#promptModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);color:#F2F2F2;display:flex;align-items:center;justify-content:center;z-index:1000;}
+#promptContent{background:linear-gradient(145deg,#1A1A1F,#0F0F12);padding:20px;border-radius:14px;max-width:600px;max-height:80%;overflow-y:auto;}
+#promptContent h2{border-left:4px solid var(--gold);padding-left:10px;margin-bottom:10px;}
+#promptContent p, #promptContent ul{margin-bottom:10px;font-size:0.95rem;}
+#promptClose{margin-top:10px;padding:10px 16px;background:linear-gradient(135deg,#D4AF37,#FFD966);border:none;border-radius:10px;cursor:pointer;font-weight:bold;}
 </style>
 </head>
 <body>
+
+<!-- Prompt Modal -->
+<div id="promptModal">
+  <div id="promptContent">
+    <h2>Prompt / Instructions for Scouters</h2>
+    <p>Welcome to the REBUILT 2026 Pit Scouting App! Please follow instructions carefully.</p>
+    <ul>
+      <li>Scouter Name: No profanity or racial slurs.</li>
+      <li>Team Number: Must be one of the 48 predefined teams.</li>
+      <li>Drive Type: Only one selectable.</li>
+      <li>Preload cannot exceed robot capacity.</li>
+      <li>“Both” cancels other options for certain selections.</li>
+      <li>Notes: No profanity.</li>
+    </ul>
+    <button id="promptClose">I Understand</button>
+  </div>
+</div>
 
 <header>
   <h1>FRC 6998 – REBUILT 2026</h1>
@@ -48,7 +66,6 @@ input,textarea,select{width:100%;padding:9px;margin-top:6px;background:#121218;c
     <label>Scouter Name</label>
     <input id="scouter">
     <div id="scouterWarning" class="warning"></div>
-
     <label>Team Number</label>
     <input id="team" type="number">
     <div id="teamWarning" class="warning"></div>
@@ -73,11 +90,10 @@ input,textarea,select{width:100%;padding:9px;margin-top:6px;background:#121218;c
     </select>
     <div id="driveWarning" class="warning"></div>
 
-    <label>Robot Weight (lbs)</label>
-    <input id="weight" type="number" min="0">
+    <label>Robot Weight</label><input id="weight" type="number">
 
-    <label>Maximum Capacity</label>
-    <input id="capacity" type="number" min="0">
+    <label>Maximum Capacity</label><input id="maxCap" type="number">
+    <div id="maxCapWarning" class="warning"></div>
 
     <label>Intake</label>
     <select id="intake">
@@ -88,260 +104,180 @@ input,textarea,select{width:100%;padding:9px;margin-top:6px;background:#121218;c
     </select>
     <div id="intakeWarning" class="warning"></div>
 
-    <label>Vision</label>
-    <select id="vision" multiple>
-      <option>Limelight</option>
-      <option>AprilTag</option>
-      <option>Both</option>
-    </select>
-
-    <label>Outpost Source</label>
-    <select id="source" multiple>
-      <option>Outpost</option>
-      <option>Depot</option>
-      <option>Both</option>
-    </select>
-
-    <label>Terrain</label>
-    <select id="terrain" multiple>
-      <option>Bump</option>
-      <option>Trench</option>
-      <option>Both</option>
-    </select>
-
-    <label>Shooting Ability</label>
-    <select id="shooting" multiple>
-      <option>Shoot while intaking</option>
-      <option>Shoot while moving</option>
-    </select>
+    <label>Photos (optional)</label>
+    <input type="checkbox" id="photos"> Photos exist
   </div>
   <div class="nav-buttons">
-    <button class="main-btn" onclick="prevPage()">Prev</button>
+    <button class="main-btn" onclick="prevPage()">Back</button>
     <button class="main-btn" onclick="nextPage()">Next</button>
   </div>
 </div>
 
-<!-- PAGE 3: Autonomous -->
+<!-- PAGE 3: Autonomous Info -->
 <div class="page">
   <div class="card">
     <h2>Autonomous Info</h2>
-    <label>Preload</label>
-    <input id="autoPreload" type="number" min="0" max="8">
-    <div id="autoPreloadWarning" class="warning"></div>
-
-    <label>Source</label>
-    <select id="autoSource" multiple>
-      <option>Outpost</option>
-      <option>Depot</option>
-      <option>Both</option>
-    </select>
-
+    <label>Preload (0–8)</label>
+    <input id="preload" type="number" min="0" max="8">
+    <div id="preloadWarning" class="warning"></div>
     <label>Total Auto Balls</label>
-    <input id="autoBalls" type="number" min="0">
-
-    <label>Hanging / Climb Attempt</label>
-    <input type="checkbox" id="autoHang">
-
-    <label>Cross Midfield</label>
-    <input type="checkbox" id="autoMidfield">
+    <input id="autoBalls" type="number">
   </div>
   <div class="nav-buttons">
-    <button class="main-btn" onclick="prevPage()">Prev</button>
+    <button class="main-btn" onclick="prevPage()">Back</button>
     <button class="main-btn" onclick="nextPage()">Next</button>
   </div>
 </div>
 
-<!-- PAGE 4: Teleop -->
+<!-- PAGE 4: Teleop Info -->
 <div class="page">
   <div class="card">
     <h2>Teleop Info</h2>
     <label>Climb Level</label>
-    <select id="teleClimbLevel">
+    <select id="climbLevel">
+      <option value="">Select Level</option>
       <option>L1</option>
       <option>L2</option>
       <option>L3</option>
     </select>
-
-    <label>Climb Position</label>
-    <select id="teleClimbPos">
-      <option>Left</option>
-      <option>Center</option>
-      <option>Right</option>
-      <option>Both</option>
-    </select>
-
-    <label>Climb Time (seconds)</label>
-    <input id="teleClimbTime" type="number" min="0">
-
+    <label>Climb Time (s)</label>
+    <input id="climbTime" type="number">
     <label>Other Notes</label>
-    <textarea id="teleNotes"></textarea>
-    <div id="teleNotesWarning" class="warning"></div>
+    <textarea id="notes"></textarea>
+    <div id="notesWarning" class="warning"></div>
   </div>
   <div class="nav-buttons">
-    <button class="main-btn" onclick="prevPage()">Prev</button>
-    <button class="main-btn" onclick="saveAndGenerateQR()">Save & QR</button>
-    <button class="main-btn" onclick="resetAll()">Reset All</button>
+    <button class="main-btn" onclick="prevPage()">Back</button>
+    <button class="main-btn" onclick="nextPage()">Next</button>
   </div>
 </div>
 
-<div id="qrcode"></div>
+<!-- PAGE 5: QR Code -->
+<div class="page">
+  <div class="card">
+    <h2>Save & QR</h2>
+    <div id="qrcode"></div>
+    <button class="main-btn" onclick="generateQR()">Generate QR</button>
+    <button class="main-btn" onclick="resetAll()">Reset All</button>
+  </div>
+  <div class="nav-buttons">
+    <button class="main-btn" onclick="prevPage()">Back</button>
+  </div>
+</div>
+
+</div>
 
 <script>
-// Pages
-let page=0;
-const pages=document.querySelectorAll(".page");
-const show=i=>{pages.forEach(p=>p.classList.remove("active"));pages[i].classList.add("active");}
-const nextPage=()=>{
-  if(validatePage(page)) show(++page);
-}
-const prevPage=()=>show(--page);
-
-// Fullscreen
-function toggleFS(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
-
-// Predefined teams
+// Teams
 const teams = {
-  364:"Team Fusion 364 - Gulfport, Mississippi, USA",
-  456:"Siege Robotics - Vicksburg, Mississippi, USA",
-  538:"Renaissance Robotics - Athens, Alabama, USA",
-  590:"Chahta Warriors - Choctaw, Mississippi, USA",
-  1421:"Team CHAOS - Picayune, Mississippi, USA",
-  1912:"Team Combustion - Slidell, Louisiana, USA",
-  1927:"Tempest - Biloxi, Mississippi, USA",
-  2221:"FHS Robodawgs - Mandeville, Louisiana, USA",
-  2556:"RadioActive Roaches - Niceville, Florida, USA",
-  2992:"The S.S. Prometheus - Mandeville, Louisiana, USA",
-  3039:"Wildcat Robotics - Destrehan, Louisiana, USA",
-  3606:"BearMetal - Baton Rouge, Louisiana, USA",
-  3616:"Team Phenomena - Lafayette, Louisiana, USA",
-  3753:"BulahBots! - Baton Rouge, Louisiana, USA",
-  4087:"Voodoo Voltage - New Orleans, Louisiana, USA",
-  4107:"Team Storm - Long Beach, Mississippi, USA",
-  4336:"Ramageddon Robotics - Lafayette, Louisiana, USA",
-  4400:"Cerbotics - Peñoles TORREON, Coahuila, Mexico",
-  5045:"SpartaBot - Memphis, Tennessee, USA",
-  5863:"Hypercubed - Brusly, Louisiana, USA",
-  5971:"Raider Robotics Team - Metairie, Louisiana, USA",
-  6184:"C4 (Capital City Chaotic Coders) - Tallahassee, Florida, USA",
-  6706:"Golem - Shenzhen, Guangdong, China",
-  6998:"Unipards - Tainan, Tainan Municipality, Chinese Taipei",
-  7094:"Alpha Omega - Bay Saint Louis, Mississippi, USA",
-  7474:"JXN UNITED - Ridgeland, Mississippi, USA",
-  8044:"Denham Venom - Denham Springs, Louisiana, USA",
-  8624:"Sasquatch Robotics - Andalusia, Alabama, USA",
-  8808:"SWLA Tech Pirates - Lake Charles, Louisiana, USA",
-  9153:"Bearcat Robotics - Ruston, Louisiana, USA",
-  9309:"Metal Mages - New Orleans, Louisiana, USA",
-  9405:"KNOS Robotics - New Orleans, Louisiana, USA",
-  9503:"EF5 CHAOS - Laurel, Mississippi, USA",
-  9717:"Poultronix - Forest, Mississippi, USA",
-  9734:"Jasper County Robotics - Bay Springs, Mississippi, USA",
-  10101:"Critical Hit - Huntsville, Alabama, USA",
-  10217:"Catahoula Blue Dogs - Port Allen, Louisiana, USA",
-  10309:"Jayhawks Robotics - Columbus, Mississippi, USA",
-  10661:"Blue Phoenix - Shawnee, Oklahoma, USA",
-  10929:"Tarpon Robotics - Cut Off, Louisiana, USA",
-  10943:"WJH RoboStangs - Laurel, Mississippi, USA",
-  10961:"Hyper Wave - Gulf Shores, Alabama, USA",
-  11107:"FARMBots - Farmerville, Louisiana, USA",
-  11265:"Rockbotics -FRC - Bay Saint Louis, Mississippi, USA",
-  11287:"Canton Career Center - Canton, Mississippi, USA",
-  11343:"JPS High School Robotics - Jackson, Mississippi, USA",
-  11345:"Long Beach RoboBearcats - Long Beach, Mississippi, USA"
+  364:"Team Fusion",456:"Siege Robotics",538:"Renaissance Robotics",590:"Chahta Warriors",
+  1421:"Team CHAOS",1912:"Team Combustion",1927:"Tempest",2221:"FHS Robodawgs",
+  2556:"RadioActive Roaches",2992:"The S.S. Prometheus",3039:"Wildcat Robotics",
+  3606:"BearMetal",3616:"Team Phenomena",3753:"BulahBots!",4087:"Voodoo Voltage",
+  4107:"Team Storm",4336:"Ramageddon Robotics",4400:"Cerbotics - Peñoles",5045:"SpartaBot",
+  5863:"Hypercubed",5971:"Raider Robotics Team",6184:"C4 (Capital City Chaotic Coders)",
+  6706:"Golem",6998:"Unipards",7094:"Alpha Omega",7474:"JXN UNITED",8044:"Denham Venom",
+  8624:"Sasquatch Robotics",8808:"SWLA Tech Pirates",9153:"Bearcat Robotics",9309:"Metal Mages",
+  9405:"KNOS Robotics",9503:"EF5 CHAOS",9717:"Poultronix",9734:"Jasper County Robotics",
+  10101:"Critical Hit",10217:"Catahoula Blue Dogs",10309:"Jayhawks Robotics",10661:"Blue Phoenix",
+  10929:"Tarpon Robotics",10943:"WJH RoboStangs",10961:"Hyper Wave",11107:"FARMBots",
+  11265:"Rockbotics -FRC",11287:"Canton Career Center",11343:"JPS High School Robotics",
+  11345:"Long Beach RoboBearcats"
 };
 
-// Profanity filter simple version
-const profanity = ["badword1","badword2","slur1"]; // add more
-function containsProfanity(text){
-  text = text.toLowerCase();
-  return profanity.some(word => text.includes(word));
-}
+// Navigation
+let page=0;
+const pages=document.querySelectorAll(".page");
+const show=i=>{
+  pages.forEach(p=>p.classList.remove("active"));
+  pages[i].classList.add("active");
+};
+const nextPage=()=>{
+  if(!validatePage(page)) return;
+  show(++page);
+};
+const prevPage=()=>show(--page);
+function toggleFS(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+
+// Prompt
+document.getElementById("promptClose").addEventListener("click",()=>{
+  document.getElementById("promptModal").style.display="none";
+});
 
 // Validation
+function containsProfanity(str){
+  const badWords=["badword1","badword2"]; // Add full list
+  str=str.toLowerCase();
+  return badWords.some(w=>str.includes(w));
+}
+
 function validatePage(p){
   let valid=true;
-  if(p===0){ // Scouter
+  if(p===0){
     const scouter=document.getElementById("scouter").value.trim();
-    const team=document.getElementById("team").value.trim();
-    const scouterWarn=document.getElementById("scouterWarning");
-    const teamWarn=document.getElementById("teamWarning");
-    scouterWarn.textContent="";
-    teamWarn.textContent="";
-    if(scouter.length===0 || containsProfanity(scouter)){
-      scouterWarn.textContent="Invalid scouter name (empty or contains profanity)";
+    const team=document.getElementById("team").value;
+    if(scouter==="" || containsProfanity(scouter)){
+      document.getElementById("scouterWarning").innerText="Invalid name.";
       valid=false;
-    }
+    }else document.getElementById("scouterWarning").innerText="";
     if(!teams[team]){
-      teamWarn.textContent="Invalid team number";
+      document.getElementById("teamWarning").innerText="Team not in predefined list.";
+      document.getElementById("teamInfo").innerText="";
       valid=false;
-      document.getElementById("teamInfo").textContent="";
-    } else {
-      document.getElementById("teamInfo").textContent=teams[team];
+    }else{
+      document.getElementById("teamWarning").innerText="";
+      document.getElementById("teamInfo").innerText=`Team: ${teams[team]}`;
     }
-  }
-  if(p===2){ // Auto preload
-    const preload=parseInt(document.getElementById("autoPreload").value||0);
-    const capacity=parseInt(document.getElementById("capacity").value||0);
-    const warn=document.getElementById("autoPreloadWarning");
-    warn.textContent="";
-    if(preload>capacity){
-      warn.textContent="Preload cannot exceed robot capacity";
+  } else if(p===2){
+    const preload=Number(document.getElementById("preload").value);
+    const maxCap=Number(document.getElementById("maxCap").value);
+    if(preload>maxCap){
+      document.getElementById("preloadWarning").innerText="Preload exceeds max capacity.";
       valid=false;
-    }
-  }
-  if(p===3){ // Teleop notes
-    const notes=document.getElementById("teleNotes").value.trim();
-    const warn=document.getElementById("teleNotesWarning");
-    warn.textContent="";
+    }else document.getElementById("preloadWarning").innerText="";
+  } else if(p===3){
+    const notes=document.getElementById("notes").value;
     if(containsProfanity(notes)){
-      warn.textContent="Notes contain profanity or racial slurs";
+      document.getElementById("notesWarning").innerText="Notes contain invalid words.";
       valid=false;
-    }
+    } else document.getElementById("notesWarning").innerText="";
   }
   return valid;
 }
 
-// Save & QR
-function saveAndGenerateQR(){
-  if(!validatePage(0) || !validatePage(2) || !validatePage(3)) return alert("Fix warnings first!");
+// Real-time validation
+["scouter","team","preload","maxCap","notes"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",()=>validatePage(page));
+});
+
+// QR
+function generateQR(){
   const data={
-    scouter: document.getElementById("scouter").value.trim(),
-    team: document.getElementById("team").value.trim(),
-    drive: document.getElementById("drive").value,
-    weight: document.getElementById("weight").value,
-    capacity: document.getElementById("capacity").value,
-    intake: document.getElementById("intake").value,
-    vision: Array.from(document.getElementById("vision").selectedOptions).map(o=>o.value),
-    source: Array.from(document.getElementById("source").selectedOptions).map(o=>o.value),
-    terrain: Array.from(document.getElementById("terrain").selectedOptions).map(o=>o.value),
-    shooting: Array.from(document.getElementById("shooting").selectedOptions).map(o=>o.value),
-    autoPreload: document.getElementById("autoPreload").value,
-    autoSource: Array.from(document.getElementById("autoSource").selectedOptions).map(o=>o.value),
-    autoBalls: document.getElementById("autoBalls").value,
-    autoHang: document.getElementById("autoHang").checked,
-    autoMidfield: document.getElementById("autoMidfield").checked,
-    teleClimbLevel: document.getElementById("teleClimbLevel").value,
-    teleClimbPos: document.getElementById("teleClimbPos").value,
-    teleClimbTime: document.getElementById("teleClimbTime").value,
-    teleNotes: document.getElementById("teleNotes").value
+    scouter:document.getElementById("scouter").value,
+    team:document.getElementById("team").value,
+    drive:document.getElementById("drive").value,
+    weight:document.getElementById("weight").value,
+    maxCap:document.getElementById("maxCap").value,
+    intake:document.getElementById("intake").value,
+    photos:document.getElementById("photos").checked,
+    preload:document.getElementById("preload").value,
+    autoBalls:document.getElementById("autoBalls").value,
+    climbLevel:document.getElementById("climbLevel").value,
+    climbTime:document.getElementById("climbTime").value,
+    notes:document.getElementById("notes").value
   };
   document.getElementById("qrcode").innerHTML="";
-  new QRCode(document.getElementById("qrcode"),{
-    text: JSON.stringify(data),
-    width:128,
-    height:128
-  });
+  new QRCode(document.getElementById("qrcode"),JSON.stringify(data));
 }
 
 // Reset
 function resetAll(){
-  document.querySelectorAll("input,textarea,select").forEach(i=>i.value=i.type==="checkbox"?false:"");
-  document.getElementById("teamInfo").textContent="";
-  document.querySelectorAll(".warning").forEach(w=>w.textContent="");
+  document.querySelectorAll("input,textarea,select").forEach(el=>el.value="");
+  document.getElementById("photos").checked=false;
   document.getElementById("qrcode").innerHTML="";
+  document.querySelectorAll(".warning").forEach(w=>w.innerText="");
+  show(0);
 }
-
 </script>
-
 </body>
 </html>
