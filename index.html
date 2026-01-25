@@ -3,68 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRC 6998 | REBUILT 2026</title>
+    <title>FRC 6998 | ELITE SCOUTING 2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #0a0a0c; --bg-card: #16161e; --accent: #d4af37;
-            --text-main: #e0e0e0; --text-dim: #a0a0a0; --error: #ff4c4c; --input-bg: #0f0f14;
+            --bg-deep: #08080a;
+            --bg-card: #12121a;
+            --accent: #d4af37;
+            --accent-glow: rgba(212, 175, 55, 0.4);
+            --text-main: #f0f0f0;
+            --text-dim: #94a3b8;
+            --error: #ff4d4d;
+            --input-bg: #1c1c24;
+            --glass: rgba(255, 255, 255, 0.03);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Lexend', sans-serif; }
-        body { background-color: var(--bg-deep); color: var(--text-main); line-height: 1.6; }
-        header { background: var(--bg-card); padding: 1.5rem; text-align: center; border-bottom: 2px solid var(--accent); }
-        .container { max-width: 600px; margin: 20px auto; padding-bottom: 120px; }
-        .card { background: var(--bg-card); border-radius: 20px; padding: 24px; margin: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .card h2 { font-size: 1.1rem; margin-bottom: 1.2rem; color: var(--accent); display: flex; align-items: center; gap: 10px; }
-        .card h2::before { content: ""; width: 4px; height: 18px; background: var(--accent); border-radius: 10px; }
-        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; }
-        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; margin-top: 8px; background: var(--input-bg); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; }
-        .grid-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 10px; }
-        .option-box { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem; }
-        .option-box:has(input:checked) { border-color: var(--accent); background: rgba(214, 175, 55, 0.1); }
-        .warning-text { color: var(--error); font-size: 0.75rem; margin-top: 6px; font-weight: 600; }
-        .hidden-section { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); padding: 15px; display: flex; gap: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .btn-next { background: var(--accent); color: #000; }
-        .btn-back { background: #2a2a30; color: #fff; }
-        .btn:disabled { opacity: 0.2; filter: grayscale(1); }
-        .page { display: none; } .page.active { display: block; }
+        body { background-color: var(--bg-deep); color: var(--text-main); overflow-x: hidden; }
+
+        header {
+            background: linear-gradient(to bottom, #1a1a24, var(--bg-deep));
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        header h1 { color: var(--accent); text-transform: uppercase; letter-spacing: 4px; font-size: 1.8rem; text-shadow: 0 0 15px var(--accent-glow); }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px 20px 120px 20px; }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--accent); display: flex; align-items: center; gap: 12px; }
+        .card h2::before { content: ""; width: 5px; height: 20px; background: var(--accent); border-radius: 10px; box-shadow: 0 0 10px var(--accent); }
+
+        label { display: block; margin-top: 18px; font-weight: 700; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+        input, select, textarea {
+            width: 100%; padding: 14px; margin-top: 8px; background: var(--input-bg); color: #fff;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; font-size: 1rem; transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); outline: none; }
+
+        .grid-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 12px; }
+        .option-box {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 15px;
+            display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; font-size: 0.9rem;
+        }
+        .option-box:hover { background: rgba(255,255,255,0.05); }
+        .option-box:has(input:checked) { border-color: var(--accent); background: rgba(214, 175, 55, 0.12); box-shadow: inset 0 0 10px rgba(214, 175, 55, 0.1); }
+        .option-box input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+
+        .warning-text { color: var(--error); font-size: 0.75rem; margin-top: 8px; font-weight: 700; min-height: 1rem; text-transform: uppercase; }
+        .team-badge { display: inline-block; background: var(--accent); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; margin-top: 10px; display: none; }
+
+        .hidden-section { display: none; animation: slideDown 0.4s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(18, 18, 26, 0.95); backdrop-filter: blur(15px); padding: 20px; display: flex; gap: 15px; border-top: 1px solid rgba(214, 175, 55, 0.2); z-index: 1000; }
+        .btn { flex: 1; padding: 16px; border-radius: 16px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 0.9rem; }
+        .btn-next { background: var(--accent); color: #000; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-back { background: #2a2a35; color: #fff; }
+        .btn:disabled { opacity: 0.1; filter: grayscale(1); cursor: not-allowed; }
+        .btn:active { transform: scale(0.96); }
+
+        .page { display: none; }
+        .page.active { display: block; animation: pageIn 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+        @keyframes pageIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+        .summary-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .summary-row span { color: var(--text-dim); font-size: 0.85rem; }
+        .summary-row b { color: var(--accent); font-size: 0.95rem; }
+
+        #qrcode { background: #fff; padding: 15px; border-radius: 20px; margin: 20px auto; display: none; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-<header><h1>FRC 6998 PIT</h1></header>
+<header><h1>FRC 6998</h1></header>
 
 <div class="container">
-    <form id="scoutingForm">
+    <form id="scoutingForm" onsubmit="return false;">
         <div class="page active" id="page0">
             <div class="card">
-                <h2>Personnel</h2>
+                <h2>Identification</h2>
                 <label>Scouter Name</label>
-                <input type="text" id="scouterName" placeholder="Name">
+                <input type="text" id="scouterName" placeholder="Enter your full name">
                 <div id="scouterWarn" class="warning-text"></div>
+
                 <label>Team Number</label>
-                <input type="number" id="teamNum" placeholder="Number">
+                <input type="number" id="teamNum" placeholder="e.g. 6998">
+                <div id="teamBadge" class="team-badge"></div>
                 <div id="teamWarn" class="warning-text"></div>
             </div>
         </div>
 
         <div class="page" id="page1">
             <div class="card">
-                <h2>Stats</h2>
+                <h2>Technical Stats</h2>
                 <label>Drive Train</label>
                 <select id="driveType">
-                    <option value="">-- Select --</option>
-                    <option>Swerve</option><option>Tank</option><option>Mecanum</option>
+                    <option value="">-- Select Configuration --</option>
+                    <option>Swerve</option><option>Tank</option><option>Mecanum</option><option>Other</option>
                 </select>
-                <label>Max Ball Capacity</label>
+
+                <label>Max Piece Capacity</label>
                 <input type="number" id="maxCap" value="4">
                 <div id="capWarn" class="warning-text"></div>
             </div>
+
             <div class="card">
-                <h2>Intake</h2>
+                <h2>Intake Logic</h2>
                 <div class="grid-options">
                     <label class="option-box"><input type="checkbox" name="intake" value="Roller" class="logic-group" data-group="intake"> Roller</label>
                     <label class="option-box"><input type="checkbox" name="intake" value="Pneumatic" class="logic-group" data-group="intake"> Pneumatic</label>
@@ -75,17 +135,17 @@
 
         <div class="page" id="page2">
             <div class="card">
-                <h2>Auto</h2>
-                <label>Preload Balls (Capped at 8)</label>
+                <h2>Autonomous Strategy</h2>
+                <label>Preload Pieces (Strict Cap: 8)</label>
                 <input type="number" id="preload" value="0">
                 <div id="preloadWarn" class="warning-text"></div>
 
-                <label class="option-box" style="margin-top:20px;">
-                    <input type="checkbox" id="crossMid" onchange="toggleMidfield()"> Cross Midfield
+                <label class="option-box" style="margin-top:25px;">
+                    <input type="checkbox" id="crossMid" onchange="toggleMidfield()"> Cross Midfield Line
                 </label>
 
                 <div id="midfieldSection" class="hidden-section">
-                    <label>Terrain Access</label>
+                    <label>Navigable Terrain</label>
                     <div class="grid-options">
                         <label class="option-box"><input type="checkbox" name="terrain" value="Bump" class="logic-group" data-group="terr" onchange="toggleStability()"> Bump</label>
                         <label class="option-box"><input type="checkbox" name="terrain" value="Trench" class="logic-group" data-group="terr" onchange="toggleStability()"> Trench</label>
@@ -93,10 +153,10 @@
                     </div>
 
                     <div id="stabilitySection" class="hidden-section">
-                        <label>Bump Crossing Stability (1-5)</label>
-                        <input type="range" id="bumpStable" min="1" max="5" value="3" style="width:100%; accent-color:var(--accent);">
-                        <div style="display:flex; justify-content:between; font-size:10px; color:var(--text-dim)">
-                            <span>Tippy</span><span style="margin-left:auto">Rock Solid</span>
+                        <label>Bump Stability: <span id="stableVal" style="color:var(--accent)">3</span></label>
+                        <input type="range" id="bumpStable" min="1" max="5" value="3" step="1" oninput="document.getElementById('stableVal').innerText=this.value" style="width:100%; accent-color:var(--accent); margin-top:10px;">
+                        <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-dim); margin-top:8px;">
+                            <span>Highly Unstable</span><span>Rock Solid</span>
                         </div>
                     </div>
                 </div>
@@ -107,22 +167,29 @@
             <div class="card">
                 <h2>Climb Capability</h2>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="climb" value="L1" class="logic-group" data-group="climb"> L1</label>
-                    <label class="option-box"><input type="checkbox" name="climb" value="L2" class="logic-group" data-group="climb"> L2</label>
-                    <label class="option-box"><input type="checkbox" name="climb" value="L3" class="logic-group" data-group="climb"> L3</label>
+                    <label class="option-box"><input type="checkbox" name="climb" value="L1" class="logic-group" data-group="climb"> Level 1</label>
+                    <label class="option-box"><input type="checkbox" name="climb" value="L2" class="logic-group" data-group="climb"> Level 2</label>
+                    <label class="option-box"><input type="checkbox" name="climb" value="L3" class="logic-group" data-group="climb"> Level 3</label>
                     <label class="option-box"><input type="checkbox" name="climb" value="All" class="logic-both" data-group="climb"> All Levels</label>
                 </div>
-                <label>Strategic Notes</label>
-                <textarea id="notes" rows="4"></textarea>
+
+                <label>Strategic Insights</label>
+                <textarea id="notes" rows="5" placeholder="Note driver skills, robot speed, or mechanical failures..."></textarea>
                 <div id="notesWarn" class="warning-text"></div>
             </div>
         </div>
 
         <div class="page" id="page4">
-            <div class="card" style="text-align:center">
-                <h2>QR Output</h2>
-                <div id="qrcode" style="background:#fff; padding:10px; display:inline-block; border-radius:10px;"></div>
-                <button type="button" class="btn btn-next" style="width:100%; margin-top:20px;" onclick="generateQR()">Generate</button>
+            <div class="card">
+                <h2>Final Data Review</h2>
+                <div id="summaryPanel"></div>
+                
+                <div style="text-align: center;">
+                    <div id="qrcode"></div>
+                </div>
+
+                <button type="button" class="btn btn-next" style="width:100%; margin-top:20px;" id="genBtn" onclick="generateQR()">Confirm & Generate QR</button>
+                <button type="button" class="btn btn-back" style="width:100%; margin-top:12px; background: #4a1010;" onclick="location.reload()">Wipe Data</button>
             </div>
         </div>
     </form>
@@ -130,16 +197,18 @@
 
 <div class="nav-bar">
     <button class="btn btn-back" id="prevBtn" onclick="changePage(-1)">Back</button>
-    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next</button>
+    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next Step</button>
 </div>
 
 <script>
-    const badWords = ["shit", "fuck", "nigger", "bitch", "cunt", "faggot"];
-    const teams = { 364:"Fusion", 6998:"Unipards", 1912:"Combustion" /* ... rest of your teams ... */ };
+    const badWords = ["shit", "fuck", "nigger", "bitch", "cunt", "faggot", "asshole", "piss"];
+    const teams = { 364:"Team Fusion", 456:"Siege Robotics", 538:"Renaissance Robotics", 590:"Chahta Warriors", 1421:"Team CHAOS", 1912:"Team Combustion", 1927:"Tempest", 2221:"FHS Robodawgs", 2556:"RadioActive Roaches", 2992:"The S.S. Prometheus", 3039:"Wildcat Robotics", 3606:"BearMetal", 3616:"Team Phenomena", 3753:"BulahBots!", 4087:"Voodoo Voltage", 4107:"Team Storm", 4336:"Ramageddon Robotics", 4400:"Cerbotics - Peñoles", 5045:"SpartaBot", 5863:"Hypercubed", 5971:"Raider Robotics Team", 6184:"C4", 6706:"Golem", 6998:"Unipards", 7094:"Alpha Omega", 7474:"JXN UNITED", 8044:"Denham Venom", 8624:"Sasquatch Robotics", 8808:"SWLA Tech Pirates", 9153:"Bearcat Robotics", 9309:"Metal Mages", 9405:"KNOS Robotics", 9503:"EF5 CHAOS", 9717:"Poultronix", 9734:"Jasper County Robotics", 10101:"Critical Hit", 10217:"Catahoula Blue Dogs", 10309:"Jayhawks Robotics", 10661:"Blue Phoenix", 10929:"Tarpon Robotics", 10943:"WJH RoboStangs", 10961:"Hyper Wave", 11107:"FARMBots", 11265:"Rockbotics", 11287:"Canton Career Center", 11343:"JPS High School Robotics", 11345:"Long Beach RoboBearcats" };
+    
     let curPage = 0;
 
     function toggleMidfield() {
-        document.getElementById('midfieldSection').style.display = document.getElementById('crossMid').checked ? 'block' : 'none';
+        const sec = document.getElementById('midfieldSection');
+        sec.style.display = document.getElementById('crossMid').checked ? 'block' : 'none';
         toggleStability();
     }
 
@@ -162,7 +231,6 @@
                 members.forEach(m => m.checked = false);
             } else if (this.classList.contains('logic-group')) {
                 both.checked = false;
-                // If all members are checked, uncheck them and check 'Both'
                 const allChecked = Array.from(members).every(m => m.checked);
                 if (allChecked) {
                     members.forEach(m => m.checked = false);
@@ -176,18 +244,39 @@
     function validate() {
         let valid = true;
         const name = document.getElementById('scouterName').value.toLowerCase();
+        const teamNum = document.getElementById('teamNum').value;
         const preload = parseInt(document.getElementById('preload').value) || 0;
         const notes = document.getElementById('notes').value.toLowerCase();
 
-        if (badWords.some(w => name.includes(w) || notes.includes(w))) {
-            document.getElementById('scouterWarn').innerText = "Inappropriate Language!";
+        // Profanity + Empty Check
+        if (badWords.some(w => name.includes(w))) {
+            document.getElementById('scouterWarn').innerText = "Inappropriate Language Detected";
             valid = false;
-        } else { document.getElementById('scouterWarn').innerText = ""; }
+        } else if (name === "") { valid = false; } 
+        else { document.getElementById('scouterWarn').innerText = ""; }
 
+        // Team Check
+        if (!teams[teamNum]) {
+            document.getElementById('teamWarn').innerText = "Select Valid Team";
+            document.getElementById('teamBadge').style.display = "none";
+            valid = false;
+        } else {
+            document.getElementById('teamWarn').innerText = "";
+            document.getElementById('teamBadge').innerText = "✓ " + teams[teamNum];
+            document.getElementById('teamBadge').style.display = "inline-block";
+        }
+
+        // Preload Logic (Rule 1)
         if (preload > 8) {
-            document.getElementById('preloadWarn').innerText = "Preload cannot exceed 8!";
+            document.getElementById('preloadWarn').innerText = "MAX PRELOAD IS 8 REGARDLESS OF CAPACITY";
             valid = false;
         } else { document.getElementById('preloadWarn').innerText = ""; }
+
+        // Notes Profanity
+        if (badWords.some(w => notes.includes(w))) {
+            document.getElementById('notesWarn').innerText = "Please remove inappropriate language";
+            valid = false;
+        } else { document.getElementById('notesWarn').innerText = ""; }
 
         document.getElementById('nextBtn').disabled = !valid;
         return valid;
@@ -198,18 +287,58 @@
         document.getElementById(`page${curPage}`).classList.remove('active');
         curPage += dir;
         document.getElementById(`page${curPage}`).classList.add('active');
+        
         document.getElementById('prevBtn').style.visibility = (curPage === 0) ? 'hidden' : 'visible';
-        if (curPage === 4) document.getElementById('nextBtn').style.display = 'none';
-        else { document.getElementById('nextBtn').style.display = 'block'; document.getElementById('nextBtn').innerText = 'Next'; }
+        
+        if (curPage === 4) {
+            buildSummary();
+            document.getElementById('nextBtn').style.display = 'none';
+        } else {
+            document.getElementById('nextBtn').style.display = 'block';
+            document.getElementById('nextBtn').innerText = 'Next Step';
+        }
+        window.scrollTo(0,0);
+    }
+
+    function buildSummary() {
+        const formData = new FormData(document.getElementById('scoutingForm'));
+        const html = `
+            <div class="summary-row"><span>Scouter</span><b>${document.getElementById('scouterName').value}</b></div>
+            <div class="summary-row"><span>Team</span><b>${document.getElementById('teamNum').value}</b></div>
+            <div class="summary-row"><span>Drive</span><b>${document.getElementById('driveType').value}</b></div>
+            <div class="summary-row"><span>Preload</span><b>${document.getElementById('preload').value}</b></div>
+            <div class="summary-row"><span>Terrain</span><b>${Array.from(formData.getAll('terrain')).join(', ') || 'None'}</b></div>
+            <div class="summary-row"><span>Climb</span><b>${Array.from(formData.getAll('climb')).join(', ') || 'None'}</b></div>
+        `;
+        document.getElementById('summaryPanel').innerHTML = html;
     }
 
     function generateQR() {
-        const data = { n: document.getElementById('scouterName').value, t: document.getElementById('teamNum').value, p: document.getElementById('preload').value };
-        document.getElementById('qrcode').innerHTML = "";
-        new QRCode(document.getElementById('qrcode'), JSON.stringify(data));
+        const formData = new FormData(document.getElementById('scoutingForm'));
+        const data = {
+            s: document.getElementById('scouterName').value,
+            t: document.getElementById('teamNum').value,
+            dt: document.getElementById('driveType').value,
+            i: Array.from(formData.getAll('intake')),
+            p: document.getElementById('preload').value,
+            m: document.getElementById('crossMid').checked,
+            ter: Array.from(formData.getAll('terrain')),
+            cl: Array.from(formData.getAll('climb')),
+            stab: document.getElementById('bumpStable').value,
+            n: document.getElementById('notes').value
+        };
+        const qrEl = document.getElementById('qrcode');
+        qrEl.innerHTML = "";
+        qrEl.style.display = "block";
+        new QRCode(qrEl, { text: JSON.stringify(data), width: 220, height: 220, colorDark: "#000000", colorLight: "#ffffff" });
+        document.getElementById('genBtn').innerText = "QR CODE READY";
+        document.getElementById('genBtn').style.background = "#4caf50";
     }
 
-    document.querySelectorAll('input').forEach(i => i.addEventListener('input', validate));
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', validate);
+        el.addEventListener('change', validate);
+    });
     document.getElementById('prevBtn').style.visibility = 'hidden';
 </script>
 </body>
