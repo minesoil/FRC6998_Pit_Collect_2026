@@ -170,29 +170,42 @@ capacity.addEventListener("input",()=>{
   if(+preload.value>+preload.max) preload.value=preload.max;
 });
 
-// Profanity + racial slur filter (offline-safe)
+// Profanity + racial slur filter
 const badWords=["fuck","fucks","fucked","fucking","shit","shitty","asshole","bitch","cunt","dick","cock","slut","whore","porn","cum","jerk","idiot","moron","retard","wtf","stfu","gtfo","fck","fuk","sh1t","a$$","b1tch"];
 const encodedSlurs=["bmlnZ2Vy","bmlnZ2E=","Y2hpbms=","c3BpYw==","a2lrZQ==","Z29vaw=="];
 const racialSlurs=encodedSlurs.map(x=>atob(x));
 
-function clean(text){
-  let t=text;
-  [...badWords,...racialSlurs].forEach(word=>{
-    const pattern=new RegExp(`\\b${word.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")}\\b`,"gi");
-    t=t.replace(pattern,"***");
+function containsBadWords(text){
+  return [...badWords,...racialSlurs].some(word=>{
+    const pattern=new RegExp(`\\b${word.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")}\\b`,"i");
+    return pattern.test(text);
   });
-  return t;
 }
 
-// Save system
+// Save system with warnings
 const saved=[];
 function saveEntry(){
+  const driveSelected=[...document.querySelectorAll(".drive:checked")];
+  if(driveSelected.length===0){alert("Please select a drive."); return;}
+  if(driveSelected.length>1){alert("Multiple drives selected! Only one allowed."); return;}
+
+  document.querySelectorAll(".both-group").forEach(group=>{
+    const both=group.querySelector(".both");
+    const others=[...group.querySelectorAll("input:not(.both)")];
+    if(both.checked && others.some(o=>o.checked)){
+      alert("Cannot select 'Both' and other options in the same group."); return;
+    }
+  });
+
+  if(+preload.value>+capacity.value){alert("Preload cannot exceed capacity."); return;}
+  if(containsBadWords(scouter.value) || containsBadWords(notes.value)){alert("Please remove profanity or racial slurs."); return;}
+
   const d={
-    scouter: clean(scouter.value),
+    scouter: scouter.value,
     team: team.value,
-    robot:{drive:[...document.querySelectorAll(".drive:checked")].map(x=>x.value)},
+    robot:{drive:driveSelected.map(x=>x.value)},
     auto:{preload: preload.value},
-    teleop:{notes: clean(notes.value)},
+    teleop:{notes: notes.value},
     ts:new Date().toLocaleString()
   };
   saved.push(d);
@@ -218,8 +231,20 @@ function resetAll(){
   page=0;show(0);
 }
 
-// Team info
-const teams={6998:"Unipards – Tainan"};
+// 48 Teams
+const teams={
+6998:"Unipards – Tainan, Chinese Taipei",364:"Team Fusion – Gulfport, USA",456:"Siege Robotics – Vicksburg, USA",538:"Renaissance Robotics – Athens, USA",590:"Chahta Warriors – Choctaw, USA",
+1421:"Team CHAOS – Picayune, USA",1912:"Team Combustion – Slidell, USA",1927:"Tempest – Biloxi, USA",2221:"FHS Robodawgs – Mandeville, USA",2556:"RadioActive Roaches – Niceville, USA",
+2992:"S.S. Prometheus – Mandeville, USA",3039:"Wildcat Robotics – Destrehan, USA",3606:"BearMetal – Baton Rouge, USA",3616:"Team Phenomena – Lafayette, USA",3753:"BulahBots! – Baton Rouge, USA",
+4087:"Voodoo Voltage – New Orleans, USA",4107:"Team Storm – Long Beach, USA",4336:"Ramageddon Robotics – Lafayette, USA",4400:"Cerbotics – Torreón, Mexico",5045:"SpartaBot – Memphis, USA",
+5863:"Hypercubed – Brusly, USA",5971:"Raider Robotics – Metairie, USA",6184:"C4 – Tallahassee, USA",6489:"Bronco Bolts – Zachary, USA",6706:"Golem – Shenzhen, China",
+7094:"Alpha Omega – Bay Saint Louis, USA",7474:"JXN UNITED – Ridgeland, USA",8044:"Denham Venom – Denham Springs, USA",8624:"Sasquatch Robotics – Andalusia, USA",8808:"SWLA Tech Pirates – Lake Charles, USA",
+9153:"Bearcat Robotics – Ruston, USA",9309:"Metal Mages – New Orleans, USA",9405:"KNOS Robotics – New Orleans, USA",9503:"EF5 CHAOS – Laurel, USA",9717:"Poultronix – Forest, USA",
+9734:"Jasper County Robotics – Bay Springs, USA",10101:"Critical Hit – Huntsville, USA",10217:"Catahoula Blue Dogs – Port Allen, USA",10309:"Jayhawks Robotics – Columbus, USA",10661:"Blue Phoenix – Shawnee, USA",
+10929:"Tarpon Robotics – Cut Off, USA",10943:"WJH RoboStangs – Laurel, USA",10961:"Hyper Wave – Gulf Shores, USA",11107:"FARMBots – Farmerville, USA",11265:"Rockbotics – Bay Saint Louis, USA",
+11287:"Canton Career Center – Canton, USA",11343:"JPS HS Robotics – Jackson, USA",11345:"Long Beach RoboBearcats – Long Beach, USA"
+};
+
 team.addEventListener("input",()=>teamInfo.textContent=teams[team.value]||"");
 </script>
 
