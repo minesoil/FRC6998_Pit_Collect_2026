@@ -3,18 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FRC 6998 – REBUILT 2026 Pit Collect</title>
-
+<title>FRC 6998 – REBUILT 2026 Pit Collect (Offline)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --bg1:#0F0F12;
-  --bg2:#1A1A1F;
-  --txt:#F2F2F2;
-  --gold:#D4AF37;
-}
+:root{--bg1:#0F0F12;--bg2:#1A1A1F;--txt:#F2F2F2;--gold:#D4AF37;}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Lexend',sans-serif;}
 body{background:var(--bg1);color:var(--txt);}
 header{text-align:center;padding:22px;border-bottom:3px solid var(--gold);}
@@ -22,43 +15,30 @@ header{text-align:center;padding:22px;border-bottom:3px solid var(--gold);}
 .card{background:linear-gradient(145deg,var(--bg1),var(--bg2));border-radius:18px;padding:18px;margin-bottom:16px;}
 .card h2{border-left:6px solid var(--gold);padding-left:12px;margin-bottom:10px;}
 label{display:block;margin-top:10px;font-weight:600;}
-input,select,textarea{
-  width:100%;padding:9px;margin-top:6px;
-  background:#121218;color:var(--txt);
-  border-radius:12px;border:1px solid rgba(255,255,255,.15);
-}
+input,select,textarea{width:100%;padding:9px;margin-top:6px;background:#121218;color:var(--txt);border-radius:12px;border:1px solid rgba(255,255,255,.15);}
 .checkbox-inline{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px;}
 .checkbox-inline label{display:flex;align-items:center;gap:6px;font-weight:normal;}
-.main-btn{
-  flex:1;padding:12px;font-weight:bold;border-radius:14px;
-  background:linear-gradient(135deg,#D4AF37,#FFD966);
-  border:none;cursor:pointer;
-}
+.main-btn{flex:1;padding:12px;font-weight:bold;border-radius:14px;background:linear-gradient(135deg,#D4AF37,#FFD966);border:none;cursor:pointer;}
 .nav-buttons{display:flex;gap:10px;margin-top:12px;}
 .page{display:none;}
 .page.active{display:block;}
 #qrcode{width:128px;height:128px;margin:0 auto;background:white;border-radius:10px;}
-#teamInfo{margin-top:6px;font-size:.9em;opacity:.85;text-align:center;}
+#savedEntries{margin-top:12px;max-height:150px;overflow-y:auto;border:1px solid var(--gold);padding:6px;border-radius:8px;background:#121218;}
 </style>
 </head>
-
 <body>
-
 <header>
   <h1>FRC 6998 – REBUILT 2026</h1>
-  <p>Pit Scouting</p>
+  <p>Pit Scouting (Offline)</p>
 </header>
 
 <div class="container">
-
-<!-- PAGE 1 -->
+<!-- PAGE 1: Scouter & Team -->
 <div class="page active">
   <div class="card">
-    <h2>Scouter</h2>
-    <label>Scouter Name</label>
-    <input id="scouter">
-    <label>Team Number</label>
-    <input id="team" type="number">
+    <h2>Scouter Info</h2>
+    <label>Scouter Name</label><input id="scouter">
+    <label>Team Number</label><input id="team" type="number">
     <p id="teamInfo"></p>
   </div>
   <div class="nav-buttons">
@@ -67,11 +47,10 @@ input,select,textarea{
   </div>
 </div>
 
-<!-- PAGE 2 ROBOT -->
+<!-- PAGE 2: Robot -->
 <div class="page">
   <div class="card">
     <h2>Robot</h2>
-
     <label>底盤</label>
     <div class="checkbox-inline">
       <label><input type="checkbox" class="drive" value="S">Swerve</label>
@@ -117,24 +96,18 @@ input,select,textarea{
   </div>
 </div>
 
-<!-- PAGE 3 AUTO -->
+<!-- PAGE 3: Auto -->
 <div class="page">
   <div class="card">
     <h2>Auto</h2>
-
-    <label>Preload</label>
-    <input id="preload" type="number" min="0" max="8">
-
+    <label>Preload</label><input id="preload" type="number" min="0" max="8">
     <label>Source</label>
     <div class="checkbox-inline">
       <label><input type="checkbox" class="asrc" value="O">Outpost</label>
       <label><input type="checkbox" class="asrc" value="D">Depot</label>
       <label><input type="checkbox" class="asrc" value="B">Both</label>
     </div>
-
-    <label>Total Auto Balls</label>
-    <input id="acount">
-
+    <label>Total Auto Balls</label><input id="acount">
     <label>Cross Midfield</label>
     <div class="checkbox-inline">
       <label><input type="checkbox" id="cross">Yes</label>
@@ -148,11 +121,10 @@ input,select,textarea{
   </div>
 </div>
 
-<!-- PAGE 4 TELEOP -->
+<!-- PAGE 4: Teleop -->
 <div class="page">
   <div class="card">
     <h2>Teleop</h2>
-
     <label>Climb Level</label>
     <div class="checkbox-inline">
       <label><input type="checkbox" class="cl" value="1">L1</label>
@@ -175,72 +147,92 @@ input,select,textarea{
   <div class="nav-buttons">
     <button class="main-btn" onclick="prevPage()">Back</button>
     <button class="main-btn" onclick="toggleFS()">⛶ Fullscreen</button>
-    <button class="main-btn" onclick="generateQR();nextPage()">Generate QR</button>
+    <button class="main-btn" onclick="saveEntry()">Save Entry & Generate QR</button>
   </div>
 </div>
 
-<!-- PAGE 5 -->
+<!-- PAGE 5: QR & Saved Entries -->
 <div class="page">
   <div class="card">
     <h2>QR Code</h2>
     <div id="qrcode"></div>
+    <h3>Saved Entries</h3>
+    <div id="savedEntries"></div>
   </div>
 
   <div class="nav-buttons">
     <button class="main-btn" onclick="prevPage()">Back</button>
     <button class="main-btn" onclick="toggleFS()">⛶ Fullscreen</button>
-    <button class="main-btn" onclick="resetAll()">Reset</button>
+    <button class="main-btn" onclick="resetAll()">Reset All</button>
   </div>
 </div>
 
 </div>
 
 <script>
-// NAV
 let page=0;
 const pages=document.querySelectorAll(".page");
 const show=i=>{pages.forEach(p=>p.classList.remove("active"));pages[i].classList.add("active");}
 const nextPage=()=>show(++page);
 const prevPage=()=>show(--page);
-
-// FULLSCREEN
-function toggleFS(){
-  document.fullscreenElement
-    ? document.exitFullscreen()
-    : document.documentElement.requestFullscreen();
-}
-
-// TEAM LIST (48)
-const teams={6998:"Unipards – Tainan, Chinese Taipei",364:"Team Fusion 364",456:"Siege Robotics",538:"Renaissance Robotics",590:"Chahta Warriors",1421:"Team CHAOS",1912:"Team Combustion",1927:"Tempest",2221:"FHS Robodawgs",2556:"RadioActive Roaches",2992:"S.S. Prometheus",3039:"Wildcat Robotics",3606:"BearMetal",3616:"Team Phenomena",3753:"BulahBots!",4087:"Voodoo Voltage",4107:"Team Storm",4336:"Ramageddon Robotics",4400:"Cerbotics",5045:"SpartaBot",5863:"Hypercubed",5971:"Raider Robotics",6184:"C4",6489:"Bronco Bolts",6706:"Golem",7094:"Alpha Omega",7474:"JXN UNITED",8044:"Denham Venom",8624:"Sasquatch Robotics",8808:"SWLA Tech Pirates",9153:"Bearcat Robotics",9309:"Metal Mages",9405:"KNOS Robotics",9503:"EF5 CHAOS",9717:"Poultronix",9734:"Jasper County Robotics",10101:"Critical Hit",10217:"Catahoula Blue Dogs",10309:"Jayhawks Robotics",10661:"Blue Phoenix",10929:"Tarpon Robotics",10943:"WJH RoboStangs",10961:"Hyper Wave",11107:"FARMBots",11265:"Rockbotics",11287:"Canton Career Center",11343:"JPS HS Robotics",11345:"Long Beach RoboBearcats"};
-
-team.addEventListener("input",()=>{
-  teamInfo.textContent=teams[team.value]||"";
-});
+function toggleFS(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
 
 const vals=c=>[...document.querySelectorAll(c+":checked")].map(x=>x.value);
+const saved=[];
 
-// QR (compressed)
-function generateQR(){
+function saveEntry(){
   const d={
-    s:scouter.value,t:team.value,
-    r:{d:vals(".drive"),i:vals(".intake"),v:vals(".vision"),tr:vals(".terrain"),si:si.checked,sm:sm.checked},
-    a:{p:preload.value,s:vals(".asrc"),c:acount.value,x:cross.checked},
-    tp:{l:vals(".cl"),p:vals(".cp"),n:notes.value}
+    scouter:document.getElementById("scouter").value,
+    team:document.getElementById("team").value,
+    robot:{drive:vals(".drive"),intake:vals(".intake"),vision:vals(".vision"),terrain:vals(".terrain"),si:document.getElementById("si").checked,sm:document.getElementById("sm").checked},
+    auto:{preload:document.getElementById("preload").value,source:vals(".asrc"),total:document.getElementById("acount").value,cross:document.getElementById("cross").checked},
+    teleop:{climb:vals(".cl"),position:vals(".cp"),notes:document.getElementById("notes").value},
+    ts:new Date().toLocaleString()
   };
-  qrcode.innerHTML="";
-  new QRCode(qrcode,{text:JSON.stringify(d),width:128,height:128});
+  saved.push(d);
+  generateQR(d);
+  renderSaved();
+  alert("Entry saved locally! Scan QR with Wi-Fi device to upload later.");
+  nextPage();
 }
 
-// RESET
+function generateQR(data){
+  const q=document.getElementById("qrcode");
+  q.innerHTML="";
+  new QRCode(q,{text:JSON.stringify(data),width:128,height:128});
+}
+
+function renderSaved(){
+  const container=document.getElementById("savedEntries");
+  container.innerHTML="";
+  saved.forEach((e,i)=>{container.innerHTML+=`#${i+1} Team ${e.team} - ${e.scouter}\n`;});
+}
+
 function resetAll(){
-  document.querySelectorAll("input,textarea").forEach(e=>{
-    if(e.type==="checkbox")e.checked=false;
-    else e.value="";
-  });
-  qrcode.innerHTML="";
-  teamInfo.textContent="";
+  document.querySelectorAll("input,textarea").forEach(e=>{if(e.type==="checkbox") e.checked=false; else e.value="";});
+  saved.length=0;
+  document.getElementById("qrcode").innerHTML="";
+  document.getElementById("savedEntries").innerHTML="";
   page=0;show(0);
 }
+
+// Optional: show team names
+const teams={
+6998:"Unipards – Tainan, Chinese Taipei",364:"Team Fusion – Gulfport, USA",456:"Siege Robotics – Vicksburg, USA",538:"Renaissance Robotics – Athens, USA",590:"Chahta Warriors – Choctaw, USA",
+1421:"Team CHAOS – Picayune, USA",1912:"Team Combustion – Slidell, USA",1927:"Tempest – Biloxi, USA",2221:"FHS Robodawgs – Mandeville, USA",2556:"RadioActive Roaches – Niceville, USA",
+2992:"S.S. Prometheus – Mandeville, USA",3039:"Wildcat Robotics – Destrehan, USA",3606:"BearMetal – Baton Rouge, USA",3616:"Team Phenomena – Lafayette, USA",3753:"BulahBots! – Baton Rouge, USA",
+4087:"Voodoo Voltage – New Orleans, USA",4107:"Team Storm – Long Beach, USA",4336:"Ramageddon Robotics – Lafayette, USA",4400:"Cerbotics – Torreón, Mexico",5045:"SpartaBot – Memphis, USA",
+5863:"Hypercubed – Brusly, USA",5971:"Raider Robotics – Metairie, USA",6184:"C4 – Tallahassee, USA",6489:"Bronco Bolts – Zachary, USA",6706:"Golem – Shenzhen, China",
+7094:"Alpha Omega – Bay Saint Louis, USA",7474:"JXN UNITED – Ridgeland, USA",8044:"Denham Venom – Denham Springs, USA",8624:"Sasquatch Robotics – Andalusia, USA",8808:"SWLA Tech Pirates – Lake Charles, USA",
+9153:"Bearcat Robotics – Ruston, USA",9309:"Metal Mages – New Orleans, USA",9405:"KNOS Robotics – New Orleans, USA",9503:"EF5 CHAOS – Laurel, USA",9717:"Poultronix – Forest, USA",
+9734:"Jasper County Robotics – Bay Springs, USA",10101:"Critical Hit – Huntsville, USA",10217:"Catahoula Blue Dogs – Port Allen, USA",10309:"Jayhawks Robotics – Columbus, USA",10661:"Blue Phoenix – Shawnee, USA",
+10929:"Tarpon Robotics – Cut Off, USA",10943:"WJH RoboStangs – Laurel, USA",10961:"Hyper Wave – Gulf Shores, USA",11107:"FARMBots – Farmerville, USA",11265:"Rockbotics – Bay Saint Louis, USA",11287:"Canton Career Center – Canton, USA",
+11343:"JPS HS Robotics – Jackson, USA",11345:"Long Beach RoboBearcats – Long Beach, USA"
+};
+document.getElementById("team").addEventListener("input",()=>{
+  const val=document.getElementById("team").value;
+  document.getElementById("teamInfo").textContent=teams[val]||"Team not found";
+});
 </script>
 </body>
 </html>
