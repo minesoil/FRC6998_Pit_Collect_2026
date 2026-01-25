@@ -27,12 +27,6 @@
 
         .container { max-width: 600px; margin: 0 auto; padding: 10px 15px 140px 15px; }
 
-        /* WARNING FRONT */
-        .warning-front {
-            background: rgba(255, 77, 77, 0.1); border: 2px solid var(--error);
-            border-radius: 20px; padding: 20px; margin-bottom: 20px; text-align: center;
-        }
-
         .card {
             background: var(--bg-card); border-radius: 24px; padding: 25px; margin-bottom: 20px;
             border: 1px solid rgba(212, 175, 55, 0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.4);
@@ -49,12 +43,20 @@
             border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 0.95rem;
         }
 
+        /* Modernized Toggle Switches */
         .grid-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
         .option-box {
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px;
-            display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; font-size: 0.85rem;
+            text-align: center; font-weight: 600; color: var(--text-dim);
         }
-        .option-box:has(input:checked) { border-color: var(--accent); background: rgba(214, 175, 55, 0.1); }
+        .option-box input { display: none; } /* Hide the ugly default checkbox */
+        .option-box:has(input:checked) { 
+            border-color: var(--accent); 
+            background: rgba(214, 175, 55, 0.15); 
+            color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
 
         .warning-text { color: var(--error); font-size: 0.7rem; margin-top: 5px; font-weight: 700; text-transform: uppercase; }
         .team-badge { display: inline-block; background: var(--accent); color: #000; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 800; margin-top: 8px; }
@@ -67,10 +69,10 @@
 
         .page { display: none; }
         .page.active { display: block; animation: pageIn 0.3s ease-out; }
-        @keyframes pageIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         #qrcode { background: #fff; padding: 12px; border-radius: 15px; margin: 15px auto; display: none; }
-        .log-entry { font-size: 0.75rem; padding: 8px; border-bottom: 1px solid #333; color: var(--text-dim); display: flex; justify-content: space-between; }
+        .log-entry { font-size: 0.75rem; padding: 10px; border-bottom: 1px solid #333; color: var(--text-dim); display: flex; justify-content: space-between; }
         
         input[type="range"] { accent-color: var(--accent); }
     </style>
@@ -86,10 +88,6 @@
     <form id="scoutingForm" onsubmit="return false;">
         
         <div class="page active" id="page0">
-            <div class="warning-front">
-                <h3 style="color:var(--error); margin-bottom: 5px;">⚠️ PERSONNEL AUDIT</h3>
-                <p style="font-size: 0.7rem;">ALL INPUTS ARE LOGGED AGAINST THE CMU PROFANITY DATABASE. FALSE DATA WILL BE REPORTED.</p>
-            </div>
             <div class="card">
                 <h2>Identification</h2>
                 <label>Scouter Name</label>
@@ -135,8 +133,8 @@
 
                 <label>Turret (砲台)</label>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="turret" value="Yaw"> Yaw (Horizontal)</label>
-                    <label class="option-box"><input type="checkbox" name="turret" value="Pitch"> Pitch (Vertical)</label>
+                    <label class="option-box"><input type="checkbox" name="turret" value="Yaw"> Yaw (Horiz)</label>
+                    <label class="option-box"><input type="checkbox" name="turret" value="Pitch"> Pitch (Vert)</label>
                 </div>
             </div>
         </div>
@@ -144,33 +142,33 @@
         <div class="page" id="page2">
             <div class="card">
                 <h2>Autonomous</h2>
-                <label>Preload (Strict Max: 8)</label>
+                <label>Preload (Max: 8)</label>
                 <input type="number" id="preload" value="0">
                 <div id="preloadWarn" class="warning-text"></div>
 
-                <label>Starting Location (Outpost/Depot)</label>
+                <label>Starting Location</label>
                 <select id="outpostSrc">
                     <option>Robot Outpost</option>
                     <option>Human Outpost</option>
                     <option>Depot</option>
                 </select>
 
-                <label>Auto Pieces Scored (總共顆數)</label>
+                <label>Auto Pieces Scored</label>
                 <input type="number" id="autoBalls" value="0">
 
                 <label class="option-box" style="margin-top:20px;">
-                    <input type="checkbox" id="crossMid" onchange="toggleMidfield()"> Cross Midfield (會不會過中場)
+                    <input type="checkbox" id="crossMid" onchange="toggleMidfield()"> Cross Midfield (過中場)
                 </label>
 
-                <div id="midfieldSection" class="hidden-section" style="display:none; margin-top:15px; border-top: 1px solid #333; padding-top:15px;">
-                    <label>Navigate Terrain (Bump/Trench)</label>
+                <div id="midfieldSection" style="display:none; margin-top:15px; border-top: 1px solid #333; padding-top:15px;">
+                    <label>Navigate Terrain</label>
                     <div class="grid-options">
                         <label class="option-box"><input type="checkbox" name="terrain" value="Bump" class="logic-group" data-group="terr" onchange="toggleStability()"> Bump</label>
                         <label class="option-box"><input type="checkbox" name="terrain" value="Trench" class="logic-group" data-group="terr" onchange="toggleStability()"> Trench</label>
                         <label class="option-box"><input type="checkbox" name="terrain" value="Both" class="logic-both" data-group="terr" onchange="toggleStability()"> Both</label>
                     </div>
                     <div id="stabilitySection" style="display:none; margin-top:15px;">
-                        <label>過Bump影響 (Stability: <span id="sLabel">3</span>)</label>
+                        <label>Stability Rating: <span id="sLabel" style="color:var(--accent)">3</span></label>
                         <input type="range" id="bumpStable" min="1" max="5" value="3" oninput="document.getElementById('sLabel').innerText=this.value">
                     </div>
                 </div>
@@ -180,48 +178,46 @@
         <div class="page" id="page3">
             <div class="card">
                 <h2>Teleop & Climb (吊掛)</h2>
-                <label>Climb Ability</label>
+                <label>Climb Level</label>
                 <div class="grid-options">
                     <label class="option-box"><input type="checkbox" name="climbLv" value="L1" class="logic-group" data-group="cl"> L1</label>
                     <label class="option-box"><input type="checkbox" name="climbLv" value="L2" class="logic-group" data-group="cl"> L2</label>
                     <label class="option-box"><input type="checkbox" name="climbLv" value="L3" class="logic-group" data-group="cl"> L3</label>
-                    <label class="option-box"><input type="checkbox" name="climbLv" value="All" class="logic-both" data-group="cl"> Both/All</label>
+                    <label class="option-box"><input type="checkbox" name="climbLv" value="All" class="logic-both" data-group="cl"> All</label>
                 </div>
 
-                <label>Climb Position (吊掛位子)</label>
+                <label>Climb Position</label>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Left" class="logic-group" data-group="cp"> Left (左)</label>
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Center" class="logic-group" data-group="cp"> Center (中)</label>
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Right" class="logic-group" data-group="cp"> Right (右)</label>
-                    <label class="option-box"><input type="checkbox" name="climbPos" value="Both" class="logic-both" data-group="cp"> Both</label>
+                    <label class="option-box"><input type="checkbox" name="climbPos" value="Left" class="logic-group" data-group="cp"> Left</label>
+                    <label class="option-box"><input type="checkbox" name="climbPos" value="Center" class="logic-group" data-group="cp"> Center</label>
+                    <label class="option-box"><input type="checkbox" name="climbPos" value="Right" class="logic-group" data-group="cp"> Right</label>
                 </div>
 
                 <label>Climb Time (sec)</label>
                 <input type="number" id="climbTime" placeholder="0">
 
-                <label>Shooting Abilities (射球能力)</label>
+                <label>Abilities (能力)</label>
                 <div class="grid-options">
-                    <label class="option-box"><input type="checkbox" name="shoot" value="吸射"> 邊吸邊射</label>
-                    <label class="option-box"><input type="checkbox" name="shoot" value="走射"> 邊走邊射</label>
+                    <label class="option-box"><input type="checkbox" name="shoot" value="吸射"> 吸射</label>
+                    <label class="option-box"><input type="checkbox" name="shoot" value="走射"> 走射</label>
                 </div>
 
-                <label>Notes (其他備註)</label>
+                <label>Notes</label>
                 <textarea id="notes" rows="3"></textarea>
-                <div id="notesWarn" class="warning-text"></div>
             </div>
         </div>
 
         <div class="page" id="page4">
             <div class="card">
-                <h2>Review Summary</h2>
-                <div id="summaryPanel" style="font-size: 0.9rem; line-height: 2;"></div>
+                <h2>Review</h2>
+                <div id="summaryPanel" style="font-size: 0.9rem; line-height: 2; margin-bottom: 15px; border-left: 2px solid var(--accent); padding-left: 15px;"></div>
                 <div style="text-align:center"><div id="qrcode"></div></div>
                 <button type="button" class="btn btn-next" style="width:100%; margin-top:15px;" id="genBtn" onclick="generateQR()">Generate QR</button>
-                <button type="button" class="btn" style="width:100%; margin-top:10px; background:#4a1010; color:white;" onclick="softReset()">Reset Current Match</button>
+                <button type="button" class="btn" style="width:100%; margin-top:10px; background:#4a1010; color:white;" onclick="softReset()">Reset Form</button>
             </div>
             <div class="card">
                 <h2>Session Logs</h2>
-                <div id="sessionLogs" style="max-height: 200px; overflow-y: auto;">No logs yet.</div>
+                <div id="sessionLogs" style="max-height: 200px; overflow-y: auto;">No logs.</div>
             </div>
         </div>
     </form>
@@ -229,12 +225,10 @@
 
 <div class="nav-bar">
     <button class="btn btn-back" id="prevBtn" onclick="changePage(-1)">Back</button>
-    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next Step</button>
+    <button class="btn btn-next" id="nextBtn" onclick="changePage(1)">Next</button>
 </div>
 
 <script>
-    const badWords = ["anal","anus","arse","ass","ballsack","bastard","bitch","biatch","bloody","blowjob","bollock","bollok","boner","boob","bugger","bum","butt","buttplug","clitoris","cock","coon","crap","cunt","damn","dick","dildo","dyke","fag","feck","felatio","feltch","fuck","fudgepacker","flange","goddamn","hell","homo","jerk","jizm","knobend","labia","lmao","lmfao","muff","nigger","nigga","piss","poop","prick","pube","pussy","queer","scrotum","sex","sh1t","shit","slut","smegma","spunk","tit","tosser","turd","twat","vagina","wank","whore","wtf"];
-    
     const teams = { 364:"Team Fusion", 456:"Siege Robotics", 538:"Renaissance Robotics", 590:"Chahta Warriors", 1421:"Team CHAOS", 1912:"Team Combustion", 1927:"Tempest", 2221:"FHS Robodawgs", 2556:"RadioActive Roaches", 2992:"The S.S. Prometheus", 3039:"Wildcat Robotics", 3606:"BearMetal", 3616:"Team Phenomena", 3753:"BulahBots!", 4087:"Voodoo Voltage", 4107:"Team Storm", 4336:"Ramageddon Robotics", 4400:"Cerbotics - Peñoles", 5045:"SpartaBot", 5863:"Hypercubed", 5971:"Raider Robotics Team", 6184:"C4", 6706:"Golem", 6998:"Unipards", 7094:"Alpha Omega", 7474:"JXN UNITED", 8044:"Denham Venom", 8624:"Sasquatch Robotics", 8808:"SWLA Tech Pirates", 9153:"Bearcat Robotics", 9309:"Metal Mages", 9405:"KNOS Robotics", 9503:"EF5 CHAOS", 9717:"Poultronix", 9734:"Jasper County Robotics", 10101:"Critical Hit", 10217:"Catahoula Blue Dogs", 10309:"Jayhawks Robotics", 10661:"Blue Phoenix", 10929:"Tarpon Robotics", 10943:"WJH RoboStangs", 10961:"Hyper Wave", 11107:"FARMBots", 11265:"Rockbotics", 11287:"Canton Career Center", 11343:"JPS High School Robotics", 11345:"Long Beach RoboBearcats" };
 
     let curPage = 0;
@@ -250,7 +244,7 @@
         document.getElementById('stabilitySection').style.display = isBump ? 'block' : 'none';
     }
 
-    // SMART BOTH LOGIC
+    // Logic for mutually exclusive "Both/All" buttons
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.addEventListener('change', function() {
             const group = this.getAttribute('data-group');
@@ -262,10 +256,6 @@
                 members.forEach(m => m.checked = false);
             } else if (this.classList.contains('logic-group')) {
                 both.checked = false;
-                if (Array.from(members).every(m => m.checked)) {
-                    members.forEach(m => m.checked = false);
-                    both.checked = true;
-                }
             }
             validate();
         });
@@ -273,15 +263,8 @@
 
     function validate() {
         let valid = true;
-        const name = document.getElementById('scouterName').value.toLowerCase();
         const tNum = document.getElementById('teamNum').value;
         const preload = parseInt(document.getElementById('preload').value) || 0;
-        const notes = document.getElementById('notes').value.toLowerCase();
-
-        if (badWords.some(w => name.includes(w) || notes.includes(w))) {
-            document.getElementById('scouterWarn').innerText = "PROFANITY DETECTED!";
-            valid = false;
-        } else { document.getElementById('scouterWarn').innerText = ""; }
 
         if (teams[tNum]) {
             document.getElementById('teamBadge').innerText = "✓ " + teams[tNum];
@@ -319,10 +302,10 @@
     function buildSummary() {
         const tNum = document.getElementById('teamNum').value;
         document.getElementById('summaryPanel').innerHTML = `
-            <div><b>Scouter:</b> ${document.getElementById('scouterName').value}</div>
+            <div><b>Scouter:</b> ${document.getElementById('scouterName').value || "N/A"}</div>
             <div><b>Team:</b> ${tNum} - ${teams[tNum]}</div>
-            <div><b>Auto Piece Total:</b> ${document.getElementById('autoBalls').value}</div>
-            <div><b>Climb Time:</b> ${document.getElementById('climbTime').value}s</div>
+            <div><b>Chassis:</b> ${document.getElementById('driveType').value}</div>
+            <div><b>Climb:</b> ${document.getElementById('climbTime').value}s</div>
         `;
     }
 
@@ -331,25 +314,19 @@
         document.getElementById('mCount').innerText = "ROBOTS: " + matchCount;
         const team = document.getElementById('teamNum').value;
         
-        logs.unshift(`Team ${team} (${teams[team]}) - Logged`);
+        logs.unshift(`Team ${team} - QR Generated`);
         document.getElementById('sessionLogs').innerHTML = logs.map(l => `<div class="log-entry"><span>${l}</span> <b>✓</b></div>`).join('');
 
-        const data = { t: team, s: document.getElementById('scouterName').value, n: document.getElementById('notes').value };
+        const data = { t: team, d: document.getElementById('driveType').value, c: document.getElementById('climbTime').value };
         const qrEl = document.getElementById('qrcode');
         qrEl.innerHTML = ""; qrEl.style.display = "block";
         new QRCode(qrEl, { text: JSON.stringify(data), width: 180, height: 180 });
-        document.getElementById('genBtn').innerText = "SAVED TO LOG";
+        document.getElementById('genBtn').innerText = "QR READY";
         document.getElementById('genBtn').style.background = "#4caf50";
     }
 
     function softReset() {
-        document.getElementById('scouterName').value = "";
-        document.getElementById('teamNum').value = "";
-        document.getElementById('notes').value = "";
-        document.getElementById('preload').value = 0;
-        document.getElementById('autoBalls').value = 0;
-        document.getElementById('climbTime').value = 0;
-        
+        document.getElementById('scoutingForm').reset();
         curPage = 0;
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page0').classList.add('active');
@@ -357,7 +334,7 @@
         document.getElementById('qrcode').style.display = 'none';
         document.getElementById('genBtn').innerText = "Generate QR";
         document.getElementById('genBtn').style.background = "var(--accent)";
-        validate();
+        toggleMidfield(); toggleStability(); validate();
     }
 
     document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', validate));
