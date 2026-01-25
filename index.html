@@ -338,8 +338,58 @@ const autoEstScore=document.getElementById("autoEstScore");
 const notes=document.getElementById("notes");
 const qrcode=document.getElementById("qrcode");
 
-// Team info example (add your full list)
-const mslsTeamDetails={6998:"Unipards – Tainan, Taiwan"};
+// FULL MSLS EVENT TEAM LIST (48 TEAMS)
+const mslsTeamDetails = {
+  364:  "Team Fusion 364 – Gulfport, Mississippi, USA",
+  456:  "Siege Robotics – Vicksburg, Mississippi, USA",
+  538:  "Renaissance Robotics – Athens, Alabama, USA",
+  590:  "Chahta Warriors – Choctaw, Mississippi, USA",
+  1421: "Team CHAOS – Picayune, Mississippi, USA",
+  1912: "Team Combustion – Slidell, Louisiana, USA",
+  1927: "Tempest – Biloxi, Mississippi, USA",
+  2221: "FHS Robodawgs – Mandeville, Louisiana, USA",
+  2556: "RadioActive Roaches – Niceville, Florida, USA",
+  2992: "The S.S. Prometheus – Mandeville, Louisiana, USA",
+  3039: "Wildcat Robotics – Destrehan, Louisiana, USA",
+  3606: "BearMetal – Baton Rouge, Louisiana, USA",
+  3616: "Team Phenomena – Lafayette, Louisiana, USA",
+  3753: "BulahBots! – Baton Rouge, Louisiana, USA",
+  4087: "Voodoo Voltage – New Orleans, Louisiana, USA",
+  4107: "Team Storm – Long Beach, Mississippi, USA",
+  4336: "Ramageddon Robotics – Lafayette, Louisiana, USA",
+  4400: "Cerbotics – Torreón, Coahuila, Mexico",
+  5045: "SpartaBot – Memphis, Tennessee, USA",
+  5863: "Hypercubed – Brusly, Louisiana, USA",
+  5971: "Raider Robotics Team – Metairie, Louisiana, USA",
+  6184: "C4 (Capital City Chaotic Coders) – Tallahassee, Florida, USA",
+  6489: "Bronco Bolts – Zachary, Louisiana, USA",
+  6706: "Golem – Shenzhen, Guangdong, China",
+  6998: "Unipards – Tainan, Tainan Municipality, Chinese Taipei",
+  7094: "Alpha Omega – Bay Saint Louis, Mississippi, USA",
+  7474: "JXN UNITED – Ridgeland, Mississippi, USA",
+  8044: "Denham Venom – Denham Springs, Louisiana, USA",
+  8624: "Sasquatch Robotics – Andalusia, Alabama, USA",
+  8808: "SWLA Tech Pirates – Lake Charles, Louisiana, USA",
+  9153: "Bearcat Robotics – Ruston, Louisiana, USA",
+  9309: "Metal Mages – New Orleans, Louisiana, USA",
+  9405: "KNOS Robotics – New Orleans, Louisiana, USA",
+  9503: "EF5 CHAOS – Laurel, Mississippi, USA",
+  9717: "Poultronix – Forest, Mississippi, USA",
+  9734: "Jasper County Robotics – Bay Springs, Mississippi, USA",
+  10101:"Critical Hit – Huntsville, Alabama, USA",
+  10217:"Catahoula Blue Dogs – Port Allen, Louisiana, USA",
+  10309:"Jayhawks Robotics – Columbus, Mississippi, USA",
+  10661:"Blue Phoenix – Shawnee, Oklahoma, USA",
+  10929:"Tarpon Robotics – Cut Off, Louisiana, USA",
+  10943:"WJH RoboStangs – Laurel, Mississippi, USA",
+  10961:"Hyper Wave – Gulf Shores, Alabama, USA",
+  11107:"FARMBots – Farmerville, Louisiana, USA",
+  11265:"Rockbotics – Bay Saint Louis, Mississippi, USA",
+  11287:"Canton Career Center – Canton, Mississippi, USA",
+  11343:"JPS High School Robotics – Jackson, Mississippi, USA",
+  11345:"Long Beach RoboBearcats – Long Beach, Mississippi, USA"
+};
+
 
 // Show team name dynamically
 teamNumber.addEventListener("input",()=>{ 
