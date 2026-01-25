@@ -3,34 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FRC 6998 – REBUILT 2026 Pit Collect (Offline)</title>
+<title>FRC 6998 – REBUILT 2026 Pit Scouting (Offline)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg1:#0F0F12; --bg2:#1A1A1F; --txt:#F2F2F2; --gold:#D4AF37; --warn:#FF4C4C;
+  --bg1: #0F0F12;
+  --bg2: #1A1A1F;
+  --txt: #F2F2F2;
+  --gold: #D4AF37;
+  --warn: #FF4C4C;
+  --card-bg: linear-gradient(145deg,#0F0F12,#1A1A1F);
+  --btn-bg: linear-gradient(135deg,#D4AF37,#FFD966);
 }
-* { box-sizing:border-box; margin:0; padding:0; font-family:'Lexend', sans-serif; }
+* { box-sizing:border-box; margin:0; padding:0; font-family:'Lexend',sans-serif; }
 body { background: var(--bg1); color: var(--txt); }
 header { text-align:center; padding:22px; border-bottom:3px solid var(--gold); }
 .container { max-width:900px; margin:20px auto; padding:14px; }
-.card { background: linear-gradient(145deg,var(--bg1),var(--bg2)); border-radius:18px; padding:18px; margin-bottom:16px; }
+.card { background: var(--card-bg); border-radius:18px; padding:18px; margin-bottom:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
 .card h2 { border-left:6px solid var(--gold); padding-left:12px; margin-bottom:10px; }
 label { display:block; margin-top:10px; font-weight:600; }
-input,textarea,select { width:100%; padding:9px; margin-top:6px; background:#121218; color:var(--txt); border-radius:12px; border:1px solid rgba(255,255,255,.15); }
+input,textarea,select { width:100%; padding:10px; margin-top:6px; background:#121218; color:var(--txt); border-radius:12px; border:1px solid rgba(255,255,255,.15); }
 .checkbox-inline { display:flex; flex-wrap:wrap; gap:12px; margin-top:6px; }
-.checkbox-inline label { display:flex; align-items:center; gap:6px; font-weight:normal; }
-.main-btn { flex:1; padding:12px; font-weight:bold; border-radius:14px; background:linear-gradient(135deg,#D4AF37,#FFD966); border:none; cursor:pointer; }
+.checkbox-inline label { display:flex; align-items:center; gap:6px; font-weight:normal; cursor:pointer; }
+.checkbox-inline input[type="checkbox"] { accent-color: var(--gold); }
+.main-btn { flex:1; padding:12px; font-weight:bold; border-radius:14px; background:var(--btn-bg); border:none; cursor:pointer; transition: all 0.2s ease; }
+.main-btn:hover { opacity:0.85; }
 .nav-buttons { display:flex; gap:10px; margin-top:12px; }
-.page { display:none; }
-.page.active { display:block; }
+.page { display:none; transition: opacity 0.3s ease; }
+.page.active { display:block; opacity:1; }
 .warning { color: var(--warn); font-size:0.9rem; margin-top:4px; }
 #qrcode { width:180px; height:180px; margin:0 auto; background:white; border-radius:10px; display:none; }
 #promptModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); color:#F2F2F2; display:flex; align-items:center; justify-content:center; z-index:1000; }
 #promptContent { background:linear-gradient(145deg,#1A1A1F,#0F0F12); padding:20px; border-radius:14px; max-width:600px; max-height:80%; overflow-y:auto; }
 #promptContent h2 { border-left:4px solid var(--gold); padding-left:10px; margin-bottom:10px; }
 #promptContent p, #promptContent ul { margin-bottom:10px; font-size:0.95rem; }
-#promptClose { margin-top:10px; padding:10px 16px; background:linear-gradient(135deg,#D4AF37,#FFD966); border:none; border-radius:10px; cursor:pointer; font-weight:bold; }
+#promptClose { margin-top:10px; padding:10px 16px; background:var(--btn-bg); border:none; border-radius:10px; cursor:pointer; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -105,6 +113,33 @@ input,textarea,select { width:100%; padding:9px; margin-top:6px; background:#121
       <label><input type="checkbox" id="intakeBoth"> Both</label>
     </div>
     <div id="intakeWarning" class="warning"></div>
+
+    <label>Vision</label>
+    <div class="checkbox-inline">
+      <label><input type="checkbox" id="visionLimelight"> Limelight</label>
+      <label><input type="checkbox" id="visionApril"> AprilTag</label>
+      <label><input type="checkbox" id="visionBoth"> Both</label>
+    </div>
+
+    <label>Outpost Source</label>
+    <div class="checkbox-inline">
+      <label><input type="checkbox" id="sourceOutpost"> Outpost</label>
+      <label><input type="checkbox" id="sourceDepot"> Depot</label>
+      <label><input type="checkbox" id="sourceBoth"> Both</label>
+    </div>
+
+    <label>Terrain</label>
+    <div class="checkbox-inline">
+      <label><input type="checkbox" id="terrainBump"> Bump</label>
+      <label><input type="checkbox" id="terrainTrench"> Trench</label>
+      <label><input type="checkbox" id="terrainBoth"> Both</label>
+    </div>
+
+    <label>Shooting Ability</label>
+    <div class="checkbox-inline">
+      <label><input type="checkbox" id="shootIntake"> Shoot while intaking</label>
+      <label><input type="checkbox" id="shootMove"> Shoot while moving</label>
+    </div>
   </div>
   <div class="nav-buttons">
     <button class="main-btn" onclick="prevPage()">Back</button>
@@ -195,11 +230,8 @@ const teams = {
 // Navigation
 let page=0;
 const pages=document.querySelectorAll(".page");
-const show=i=>{
-  pages.forEach(p=>p.classList.remove("active"));
-  pages[i].classList.add("active");
-};
-const nextPage=()=>{ if(validatePage(page)) show(++page); };
+const show=i=>{pages.forEach(p=>p.classList.remove("active")); pages[i].classList.add("active");};
+function nextPage(){ if(validatePage(page)){ show(++page);} else {alert("Please fix errors before continuing.");}}
 const prevPage=()=>show(--page);
 function toggleFS(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
 
@@ -216,6 +248,7 @@ function containsProfanity(str){
 function validatePage(p){
   let valid=true;
 
+  // PAGE 1
   if(p===0){
     const scouter=document.getElementById("scouter").value.trim();
     const team=document.getElementById("team").value;
@@ -233,20 +266,28 @@ function validatePage(p){
       document.getElementById("teamInfo").innerText=`Team: ${teams[team]}`;
     }
   } 
+  // PAGE 2
+  else if(p===1){
+    const drive=document.getElementById("drive").value;
+    if(drive===""){document.getElementById("driveWarning").innerText="Select a drive type."; valid=false;}
+    else document.getElementById("driveWarning").innerText="";
+
+    const maxCap=Number(document.getElementById("maxCap").value);
+    if(isNaN(maxCap) || maxCap<=0){document.getElementById("maxCapWarning").innerText="Enter max capacity."; valid=false;}
+    else document.getElementById("maxCapWarning").innerText="";
+  }
+  // PAGE 3
   else if(p===2){
     const preload=Number(document.getElementById("preload").value);
     const maxCap=Number(document.getElementById("maxCap").value);
-    if(preload>maxCap){
-      document.getElementById("preloadWarning").innerText="Preload exceeds max capacity.";
-      valid=false;
-    } else document.getElementById("preloadWarning").innerText="";
-  } 
+    if(preload>maxCap){document.getElementById("preloadWarning").innerText="Preload exceeds max capacity."; valid=false;}
+    else document.getElementById("preloadWarning").innerText="";
+  }
+  // PAGE 4
   else if(p===3){
     const notes=document.getElementById("notes").value;
-    if(containsProfanity(notes)){
-      document.getElementById("notesWarning").innerText="Notes contain invalid words.";
-      valid=false;
-    } else document.getElementById("notesWarning").innerText="";
+    if(containsProfanity(notes)){document.getElementById("notesWarning").innerText="Notes contain invalid words."; valid=false;}
+    else document.getElementById("notesWarning").innerText="";
   }
 
   return valid;
@@ -256,6 +297,25 @@ function validatePage(p){
 ["scouter","team","preload","maxCap","notes"].forEach(id=>{
   document.getElementById(id).addEventListener("input",()=>validatePage(page));
 });
+
+// Checkbox logic for Both
+function setupBothLogic(mainIds, bothId){
+  mainIds.forEach(id=>{
+    const el=document.getElementById(id);
+    el.addEventListener("change",()=>{
+      if(el.checked) document.getElementById(bothId).checked=false;
+    });
+  });
+  document.getElementById(bothId).addEventListener("change",()=>{
+    if(document.getElementById(bothId).checked) mainIds.forEach(id=>document.getElementById(id).checked=false);
+  });
+}
+
+// Apply checkbox logic
+setupBothLogic(["intakeRoller","intakePneumatic"],"intakeBoth");
+setupBothLogic(["visionLimelight","visionApril"],"visionBoth");
+setupBothLogic(["sourceOutpost","sourceDepot"],"sourceBoth");
+setupBothLogic(["terrainBump","terrainTrench"],"terrainBoth");
 
 // QR
 function generateQR(){
@@ -268,6 +328,17 @@ function generateQR(){
     intakeRoller:document.getElementById("intakeRoller").checked,
     intakePneumatic:document.getElementById("intakePneumatic").checked,
     intakeBoth:document.getElementById("intakeBoth").checked,
+    visionLimelight:document.getElementById("visionLimelight").checked,
+    visionApril:document.getElementById("visionApril").checked,
+    visionBoth:document.getElementById("visionBoth").checked,
+    sourceOutpost:document.getElementById("sourceOutpost").checked,
+    sourceDepot:document.getElementById("sourceDepot").checked,
+    sourceBoth:document.getElementById("sourceBoth").checked,
+    terrainBump:document.getElementById("terrainBump").checked,
+    terrainTrench:document.getElementById("terrainTrench").checked,
+    terrainBoth:document.getElementById("terrainBoth").checked,
+    shootIntake:document.getElementById("shootIntake").checked,
+    shootMove:document.getElementById("shootMove").checked,
     preload:document.getElementById("preload").value,
     autoBalls:document.getElementById("autoBalls").value,
     crossMid:document.getElementById("crossMid").checked,
