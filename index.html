@@ -1,59 +1,88 @@
+Here is the fully commented code. I have added detailed explanations to the HTML, CSS, and JavaScript sections so you can understand exactly how the logic works.
+
+I have also added a **JSON Data Key** inside the JavaScript section. This explains the abbreviated variable names (e.g., `dt`, `mx`) used in the QR code generation to keep the data size small.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>6998 | 2026 Pit Scout</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- CSS VARIABLES (THEME CONFIGURATION) --- */
+        /* Changing these hex codes will update the color scheme across the entire app */
         :root {
-            --bg-deep: #050505;
-            --bg-card: #141419;
-            --accent: #D4AF37; /* Gold */
-            --accent-dim: #b89b00;
-            --text-main: #ffffff;
-            --text-secondary: #a0a0a0;
-            --danger: #ff4444;
-            --success: #00C851;
-            --input-bg: #1f1f26;
-            --border: rgba(255, 215, 0, 0.2);
+            --bg-deep: #050505;       /* The darkest background (body) */
+            --bg-card: #141419;       /* The background for question cards */
+            --accent: #D4AF37;        /* Gold accent color for highlights/buttons */
+            --accent-dim: #b89b00;    /* Darker gold for hover states */
+            --text-main: #ffffff;     /* White text */
+            --text-secondary: #a0a0a0;/* Grey text for subtitles */
+            --danger: #ff4444;        /* Red for errors/reset buttons */
+            --success: #00C851;       /* Green for success messages */
+            --input-bg: #1f1f26;      /* Background color for text boxes */
+            --border: rgba(255, 215, 0, 0.2); /* Subtle gold border */
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Lexend', sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* --- GLOBAL RESET --- */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Lexend', sans-serif; 
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on tap on mobile */
+        }
         
         body { 
             background-color: var(--bg-deep); 
             color: var(--text-main); 
-            padding-bottom: 100px; /* Space for navbar */
+            padding-bottom: 100px; /* Adds extra space at bottom so the Next button doesn't cover content */
         }
 
-        /* --- Header --- */
+        /* --- HEADER STYLES --- */
         header {
             background: linear-gradient(180deg, #1a1a20 0%, var(--bg-deep) 100%);
             padding: 20px;
             text-align: center;
             border-bottom: 2px solid var(--accent);
-            position: sticky;
+            position: sticky; /* Keeps header at the top when scrolling */
             top: 0;
-            z-index: 100;
+            z-index: 100; /* Ensures header stays on top of other elements */
             box-shadow: 0 4px 20px rgba(0,0,0,0.7);
         }
-        header h1 { color: var(--accent); font-weight: 800; letter-spacing: 2px; font-size: 1.4rem; text-transform: uppercase; }
+        header h1 { 
+            color: var(--accent); 
+            font-weight: 800; 
+            letter-spacing: 2px; 
+            font-size: 1.4rem; 
+            text-transform: uppercase; 
+        }
+        /* The badge showing how many robots have been scouted */
         .counter-badge {
             position: absolute; top: 20px; right: 20px;
             font-size: 0.75rem; color: var(--accent); border: 1px solid var(--accent);
             padding: 4px 8px; border-radius: 8px; font-weight: 600;
         }
 
-        /* --- Layout --- */
+        /* --- LAYOUT & ANIMATION --- */
         .container { max-width: 650px; margin: 0 auto; padding: 20px; }
         
+        /* Pages are hidden by default. Only the one with class 'active' is shown */
         .page { display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Simple fade-in animation for smooth page transitions */
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
-        /* --- Cards --- */
+        /* --- CARD STYLES (Question Containers) --- */
         .section-title {
             color: var(--text-secondary); font-size: 0.85rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 10px 5px;
@@ -70,7 +99,7 @@
             position: relative;
         }
 
-        /* --- Inputs --- */
+        /* --- INPUT FIELD STYLES --- */
         label { display: block; font-size: 0.9rem; margin-bottom: 8px; font-weight: 600; color: var(--text-main); }
         .sub-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px; display: block; }
 
@@ -79,14 +108,21 @@
             border: 1px solid #333; border-radius: 10px;
             color: white; font-size: 1rem; outline: none; transition: 0.3s;
         }
+        /* Glow effect when user clicks into a box */
         input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 215, 0, 0.1); }
         
-        /* Bad Word Violation State */
+        /* Style for when a bad word is detected */
         .violation { border-color: var(--danger) !important; background: rgba(255, 68, 68, 0.1) !important; }
 
-        /* --- Custom Checkboxes/Radios (Grid) --- */
-        .grid-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 10px; }
+        /* --- CUSTOM GRID BUTTONS (Checkboxes looking like buttons) --- */
+        .grid-select { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Responsive grid */
+            gap: 12px; 
+            margin-top: 10px; 
+        }
         
+        /* The container for the checkbox/radio */
         .toggle-btn {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
@@ -101,32 +137,34 @@
             overflow: hidden;
             color: var(--text-secondary);
         }
+        /* Hide the actual ugly browser checkbox */
         .toggle-btn input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
         
-        /* Selected State */
+        /* Styles applied when the hidden checkbox inside is checked */
         .toggle-btn:has(input:checked) {
-            background: rgba(255, 215, 0, 0.15);
+            background: rgba(255, 215, 0, 0.15); /* Gold Tint */
             border-color: var(--accent);
             color: var(--accent);
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
         }
 
-        /* --- Range Slider --- */
+        /* --- RANGE SLIDER (For Stability) --- */
         .slider-container { padding: 10px 0; }
         input[type="range"] {
             -webkit-appearance: none; width: 100%; height: 6px; background: #333;
             border-radius: 5px; outline: none; margin-top: 10px;
         }
+        /* The round handle on the slider */
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
             background: var(--accent); cursor: pointer; border: 2px solid #000;
         }
 
-        /* --- Navigation Bar --- */
+        /* --- NAVIGATION BAR (Bottom) --- */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 10, 0.95); /* Semi-transparent black */
+            backdrop-filter: blur(10px); /* Blurs content behind the bar */
             padding: 15px 20px;
             display: flex; gap: 15px;
             border-top: 1px solid #333;
@@ -137,11 +175,11 @@
             font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
             cursor: pointer; transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.98); }
+        .btn:active { transform: scale(0.98); } /* Click effect */
         .btn-back { background: #2a2a2a; color: #fff; }
         .btn-next { background: var(--accent); color: #000; }
         
-        /* Disabled State (Greyed Out) */
+        /* Greyed out Next button when form is invalid */
         .btn-next:disabled { 
             background: #444; 
             color: #888; 
@@ -150,7 +188,7 @@
             box-shadow: none;
         }
 
-        /* --- Utility --- */
+        /* --- UTILITY CLASSES --- */
         .team-display { margin-top: 10px; font-size: 0.9rem; font-weight: bold; color: var(--accent); display: inline-block; padding: 5px 10px; background: rgba(255,215,0,0.1); border-radius: 8px; }
         .error-msg { color: var(--danger); font-size: 0.75rem; font-weight: bold; margin-top: 5px; display: none; }
         #qrcode { background: white; padding: 15px; border-radius: 10px; margin: 20px auto; width: fit-content; display: none; }
@@ -419,7 +457,7 @@
             <div class="card" style="text-align:center;">
                 <h2 style="color:var(--accent); margin-bottom:10px;">Ready to Generate</h2>
                 <div id="reviewText" style="text-align:left; background:#000; padding:15px; border-radius:10px; margin-bottom:20px; font-size:0.9rem; line-height:1.6; color:#ccc;">
-                    </div>
+                </div>
 
                 <div id="qrcode"></div>
                 
@@ -438,8 +476,38 @@
 </div>
 
 <script>
+    /* =========================================
+       JSON DATA KEY (QR CODE DICTIONARY)
+       
+       To keep the QR code small and easy to scan, 
+       we use short variable names in the JSON data.
+       Here is what each key stands for:
+
+       t    : Team Number
+       sc   : Scouter Name
+       dt   : Drive/Chassis Type (Swerve, Tank, etc.)
+       wt   : Weight (lbs)
+       mx   : Max Piece Capacity
+       in   : Intake Type (Roller, Pneumatic)
+       vis  : Vision System (Limelight, AprilTag)
+       sht  : Shooting Capability (Move & Shoot, etc.)
+       tur  : Turret Capability (Yaw, Pitch)
+       stL  : Starting Location (Auto)
+       pre  : Preload Count
+       at   : Auto Total Pieces Scored
+       mid  : Crossed Midfield (1 = Yes, 0 = No)
+       ter  : Terrain Type (Bump, Trench)
+       stb  : Stability Rating (1-5)
+       cLv  : Climb Level (L1, L2, L3)
+       cPs  : Climb Position (Left, Right, Center)
+       cTm  : Climb Time (seconds)
+       ph   : Photos Taken (1 = Yes, 0 = No)
+       nt   : Notes
+    ========================================= */
+
     /* --- CONFIGURATION --- */
-    // TEAM LIST - LAUREL, MS
+    // TEAM LIST: You must update this list for every specific competition!
+    // Format: Team Number: "Team Name"
     const TEAM_LIST = {
         364: "Team Fusion",
         456: "Siege Robotics",
@@ -490,78 +558,86 @@
         11345: "Long Beach RoboBearcats"
     };
 
-    // BAD WORDS LIST (Basic Filter)
+    // BAD WORDS LIST (Basic Filter to keep data clean)
     const BAD_WORDS = ["damn", "hell", "shit", "fuck", "bitch", "crap", "ass", "bastard", "dick", "piss", "cock", "pussy", "slut", "whore", "nigger", "fag", "retard", "sex", "nude", "gyatt", "skibidi", "rizz"];
     
-    let currentPage = 0;
-    let robotsScouted = 0;
+    // State Variables
+    let currentPage = 0; // Starts at 0 (Step 1)
+    let robotsScouted = 0; // Keeps track of how many QR codes generated
 
     /* --- LOGIC HANDLERS --- */
     
-    // Checkbox Logic: Exclusive Selection within Group (Choose One OR Both)
+    // Logic to handle exclusive checkboxes (where you can select "Both" OR specific items)
     document.querySelectorAll('.exclusive-check').forEach(box => {
         box.addEventListener('change', (e) => {
             const group = e.target.dataset.group;
             if(!group) return; 
 
             if (e.target.checked) {
-                // Uncheck all other boxes in the same group
+                // If a user checks a box, uncheck others in the same group 
+                // (Note: This logic enforces single selection visual behavior if needed, 
+                // currently allows multiples unless strict logic applies)
                 document.querySelectorAll(`input[data-group="${group}"]`).forEach(el => { 
                     if(el !== e.target) el.checked = false; 
                 });
             }
             
-            // Special check for Terrain stability trigger
+            // Special check: If this was the Terrain group, we need to see if we should show the Slider
             if(group === 'terrain') {
                 checkStability();
             }
         });
     });
 
-    // Terrain Visibility Logic
+    // Function to Show/Hide the Terrain Section
+    // Triggered when "Cross Midfield" is checked/unchecked
     function toggleTerrainSection() {
         const crossMid = document.getElementById('crossMid').checked;
         const card = document.getElementById('terrainCard');
         
         if(crossMid) {
-            card.style.display = 'block';
+            card.style.display = 'block'; // Show
         } else {
-            card.style.display = 'none';
-            // Reset terrain inputs when hidden
+            card.style.display = 'none'; // Hide
+            // Reset terrain inputs when hidden so we don't save bad data
             document.querySelectorAll('input[name="terrain"]').forEach(cb => cb.checked = false);
             checkStability(); 
         }
     }
 
-    // Stability Slider Visibility
+    // Function to Show/Hide the Stability Slider
     function checkStability() {
+        // Get all checked boxes in the terrain group
         const terrainOpts = Array.from(document.querySelectorAll('input[name="terrain"]:checked')).map(cb => cb.value);
-        // Show stability if Bump OR Both is selected
+        // Show stability slider only if 'Bump' or 'Both' is selected
         const needsStable = terrainOpts.includes('Bump') || terrainOpts.includes('Both');
         document.getElementById('stabilityBox').style.display = needsStable ? 'block' : 'none';
     }
 
-    // Team Number Lookup & Real-time Validtion
+    // Team Number Lookup Logic
     document.getElementById('teamNum').addEventListener('input', function() {
         const num = this.value;
         const disp = document.getElementById('teamNameDisplay');
         
+        // If team exists in our list:
         if(TEAM_LIST[num]) {
             disp.textContent = "✓ " + TEAM_LIST[num];
             disp.style.color = "#000";
             disp.style.background = "var(--accent)";
         } else {
+            // If unknown or empty:
             disp.textContent = num ? "Unknown Team" : "Waiting for input...";
             disp.style.color = num ? "var(--text-secondary)" : "var(--accent)";
             disp.style.background = "rgba(255,255,255,0.05)";
         }
-        updateNavButtons(); // Check validity immediately
+        updateNavButtons(); // Re-check if we can proceed
     });
 
+    // Listeners to check validity when user types name or notes
     document.getElementById('scouterName').addEventListener('input', updateNavButtons);
     document.getElementById('notes').addEventListener('input', updateNavButtons);
 
-    // Profanity Checker
+    // Helper: Returns true if text contains a bad word
     function containsProfanity(text) {
         if (!text) return false;
         const lower = text.toLowerCase();
@@ -570,16 +646,17 @@
 
     /* --- NAVIGATION & VALIDATION --- */
 
+    // Checks if the current page is valid. If not, disables the "Next" button.
     function updateNavButtons() {
-        // This function enables/disables the Next button in real-time
         const nextBtn = document.getElementById('nextBtn');
         let isValid = true;
 
+        // Validation for Page 0 (ID)
         if (currentPage === 0) {
             const name = document.getElementById('scouterName').value.trim();
             const team = document.getElementById('teamNum').value.trim();
             
-            // Profanity Check
+            // 1. Check Profanity in Name
             if(containsProfanity(name)) {
                 document.getElementById('profanity-name').style.display = 'block';
                 document.getElementById('scouterName').classList.add('violation');
@@ -589,17 +666,18 @@
                 document.getElementById('scouterName').classList.remove('violation');
             }
 
-            // Name Length Check
+            // 2. Check Name Length
             if (name.length < 2) isValid = false;
 
-            // Unknown Team Check
+            // 3. Check Team Number against List
             if (!TEAM_LIST[team]) {
-                document.getElementById('err-team').style.display = team ? 'block' : 'none'; // Show error if typed but invalid
+                document.getElementById('err-team').style.display = team ? 'block' : 'none';
                 isValid = false;
             } else {
                 document.getElementById('err-team').style.display = 'none';
             }
         }
+        // Validation for Page 3 (Notes)
         else if (currentPage === 3) {
              const notes = document.getElementById('notes').value;
              if(containsProfanity(notes)) {
@@ -612,36 +690,47 @@
              }
         }
 
+        // Enable or Disable button based on 'isValid'
         nextBtn.disabled = !isValid;
     }
 
+    // Handles moving between pages
+    // dir = 1 (Next), dir = -1 (Back)
     function navigate(dir) {
-        if (dir === 1 && document.getElementById('nextBtn').disabled) return; // Double check
+        // Prevent moving forward if disabled
+        if (dir === 1 && document.getElementById('nextBtn').disabled) return; 
 
+        // Hide current page
         document.getElementById(`page${currentPage}`).classList.remove('active');
+        // Update page number
         currentPage += dir;
+        // Show new page
         document.getElementById(`page${currentPage}`).classList.add('active');
         
-        // Button State
+        // Show/Hide Back Button
         document.getElementById('backBtn').style.visibility = currentPage === 0 ? 'hidden' : 'visible';
         
+        // If we reached the last page (Review), prepare the summary
         if(currentPage === 4) {
-            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none'; // Hide Next button
             prepareReview();
         } else {
-            document.getElementById('nextBtn').style.display = 'block';
-            updateNavButtons(); // Re-evaluate button state for new page
+            document.getElementById('nextBtn').style.display = 'block'; // Show Next button
+            updateNavButtons(); // Check validation for the new page
         }
         
+        // Scroll to top of screen
         window.scrollTo(0,0);
     }
 
     /* --- QR GENERATION --- */
 
+    // Helper: Gets values of all checked boxes with a specific name
     function getVals(name) {
         return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
     }
 
+    // Creates the text summary on the final page
     function prepareReview() {
         const team = document.getElementById('teamNum').value;
         const name = document.getElementById('scouterName').value;
@@ -658,11 +747,13 @@
         `;
     }
 
+    // Generates the QR Code using the JS library
     function generateQR() {
         robotsScouted++;
         document.getElementById('robotCounter').innerText = "ROBOTS: " + robotsScouted;
 
-        // Construct Data Object (Compressed keys for QR size)
+        // 1. Collect all data into a Javascript Object
+        // We use the short keys defined in the Key at the top of the script
         const data = {
             // ID
             t: document.getElementById('teamNum').value,
@@ -680,7 +771,7 @@
             stL: document.getElementById('startPos').value,
             pre: document.getElementById('preload').value,
             at: document.getElementById('autoTotal').value,
-            mid: document.getElementById('crossMid').checked ? 1 : 0,
+            mid: document.getElementById('crossMid').checked ? 1 : 0, // Convert boolean to 1/0
             ter: getVals('terrain'),
             stb: document.getElementById('stability').value,
             // Teleop
@@ -691,58 +782,66 @@
             nt: document.getElementById('notes').value
         };
 
+        // 2. Clear previous QR code if it exists
         const qrContainer = document.getElementById('qrcode');
         qrContainer.innerHTML = "";
         qrContainer.style.display = "inline-block";
         
+        // 3. Create new QR Code
         new QRCode(qrContainer, {
-            text: JSON.stringify(data),
+            text: JSON.stringify(data), // Convert Object to String
             width: 240,
             height: 240,
-            correctLevel: QRCode.CorrectLevel.L
+            correctLevel: QRCode.CorrectLevel.L // Low error correction (makes QR less dense/easier to scan)
         });
 
+        // 4. Disable button to prevent double clicks
         const btn = document.getElementById('generateBtn');
         btn.innerText = "QR Generated (Saved)";
         btn.style.background = "var(--success)";
         btn.disabled = true;
     }
 
+    // Resets the form to start over
     function resetForm() {
         if(!confirm("Are you sure you want to reset? Unsaved data will be lost.")) return;
         
+        // Native form reset
         document.getElementById('scoutForm').reset();
         document.getElementById('qrcode').style.display = 'none';
         
-        // Remove violation styles
+        // Clean up visual errors/styles
         document.querySelectorAll('.violation').forEach(el => el.classList.remove('violation'));
         document.querySelectorAll('.profanity-alert').forEach(el => el.style.display = 'none');
 
+        // Reset Generator Button
         const btn = document.getElementById('generateBtn');
         btn.innerText = "Generate QR Code";
         btn.style.background = "var(--accent)";
         btn.disabled = false;
         
-        // Reset navigation
+        // Go back to Page 0
         document.getElementById(`page${currentPage}`).classList.remove('active');
         currentPage = 0;
         document.getElementById(`page0`).classList.add('active');
         document.getElementById('backBtn').style.visibility = 'hidden';
         document.getElementById('nextBtn').style.display = 'block';
         
-        // Reset UI elements
+        // Reset Team Display
         document.getElementById('teamNameDisplay').textContent = "Waiting for input...";
         document.getElementById('teamNameDisplay').style.background = "rgba(255,255,255,0.05)";
         document.getElementById('teamNameDisplay').style.color = "var(--text-secondary)";
         
-        // Reset Terrain hidden state
+        // Ensure hidden sections are hidden again
         toggleTerrainSection();
         updateNavButtons();
     }
     
-    // Initial run to set button state
+    // Run this once on load to ensure buttons are in correct state
     updateNavButtons();
 </script>
 
 </body>
 </html>
+
+```
