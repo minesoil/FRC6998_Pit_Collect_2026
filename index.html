@@ -272,7 +272,7 @@
                         Pneumatic
                     </label>
                     <label class="toggle-btn">
-                        <input type="checkbox" name="intakeOtherTrigger" id="intakeOtherTrigger">
+                        <input type="checkbox" name="intake" id="intakeOtherTrigger">
                         Other (其他)
                     </label>
                 </div>
@@ -293,7 +293,7 @@
                         Photon Camera
                     </label>
                      <label class="toggle-btn">
-                        <input type="checkbox" name="visOtherTrigger" id="visOtherTrigger">
+                        <input type="checkbox" name="visionHard" id="visOtherTrigger">
                         Other (其他)
                     </label>
                 </div>
@@ -314,9 +314,12 @@
                         AprilTag
                     </label>
                      <label class="toggle-btn">
-                        <input type="checkbox" name="visionSoft" value="DriverCam">
-                        Driver Cam
+                        <input type="checkbox" name="visionSoft" id="visSoftOtherTrigger">
+                        Other (其他)
                     </label>
+                </div>
+                <div class="conditional-input" id="visSoftOtherBox">
+                    <input type="text" id="visSoftOtherVal" placeholder="Describe vision capabilities...">
                 </div>
             </div>
 
@@ -597,6 +600,7 @@
         11287: "Canton Career Center",
         11343: "JPS High School Robotics",
         11345: "Long Beach RoboBearcats"
+
     };
 
     // BAD WORDS LIST
@@ -623,6 +627,7 @@
 
     setupOtherToggle('intakeOtherTrigger', 'intakeOtherBox');
     setupOtherToggle('visOtherTrigger', 'visOtherBox');
+    setupOtherToggle('visSoftOtherTrigger', 'visSoftOtherBox');
 
     // 2. Logic to handle exclusive checkboxes (where needed) - Keep existing exclusive checks if any remain
     document.querySelectorAll('.exclusive-check').forEach(box => {
@@ -779,7 +784,7 @@
         html += `Chassis: ${document.getElementById('chassis').value}<br>`;
         html += `Intake: ${getMultiValues('intake', 'intakeOtherVal') || 'None'}<br>`;
         html += `Vision H/W: ${getMultiValues('visionHard', 'visOtherVal') || 'None'}<br>`;
-        html += `Vision S/W: ${getMultiValues('visionSoft') || 'None'}<br>`;
+        html += `Vision S/W: ${getMultiValues('visionSoft', 'visSoftOtherVal') || 'None'}<br>`;
         
         // Auto
         const startMap = {
@@ -813,7 +818,7 @@
             mx: document.getElementById('capacity').value,
             in: getMultiValues('intake', 'intakeOtherVal'),
             visH: getMultiValues('visionHard', 'visOtherVal'),
-            visS: getMultiValues('visionSoft'),
+            visS: getMultiValues('visionSoft', 'visSoftOtherVal'),
             sht: getMultiValues('shoot'),
             tur: getMultiValues('turret'),
             
@@ -865,6 +870,7 @@
             // 2. Hide "Other" inputs that were toggled open
             document.getElementById('intakeOtherBox').style.display = 'none';
             document.getElementById('visOtherBox').style.display = 'none';
+            document.getElementById('visSoftOtherBox').style.display = 'none';
             document.getElementById('terrainCard').style.display = 'none';
             document.getElementById('stabilityBox').style.display = 'none';
             
@@ -899,6 +905,9 @@
             window.scrollTo(0,0);
         }
     }
+
+    // Run validation immediately on load to disable the Next button
+    updateNavButtons();
 </script>
 </body>
 </html>
