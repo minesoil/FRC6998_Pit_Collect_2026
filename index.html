@@ -252,9 +252,10 @@
                 <label>Robot Weight (機器人重量)</label>
                 <span class="sub-label">In Pounds (lbs)</span>
                 <input type="number" id="weight" placeholder="125">
+                <div class="error-msg" id="err-weight">Max Weight is 135 lbs</div>
                 
                 <br><br>
-                <label>Max Piece Capacity (最高容量)</label>
+                <label>Max Fuel Capacity (最高容量)</label>
                 <input type="number" id="capacity" placeholder="e.g. 1">
             </div>
 
@@ -357,13 +358,20 @@
 
             <div class="card">
                 <label>Starting Location (位子)</label>
-                <span class="sub-label">Does the Robot start at Outpost, or is it for Human Player?</span>
-                <select id="startPos">
-                    <option value="StartLine">Start Line (Anywhere)</option>
-                    <option value="OutpostRobot">Outpost (Robot Starts Here)</option>
-                    <option value="OutpostHuman">Outpost (Human Player Only)</option>
-                    <option value="Depot">Depot Side</option>
-                </select>
+                <div class="grid-select">
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="startPos" value="Left">
+                        Left (左)
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="startPos" value="Center">
+                        Center (中)
+                    </label>
+                    <label class="toggle-btn">
+                        <input type="checkbox" name="startPos" value="Right">
+                        Right (右)
+                    </label>
+                </div>
 
                 <br><br>
                 <label>Preload Count (Preload 數量)</label>
@@ -387,7 +395,7 @@
             </div>
 
             <div class="card">
-                <label>Total Auto Pieces (Auto 總共顆數)</label>
+                <label>Total Auto Fuel (Auto 總共顆數)</label>
                 <span class="sub-label">Scored during Auto</span>
                 <input type="number" id="autoTotal" placeholder="0">
             </div>
@@ -409,10 +417,6 @@
                     <label class="toggle-btn">
                         <input type="checkbox" name="terrain" value="Trench">
                         Trench
-                    </label>
-                    <label class="toggle-btn">
-                        <input type="checkbox" name="terrain" value="Flat">
-                        Flat/Open
                     </label>
                 </div>
 
@@ -685,6 +689,16 @@
 
     document.getElementById('scouterName').addEventListener('input', updateNavButtons);
     document.getElementById('notes').addEventListener('input', updateNavButtons);
+    document.getElementById('weight').addEventListener('input', updateNavButtons);
+    document.getElementById('capacity').addEventListener('input', updateNavButtons);
+    document.getElementById('preload').addEventListener('input', updateNavButtons);
+    document.getElementById('autoTotal').addEventListener('input', updateNavButtons);
+    document.getElementById('climbTime').addEventListener('input', updateNavButtons);
+    
+    // Add listeners to conditional "Other" inputs so validation updates when they type
+    document.getElementById('intakeOtherVal').addEventListener('input', updateNavButtons);
+    document.getElementById('visOtherVal').addEventListener('input', updateNavButtons);
+    document.getElementById('visSoftOtherVal').addEventListener('input', updateNavButtons);
 
     function containsProfanity(text) {
         if (!text) return false;
@@ -721,8 +735,78 @@
                 document.getElementById('err-team').style.display = 'none';
             }
         }
+        // Validation for Page 1 (Specs)
+        else if (currentPage === 1) {
+            const weightVal = document.getElementById('weight').value;
+            const capVal = document.getElementById('capacity').value;
+            const weight = parseFloat(weightVal);
+            
+            // Check if fields are empty
+            if (weightVal === '' || capVal === '') {
+                isValid = false;
+            }
+            // Check Weight Limit
+            else if (weight > 135) {
+                document.getElementById('err-weight').style.display = 'block';
+                document.getElementById('weight').classList.add('violation');
+                isValid = false;
+            } else {
+                document.getElementById('err-weight').style.display = 'none';
+                document.getElementById('weight').classList.remove('violation');
+            }
+
+            // Check Conditional "Other" fields
+            if(document.getElementById('intakeOtherBox').style.display === 'block' && 
+               document.getElementById('intakeOtherVal').value.trim() === '') isValid = false;
+               
+            if(document.getElementById('visOtherBox').style.display === 'block' && 
+               document.getElementById('visOtherVal').value.trim() === '') isValid = false;
+               
+            if(document.getElementById('visSoftOtherBox').style.display === 'block' && 
+               document.getElementById('visSoftOtherVal').value.trim() === '') isValid = false;
+        }
+        // Validation for Page 2 (Auto)
+        else if (currentPage === 2) {
+            const preloadVal = document.getElementById('preload').value;
+            const autoTotalVal = document.getElementById('autoTotal').value;
+            const preload = parseFloat(preloadVal);
+            
+            // Retrieve Capacity from previous page
+            const capacity = parseFloat(document.getElementById('capacity').value) || 0;
+            const errPreload = document.getElementById('err-preload');
+
+            // Check Empty
+            if (preloadVal === '' || autoTotalVal === '') {
+                isValid = false;
+            }
+            
+            // Preload Validation Logic
+            if (preload > 8) {
+                errPreload.innerText = "Max Preload is 8";
+                errPreload.style.display = 'block';
+                document.getElementById('preload').classList.add('violation');
+                isValid = false;
+            } 
+            else if (preload > capacity) {
+                errPreload.innerText = "Preload count should not be higher than max fuel capacity (" + capacity + ")";
+                errPreload.style.display = 'block';
+                document.getElementById('preload').classList.add('violation');
+                isValid = false;
+            } 
+            else {
+                errPreload.style.display = 'none';
+                document.getElementById('preload').classList.remove('violation');
+            }
+        }
+        // Validation for Page 3 (Teleop/Endgame)
         else if (currentPage === 3) {
+             const climbTimeVal = document.getElementById('climbTime').value;
              const notes = document.getElementById('notes').value;
+             
+             // Check Empty Fields (Notes are usually optional, but strict mode: check climbTime)
+             if (climbTimeVal === '') isValid = false;
+
+             // Profanity Check
              if(containsProfanity(notes)) {
                 document.getElementById('profanity-notes').style.display = 'block';
                 document.getElementById('notes').classList.add('violation');
@@ -787,11 +871,7 @@
         html += `Vision S/W: ${getMultiValues('visionSoft', 'visSoftOtherVal') || 'None'}<br>`;
         
         // Auto
-        const startMap = {
-            'StartLine': 'Start Line', 'OutpostRobot': 'Outpost (Robot)', 
-            'OutpostHuman': 'Outpost (Human)', 'Depot': 'Depot'
-        };
-        html += `Start: ${startMap[document.getElementById('startPos').value]}<br>`;
+        html += `Start: ${getMultiValues('startPos') || 'None'}<br>`;
         html += `Auto Intake: ${document.getElementById('autoIntake').checked ? 'Yes' : 'No'}<br>`;
         html += `Auto Hang: ${document.getElementById('autoHang').checked ? 'Yes' : 'No'}<br>`;
         
@@ -822,7 +902,7 @@
             sht: getMultiValues('shoot'),
             tur: getMultiValues('turret'),
             
-            stL: document.getElementById('startPos').value,
+            stL: getMultiValues('startPos'),
             pre: document.getElementById('preload').value,
             auInt: document.getElementById('autoIntake').checked ? 1 : 0,
             auHng: document.getElementById('autoHang').checked ? 1 : 0,
