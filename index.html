@@ -290,8 +290,8 @@
                         Limelight
                     </label>
                     <label class="toggle-btn">
-                        <input type="checkbox" name="visionHard" value="PhotonCamera">
-                        Photon Camera
+                        <input type="checkbox" name="visionHard" value="NormalCamera">
+                        Normal Camera
                     </label>
                      <label class="toggle-btn">
                         <input type="checkbox" name="visionHard" id="visOtherTrigger">
@@ -700,10 +700,41 @@
     document.getElementById('visOtherVal').addEventListener('input', updateNavButtons);
     document.getElementById('visSoftOtherVal').addEventListener('input', updateNavButtons);
 
+    function normalizeText(text) {
+    return text
+        .toLowerCase()
+        // convert leetspeak
+        .replace(/[@]/g, "a")
+        .replace(/[1!]/g, "i")
+        .replace(/[3]/g, "e")
+        .replace(/[4]/g, "a")
+        .replace(/[5$]/g, "s")
+        .replace(/[0]/g, "o")
+        // remove non-letters
+        .replace(/[^a-z]/g, "")
+        // collapse repeated letters (fuuuck → fuck)
+        .replace(/(.)\1+/g, "$1");
+    }
+
     function containsProfanity(text) {
         if (!text) return false;
-        const lower = text.toLowerCase();
-        return BAD_WORDS.some(word => lower.includes(word));
+    
+        const normalized = normalizeText(text);
+    
+        return BAD_WORDS.some(word => {
+            const cleanWord = normalizeText(word);
+    
+            // substring match
+            if (normalized.includes(cleanWord)) return true;
+    
+            // partial match (e.g. fuk vs fuck)
+            for (let i = 0; i < cleanWord.length - 1; i++) {
+                const sub = cleanWord.substring(0, i + 2);
+                if (normalized.includes(sub)) return true;
+            }
+    
+            return false;
+        });
     }
 
     /* --- NAVIGATION & VALIDATION --- */
