@@ -590,6 +590,7 @@
 
                 <div id="qrcodePath"></div>
 
+                <!-- BUTTON CHANGED: Defaults to Generate, changes to Update -->
                 <button type="button" class="btn btn-next" id="generatePathBtn" onclick="generatePathQR()">Generate Path QRs</button>
                 <br><br>
                 <button type="button" class="btn" style="background:var(--danger); color:white; font-size:0.8rem; padding:10px;" onclick="resetForm()">Finish & Reset</button>
@@ -990,6 +991,15 @@
     let strokes = []; // Stores array of lines: [ [{x,y}, {x,y}], [{x,y}...] ]
     let currentStroke = [];
     
+    // Color Palette for Distinct Paths
+    const PATH_COLORS = [
+        "#00C851", // Green
+        "#33b5e5", // Blue
+        "#ff4444", // Red
+        "#ffbb33", // Orange
+        "#aa66cc"  // Purple
+    ];
+    
     // Resize canvas to match the CSS-defined container size
     function initCanvas() {
         const container = document.getElementById('fieldContainer');
@@ -1010,15 +1020,32 @@
         
         // 1. Draw finished strokes
         if (strokes.length > 0) {
-            ctx.lineWidth = 3;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = "#00C851"; // Green Path
 
-            strokes.forEach(stroke => {
+            strokes.forEach((stroke, index) => {
                 if (stroke.length < 2) return;
+                
+                // Cycle through colors based on index
+                const color = PATH_COLORS[index % PATH_COLORS.length];
+                
+                // --- Draw Shadow (Glow) ---
                 ctx.beginPath();
-                // Convert percentage back to pixels
+                ctx.strokeStyle = "rgba(0,0,0,0.5)";
+                ctx.lineWidth = 4;
+                const startX_S = (stroke[0].x / 100) * canvas.width + 2; // Offset shadow
+                const startY_S = (stroke[0].y / 100) * canvas.height + 2;
+                ctx.moveTo(startX_S, startY_S);
+                for (let i = 1; i < stroke.length; i++) {
+                    ctx.lineTo((stroke[i].x / 100) * canvas.width + 2, (stroke[i].y / 100) * canvas.height + 2);
+                }
+                ctx.stroke();
+
+                // --- Draw Path Line ---
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2; // Thinner, professional line
+                
                 const startX = (stroke[0].x / 100) * canvas.width;
                 const startY = (stroke[0].y / 100) * canvas.height;
                 ctx.moveTo(startX, startY);
@@ -1029,15 +1056,33 @@
                     ctx.lineTo(px, py);
                 }
                 ctx.stroke();
+
+                // --- Draw Endpoints (Start=Green Dot, End=Red Dot) ---
+                // Start
+                ctx.fillStyle = "#00C851"; 
+                ctx.beginPath();
+                ctx.arc(startX, startY, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // End
+                const last = stroke[stroke.length-1];
+                const endX = (last.x / 100) * canvas.width;
+                const endY = (last.y / 100) * canvas.height;
+                ctx.fillStyle = "#ff4444";
+                ctx.beginPath();
+                ctx.arc(endX, endY, 4, 0, Math.PI * 2);
+                ctx.fill();
             });
         }
 
         // 2. Draw current stroke being drawn (live feedback)
         if (currentStroke.length > 1) {
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = "#00C851"; 
+            // Use next color in sequence
+            ctx.strokeStyle = PATH_COLORS[strokes.length % PATH_COLORS.length];
+            
             ctx.beginPath();
             const startX = (currentStroke[0].x / 100) * canvas.width;
             const startY = (currentStroke[0].y / 100) * canvas.height;
@@ -1124,7 +1169,10 @@
         document.getElementById('qrcodePath').innerHTML = "";
         document.getElementById('qrcodePath').style.display = 'none';
         document.getElementById('pathQrHeader').style.display = 'none';
-        document.getElementById('generatePathBtn').style.display = 'inline-block';
+        // Reset button
+        const btn = document.getElementById('generatePathBtn');
+        btn.style.display = 'inline-block';
+        btn.innerText = 'Generate Path QRs';
     }
 
     function undoLastStroke() {
@@ -1150,6 +1198,7 @@
         }
 
         const teamNum = document.getElementById('teamNum').value;
+        const teamName = TEAM_LIST[teamNum] || "";
         const eventCode = "2026PIT"; 
         const matchNum = "0"; 
 
@@ -1186,10 +1235,12 @@
             wrapper.style.textAlign = "center";
 
             const label = document.createElement('div');
-            label.innerText = `Auto Path #${index + 1}`;
+            // UPDATED LABEL: Shows Team Number & Name next to Path Number
+            label.innerText = `Team ${teamNum} ${teamName ? '(' + teamName + ')' : ''}\nAuto Path #${index + 1}`;
             label.style.fontWeight = "bold";
             label.style.marginBottom = "10px";
             label.style.fontSize = "1.1rem";
+            label.style.lineHeight = "1.4"; 
             
             const qrDiv = document.createElement('div');
             
@@ -1208,7 +1259,10 @@
             });
         });
         
-        document.getElementById('generatePathBtn').style.display = 'none';
+        // UPDATED: Button stays visible and changes to Update
+        const btn = document.getElementById('generatePathBtn');
+        btn.style.display = 'inline-block';
+        btn.innerText = "Update Path QRs";
     }
 
     function resetForm() {
@@ -1242,7 +1296,11 @@
             
             // Reset Buttons
             document.getElementById('generateBtn').style.display = 'inline-block';
-            document.getElementById('generatePathBtn').style.display = 'inline-block';
+            
+            const pathBtn = document.getElementById('generatePathBtn');
+            pathBtn.style.display = 'inline-block';
+            pathBtn.innerText = "Generate Path QRs";
+            
             document.getElementById('goToPathBtn').style.display = 'none'; 
             
             // Clear Path Data
