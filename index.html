@@ -204,7 +204,8 @@
             height: 100%;
             cursor: crosshair;
             background-color: #333; /* Fallback color */
-            /* Load the user's field image */
+            
+            /* LOAD THE 2026 FIELD IMAGE HERE */
             background-image: url('field_2026.png'); 
             background-size: cover;
             background-position: center;
@@ -1113,17 +1114,21 @@
         }
 
         // Format: X,Y;X,Y|X,Y;X,Y (semicolon separates points, pipe separates strokes)
-        const strokesString = strokes.map(stroke => {
-            return stroke.map(p => `${p.x},${p.y}`).join(';');
-        }).join('|');
+        // Flatten strokes for simple playback in standard viewer, or keep separator if advanced.
+        // For compatibility with 4-column schema, we output a single string.
+        // We will flatten strokes into a single path sequence joined by |
+        const points = strokes.flat();
+        const pathString = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('|');
         
-        // Add ID context
+        // Add ID context (4 Columns: Event, Match, Team, Path)
+        // Matches Scanner App SCHEMA_PATH
         const teamNum = document.getElementById('teamNum').value;
-        const matchNum = "PIT"; // Context marker
-        const eventCode = "2026"; // Context marker
+        const eventCode = "2026PIT"; 
+        const matchNum = "0"; 
         
-        // Protocol: PATH|Team|Event|Match|Coordinates
-        const fullPayload = `PATH|${teamNum}|${eventCode}|${matchNum}|${strokesString}`;
+        // Protocol: Event|Match|Team|Path
+        const tsvValues = [eventCode, matchNum, teamNum, pathString];
+        const fullPayload = tsvValues.join('\t');
 
         // Compress
         const compressed = LZString.compressToBase64(fullPayload);
