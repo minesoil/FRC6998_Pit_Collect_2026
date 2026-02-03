@@ -605,7 +605,7 @@
 
                 <div id="qrcodePath"></div>
 
-                <button type="button" class="btn btn-next" id="generatePathBtn" onclick="generatePathQR()">Generate Path QR</button>
+                <button type="button" class="btn btn-next" id="generatePathBtn" onclick="generatePathQR()">Generate Path QRs</button>
                 <br><br>
                 <button type="button" class="btn" style="background:var(--danger); color:white; font-size:0.8rem; padding:10px;" onclick="resetForm()">Finish & Reset</button>
             </div>
@@ -1087,6 +1087,7 @@
         strokes = [];
         currentStroke = [];
         drawFieldBackground();
+        document.getElementById('qrcodePath').innerHTML = "";
         document.getElementById('qrcodePath').style.display = 'none';
         document.getElementById('generatePathBtn').style.display = 'inline-block';
     }
@@ -1113,37 +1114,60 @@
             return;
         }
 
-        // Format: X,Y;X,Y|X,Y;X,Y (semicolon separates points, pipe separates strokes)
-        // Flatten strokes for simple playback in standard viewer, or keep separator if advanced.
-        // For compatibility with 4-column schema, we output a single string.
-        // We will flatten strokes into a single path sequence joined by |
-        const points = strokes.flat();
-        const pathString = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('|');
-        
-        // Add ID context (4 Columns: Event, Match, Team, Path)
-        // Matches Scanner App SCHEMA_PATH
         const teamNum = document.getElementById('teamNum').value;
         const eventCode = "2026PIT"; 
         const matchNum = "0"; 
-        
-        // Protocol: Event|Match|Team|Path
-        const tsvValues = [eventCode, matchNum, teamNum, pathString];
-        const fullPayload = tsvValues.join('\t');
 
-        // Compress
-        const compressed = LZString.compressToBase64(fullPayload);
+        const qrContainer = document.getElementById('qrcodePath');
+        qrContainer.innerHTML = ""; // Clear previous QRs
+        qrContainer.style.display = "block";
 
-        // Generate QR
-        document.getElementById('qrcodePath').innerHTML = "";
-        document.getElementById('qrcodePath').style.display = "block";
-        
-        new QRCode(document.getElementById("qrcodePath"), {
-            text: compressed,
-            width: 256,
-            height: 256,
-            colorDark : "#D4AF37", // Gold color for Path QR
-            colorLight : "#000000",
-            correctLevel : QRCode.CorrectLevel.L
+        // LOOP through each stroke and create a separate QR
+        strokes.forEach((stroke, index) => {
+            if (stroke.length < 2) return; // Skip tiny dots
+
+            // Create coordinate string for THIS specific stroke
+            const pathString = stroke.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('|');
+            
+            // Protocol: Event|Match|Team|Path
+            const tsvValues = [eventCode, matchNum, teamNum, pathString];
+            const fullPayload = tsvValues.join('\t');
+
+            // Compress
+            const compressed = LZString.compressToBase64(fullPayload);
+
+            // UI Elements for this QR
+            const wrapper = document.createElement('div');
+            wrapper.style.marginBottom = "20px";
+            wrapper.style.padding = "15px";
+            wrapper.style.background = "#fff";
+            wrapper.style.borderRadius = "10px";
+            wrapper.style.color = "#000";
+            wrapper.style.textAlign = "center";
+
+            const label = document.createElement('div');
+            label.innerText = `Path ${index + 1}`;
+            label.style.fontWeight = "bold";
+            label.style.marginBottom = "10px";
+            label.style.fontSize = "1.1rem";
+            
+            const qrDiv = document.createElement('div');
+            // We need a unique ID or just pass the element to QRCode constructor
+            // QRCode library usually takes an ID string or an HTMLElement
+            
+            wrapper.appendChild(label);
+            wrapper.appendChild(qrDiv);
+            qrContainer.appendChild(wrapper);
+
+            // Generate QR inside the new div
+            new QRCode(qrDiv, {
+                text: compressed,
+                width: 200,
+                height: 200,
+                colorDark : "#D4AF37", // Gold color
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.L
+            });
         });
         
         document.getElementById('generatePathBtn').style.display = 'none';
